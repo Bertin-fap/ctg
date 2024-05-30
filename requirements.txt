@@ -1,0 +1,8 @@
+openpyxl
+pandas
+plotly
+folium
+matplotlib
+screeninfo
+pyyaml
+pandastable
