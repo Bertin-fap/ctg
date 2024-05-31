@@ -21,7 +21,7 @@ import pandas
 from ctg.ctgfuncts.ctg_effectif import read_effectif
 from ctg.ctgfuncts.ctg_effectif import read_effectif_corrected
 from ctg.ctgfuncts.ctg_effectif import count_participation
-from ctg.ctgfuncts.ctg_effectif import parse_date
+from ctg.ctgfuncts.ctg_tools import parse_date
 from ctg.ctgfuncts.ctg_tools import built_lat_long
 
 def plot_ctg(df:pandas.core.frame.DataFrame):

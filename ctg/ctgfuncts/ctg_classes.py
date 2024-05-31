@@ -1,5 +1,6 @@
 # Standard library imports
 import os
+from datetime import datetime
 from pathlib import Path
 from math import asin, cos, radians, sin, sqrt
 from tkinter import messagebox
@@ -16,7 +17,7 @@ class EffectifCtg():
 
 
     def __init__(self,year,ctg_path):
-        
+
         # get effectif of the year year
         self.year = year
         self.ctg_path = ctg_path
@@ -27,18 +28,18 @@ class EffectifCtg():
         year_1 = int(year)-1
         path_root = self.ctg_path / Path(str(year_1))/ Path('DATA')
         df_1 = pd.read_excel(path_root /Path(str(year_1)+'.xlsx'))
-        
+
         # add column Age compute at the 30 september of year
         df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
                                                  format="%d/%m/%Y")
         df_1['Date de naissance'] = pd.to_datetime(df_1['Date de naissance'],
                                                    format="%d/%m/%Y")
 
-        df['Age']  = df['Date de naissance'].apply(lambda x : 
+        df['Age']  = df['Date de naissance'].apply(lambda x :
                                                    (pd.Timestamp(int(year), 9, 30)-x).days/365)
         df_1['Age']  = df_1['Date de naissance'].apply(lambda x :
                                                       (pd.Timestamp(int(year), 9, 30)-x).days/365)
-        
+
         # add column distance from Grenoble
         dh = built_lat_long(df)
 
@@ -52,6 +53,7 @@ class EffectifCtg():
         self.nbr_nouveaux_membres,
         self.nouveaux_membres_noms) = self.nouveaux_entrants()
         self.moy_age_sortants, self.nbr_sortants, self.sortants_noms = self.sortants()
+        self.rebond = self.get_rebond()
 
         self.cotisation_licence,self.cotisation_totale, self.cotisation_ctg = self.cotisation()
 
@@ -108,6 +110,9 @@ class EffectifCtg():
                     f"{round(self.moy_age_sortants,1)} ans")
         stat.append(long_str)
         stat.append(f"Liste des sortants :\n{self.sortants_noms}")
+        stat.append(f'Nombre de rebonds : {len(self.rebond)}')
+        rebond_str = '; '.join(self.rebond)
+        stat.append(f'Membres rebonds : {rebond_str}')
         stat.append(' ')
 
         if 'Pratique VAE' in self.effectif.columns:
@@ -209,6 +214,18 @@ class EffectifCtg():
         cotisation_ctg = 15*len(self.effectif)
         return cotisation_licence,cotisation_totale, cotisation_ctg
 
+    def get_rebond(self):
+        current_year = datetime.now().year
+        path_history = self.ctg_path / Path(str(current_year)) / Path('STATISTIQUES/effectif_history.xlsx')
+        df = pd.read_excel(path_history)
+        df = df.fillna(0)
+
+        year_int = int(self.year)
+        list_rebond = []
+        for idx,row in df.iterrows():
+            if (row[year_int-2] == 0 and row[year_int-1] == year_int-1 and row[year_int] ==0):
+                list_rebond.append('-'.join([row['Nom'],row['Prénom']]))
+        return list_rebond
 
     def plot_histo(self):
 

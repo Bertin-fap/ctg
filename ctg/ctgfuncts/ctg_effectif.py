@@ -4,7 +4,6 @@ __all__ = ['anciennete_au_club',
            'evolution_age_median',
            'evolution_effectif',
            'inscrit_sejour',
-           'parse_date',
            'read_effectif',
            'read_effectif_corrected',
            'statistique_vae',
@@ -27,6 +26,7 @@ import pandas as pd
 
 # Internal imports
 from ctg.ctgfuncts.ctg_tools import built_lat_long
+from ctg.ctgfuncts.ctg_tools import read_sortie_csv
 
 def read_effectif_corrected(ctg_path, year=None):
 
@@ -73,12 +73,11 @@ def inscrit_sejour(file,no_match,df_effectif):
                                      encode('ascii', 'ignore'). \
                                      decode('utf-8').\
                                      strip()
-
-    df = pd.read_csv(file)
+    df = read_sortie_csv(file)
     sejour = os.path.splitext(os.path.basename(file))[0]
 
-    if len(df) != 0:
-        dg = df['Unnamed: 0'].str.upper()
+    if df is not None:
+        dg = df[0].str.upper()
         dg = dg.dropna()
         dg = dg.str.replace(' \t?','',regex=False)
         dg = dg.str.replace('.',' ',regex=False)
@@ -213,22 +212,6 @@ def count_participation(path,ctg_path,year,info_rando):
 
 
     return(no_match,df_total,index)
-
-def parse_date(s,year):
-
-    convert_to_date = lambda s: datetime.datetime.strptime(s,"%Y_%m_%d")
-    s = re.sub(r"-","_",s)
-
-    try:
-        pattern = re.compile(r"(?P<year>\b\d{4}_)(?P<month>\d{1,2}_)(?P<day>\d{1,2})")
-        match = pattern.search(s)
-        date = convert_to_date(match.group("year")+match.group("month")+match.group("day"))
-    except:
-        pattern = re.compile(r"(?P<month>\d{1,2}_)(?P<day>\d{1,2})")
-        match = pattern.search(s)
-        date = convert_to_date(str(year)+'_'+match.group("month")+match.group("day"))
-
-    return date
 
 
 def read_effectif(ctg_path,year):

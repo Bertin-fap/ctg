@@ -7,21 +7,23 @@ from pathlib import Path
 
 # 3rd party imports
 import pandas as pd
+from pandas.errors import EmptyDataError, ParserError
 
 def parse_date(tag:str,year:int)->datetime:
 
     '''
-    Convert a tag formatted as yyyy[_-]mm[_-]dd or mm[_-]dd in datetime format
+    Convert a tag formatted as yyyy[_-]mm[_-]dd\s<text> or mm[_-]dd\s<text> in datetime format
     '''
 
     convert_to_date = lambda tag: datetime.strptime(tag,"%Y_%m_%d")
+
     tag = re.sub(r"-","_",tag)
 
-    if re.findall(r'^\d{4}_\d{1,2}_\d{1,2}$',tag):
+    if re.findall(r'^\d{4}_\d{1,2}_\d{1,2}\s',tag):
         pattern = re.compile(r"(?P<year>\b\d{4}_)(?P<month>\d{1,2}_)(?P<day>\d{1,2})")
         match = pattern.search(tag)
         date = convert_to_date(match.group("year")+match.group("month")+match.group("day"))
-    elif re.findall(r'^\d{1,2}_\d{1,2}$',tag):
+    elif re.findall(r'^\d{1,2}_\d{1,2}\s',tag):
         pattern = re.compile(r"(?P<month>\d{1,2}_)(?P<day>\d{1,2})")
         match = pattern.search(tag)
         date = convert_to_date(str(year)+'_'+match.group("month")+match.group("day"))
@@ -149,3 +151,18 @@ def built_lat_long(df:pd.DataFrame)->pd.DataFrame:
                                 'lat':dg.index.map(dic_lat),
                                 'number':dg.tolist()})
     return dh
+    
+def read_sortie_csv(file):
+
+    '''
+    '''
+    try:
+        err = 0
+        df = pd.read_csv(file,skiprows=1,header=None)
+    except EmptyDataError:
+        df = None
+    except ParserError :
+        print(f'WARNING : The csv file {file} is hill configurated')
+        df = None
+        
+    return df
