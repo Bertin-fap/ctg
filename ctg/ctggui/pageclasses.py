@@ -13,21 +13,21 @@ from screeninfo import get_monitors
 
 # Local imports
 import ctg.ctggui.guiglobals as gg
-import ctg.ctggui.useful_functions as guf
-from ctg.ctggui.useful_functions import font_size
-from ctg.ctggui.useful_functions import last_available_years
-from ctg.ctggui.useful_functions import mm_to_px
-from ctg.ctggui.useful_functions import place_after
-from ctg.ctggui.useful_functions import str_size_mm
-from ctg.ctggui.useful_functions import create_archi
-from ctg.ctggui.useful_functions import window_properties
+import ctg.ctggui.guitools as guf
+from ctg.ctggui.guitools import font_size
+from ctg.ctggui.guitools import last_available_years
+from ctg.ctggui.guitools import mm_to_px
+from ctg.ctggui.guitools import place_after
+from ctg.ctggui.guitools import str_size_mm
+from ctg.ctggui.guitools import create_archi
+from ctg.ctggui.guitools import window_properties
 from ctg.ctggui.page_effectif import create_effectif_analysis
 from ctg.ctggui.pagesorties import create_sorties_analysis
 from ctg.ctggui.pagesynthese import create_synthese_analysis
 from ctg.ctggui.pagetendance import create_tendance_analysis
 from ctg.ctggui.pagedivers import create_divers_analysis
-from ctg.ctggui.useful_functions import place_bellow
-from ctg.ctggui.useful_functions import show_frame
+from ctg.ctggui.guitools import place_bellow
+from ctg.ctggui.guitools import show_frame
 
 class AppMain(tk.Tk):
     '''

@@ -1,0 +1,509 @@
+************* Module ctgfuncts
+ctg\ctgfuncts\__init__.py:9:0: C0304: Final newline missing (missing-final-newline)
+ctg\ctgfuncts\__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\__init__.py:5:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_plot' (import-error)
+ctg\ctgfuncts\__init__.py:6:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_effectif' (import-error)
+ctg\ctgfuncts\__init__.py:7:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_synthese' (import-error)
+ctg\ctgfuncts\__init__.py:8:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_classes' (import-error)
+ctg\ctgfuncts\__init__.py:9:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_tools' (import-error)
+************* Module ctgfuncts.club38
+ctg\ctgfuncts\club38.py:4:0: C0301: Line too long (125/100) (line-too-long)
+ctg\ctgfuncts\club38.py:44:0: C0304: Final newline missing (missing-final-newline)
+ctg\ctgfuncts\club38.py:11:43: W1401: Anomalous backslash in string: '\-'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\club38.py:11:46: W1401: Anomalous backslash in string: '\-'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\club38.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\club38.py:1:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\club38.py:1:0: R0914: Too many local variables (16/15) (too-many-locals)
+ctg\ctgfuncts\club38.py:3:9: E0602: Undefined variable 'pd' (undefined-variable)
+ctg\ctgfuncts\club38.py:3:34: E0602: Undefined variable 'Path' (undefined-variable)
+ctg\ctgfuncts\club38.py:4:28: E0602: Undefined variable 'Path' (undefined-variable)
+ctg\ctgfuncts\club38.py:4:59: E0602: Undefined variable 'Path' (undefined-variable)
+ctg\ctgfuncts\club38.py:4:79: E0602: Undefined variable 'Path' (undefined-variable)
+ctg\ctgfuncts\club38.py:5:16: E0602: Undefined variable 'pd' (undefined-variable)
+ctg\ctgfuncts\club38.py:25:10: E0602: Undefined variable 'folium' (undefined-variable)
+ctg\ctgfuncts\club38.py:37:8: E0602: Undefined variable 'folium' (undefined-variable)
+ctg\ctgfuncts\club38.py:27:40: W0612: Unused variable 'num_ffct' (unused-variable)
+ctg\ctgfuncts\club38.py:34:8: W0612: Unused variable 'long_ville' (unused-variable)
+ctg\ctgfuncts\club38.py:34:20: W0612: Unused variable 'lat_ville' (unused-variable)
+************* Module ctgfuncts.ctg_classes
+ctg\ctgfuncts\ctg_classes.py:25:0: C0301: Line too long (103/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:30:0: C0301: Line too long (106/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:31:0: C0301: Line too long (110/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:40:0: C0301: Line too long (114/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:89:0: C0301: Line too long (128/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:91:0: C0301: Line too long (126/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:100:0: C0301: Line too long (121/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:101:0: C0301: Line too long (123/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:102:0: C0301: Line too long (118/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:112:0: C0301: Line too long (121/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:116:0: C0301: Line too long (127/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:143:0: C0301: Line too long (104/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:146:0: C0301: Line too long (130/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:187:0: C0301: Line too long (130/100) (line-too-long)
+ctg\ctgfuncts\ctg_classes.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\ctg_classes.py:8:0: E0401: Unable to import 'matplotlib.pyplot' (import-error)
+ctg\ctgfuncts\ctg_classes.py:9:0: E0401: Unable to import 'numpy' (import-error)
+ctg\ctgfuncts\ctg_classes.py:10:0: E0401: Unable to import 'pandas' (import-error)
+ctg\ctgfuncts\ctg_classes.py:13:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_tools' (import-error)
+ctg\ctgfuncts\ctg_classes.py:15:0: C0115: Missing class docstring (missing-class-docstring)
+ctg\ctgfuncts\ctg_classes.py:15:0: R0902: Too many instance attributes (15/7) (too-many-instance-attributes)
+ctg\ctgfuncts\ctg_classes.py:40:31: C2401: Attribute name "nbr_nouveaux_licencié" contains a non-ASCII character, consider renaming it. (non-ascii-name)
+ctg\ctgfuncts\ctg_classes.py:40:60: C2401: Attribute name "nouveaux_licenciés_noms" contains a non-ASCII character, consider renaming it. (non-ascii-name)
+ctg\ctgfuncts\ctg_classes.py:48:4: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_classes.py:58:4: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_classes.py:122:13: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+ctg\ctgfuncts\ctg_classes.py:58:4: R0915: Too many statements (55/50) (too-many-statements)
+ctg\ctgfuncts\ctg_classes.py:125:4: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_classes.py:126:8: C2401: Variable name "nouveaux_licenciés_id" contains a non-ASCII character, consider renaming it. (non-ascii-name)
+ctg\ctgfuncts\ctg_classes.py:133:8: C2401: Variable name "nouveaux_licenciés_list" contains a non-ASCII character, consider renaming it. (non-ascii-name)
+ctg\ctgfuncts\ctg_classes.py:136:8: C2401: Variable name "nouveaux_licenciés_noms" contains a non-ASCII character, consider renaming it. (non-ascii-name)
+ctg\ctgfuncts\ctg_classes.py:137:8: C2401: Variable name "nbr_nouveaux_licencié" contains a non-ASCII character, consider renaming it. (non-ascii-name)
+ctg\ctgfuncts\ctg_classes.py:134:12: W0612: Unused variable 'idx' (unused-variable)
+ctg\ctgfuncts\ctg_classes.py:141:4: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_classes.py:141:4: E0202: An attribute defined in ctgfuncts.ctg_classes line 45 hides this method (method-hidden)
+ctg\ctgfuncts\ctg_classes.py:155:4: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_classes.py:163:12: W0612: Unused variable 'idx' (unused-variable)
+ctg\ctgfuncts\ctg_classes.py:170:4: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_classes.py:183:4: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_classes.py:185:8: W0612: Unused variable 'fig' (unused-variable)
+ctg\ctgfuncts\ctg_classes.py:187:8: W0612: Unused variable 'result_hist' (unused-variable)
+************* Module ctgfuncts.ctg_effectif
+ctg\ctgfuncts\ctg_effectif.py:47:0: C0301: Line too long (114/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:49:0: C0301: Line too long (120/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:50:0: C0301: Line too long (110/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:101:0: W0311: Bad indentation. Found 25 spaces, expected 24 (bad-indentation)
+ctg\ctgfuncts\ctg_effectif.py:107:0: W0311: Bad indentation. Found 25 spaces, expected 24 (bad-indentation)
+ctg\ctgfuncts\ctg_effectif.py:109:0: W0311: Bad indentation. Found 25 spaces, expected 24 (bad-indentation)
+ctg\ctgfuncts\ctg_effectif.py:111:0: C0301: Line too long (105/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:114:0: C0301: Line too long (106/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:120:0: C0301: Line too long (119/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:122:0: C0301: Line too long (115/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:174:0: C0301: Line too long (113/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:176:0: C0301: Line too long (111/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:182:0: C0301: Line too long (120/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:184:0: C0301: Line too long (107/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:318:0: C0301: Line too long (104/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:319:0: C0301: Line too long (110/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:320:0: C0301: Line too long (132/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:324:0: W0311: Bad indentation. Found 11 spaces, expected 12 (bad-indentation)
+ctg\ctgfuncts\ctg_effectif.py:325:0: W0311: Bad indentation. Found 11 spaces, expected 12 (bad-indentation)
+ctg\ctgfuncts\ctg_effectif.py:327:0: W0311: Bad indentation. Found 11 spaces, expected 12 (bad-indentation)
+ctg\ctgfuncts\ctg_effectif.py:383:0: C0301: Line too long (105/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:432:0: C0301: Line too long (103/100) (line-too-long)
+ctg\ctgfuncts\ctg_effectif.py:82:27: W1401: Anomalous backslash in string: '\s'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\ctg_effectif.py:285:75: W1401: Anomalous backslash in string: '\d'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\ctg_effectif.py:311:66: W1401: Anomalous backslash in string: '\d'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\ctg_effectif.py:349:70: W1401: Anomalous backslash in string: '\d'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\ctg_effectif.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\ctg_effectif.py:23:0: E0401: Unable to import 'matplotlib.pyplot' (import-error)
+ctg\ctgfuncts\ctg_effectif.py:24:0: E0401: Unable to import 'numpy' (import-error)
+ctg\ctgfuncts\ctg_effectif.py:25:0: E0401: Unable to import 'pandas' (import-error)
+ctg\ctgfuncts\ctg_effectif.py:28:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_tools' (import-error)
+ctg\ctgfuncts\ctg_effectif.py:39:8: C0103: Variable name "currentDateTime" doesn't conform to snake_case naming style (invalid-name)
+ctg\ctgfuncts\ctg_effectif.py:63:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:66:23: C3001: Lambda expression assigned to a variable. Define a function using the "def" keyword instead. (unnecessary-lambda-assignment)
+ctg\ctgfuncts\ctg_effectif.py:63:0: R0912: Too many branches (16/12) (too-many-branches)
+ctg\ctgfuncts\ctg_effectif.py:127:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:127:0: R0914: Too many local variables (29/15) (too-many-locals)
+ctg\ctgfuncts\ctg_effectif.py:144:24: E0602: Undefined variable 'sejours_xlsx' (undefined-variable)
+ctg\ctgfuncts\ctg_effectif.py:185:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+ctg\ctgfuncts\ctg_effectif.py:127:0: R0912: Too many branches (13/12) (too-many-branches)
+ctg\ctgfuncts\ctg_effectif.py:127:0: R0915: Too many statements (57/50) (too-many-statements)
+ctg\ctgfuncts\ctg_effectif.py:188:4: W0612: Unused variable 'nbr_evenement' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:207:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:209:22: C3001: Lambda expression assigned to a variable. Define a function using the "def" keyword instead. (unnecessary-lambda-assignment)
+ctg\ctgfuncts\ctg_effectif.py:216:4: W0702: No exception type(s) specified (bare-except)
+ctg\ctgfuncts\ctg_effectif.py:224:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:252:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:257:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+ctg\ctgfuncts\ctg_effectif.py:286:37: W0612: Unused variable 'ratio_femmes' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:288:4: W0612: Unused variable 'title' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:301:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:301:0: R0914: Too many local variables (19/15) (too-many-locals)
+ctg\ctgfuncts\ctg_effectif.py:304:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+ctg\ctgfuncts\ctg_effectif.py:320:94: W0640: Cell variable year defined in loop (cell-var-from-loop)
+ctg\ctgfuncts\ctg_effectif.py:310:4: W0612: Unused variable 'xt' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:312:4: W0612: Unused variable 'nbr_femmes' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:313:4: W0612: Unused variable 'ratio_femmes' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:314:4: W0612: Unused variable 'nbr_total' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:329:4: W0612: Unused variable 'fig' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:329:9: W0612: Unused variable 'ax' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:347:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:387:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:402:8: C0103: Variable name "df_N1" doesn't conform to snake_case naming style (invalid-name)
+ctg\ctgfuncts\ctg_effectif.py:421:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_effectif.py:424:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+ctg\ctgfuncts\ctg_effectif.py:428:4: C0103: Variable name "currentDateTime" doesn't conform to snake_case naming style (invalid-name)
+ctg\ctgfuncts\ctg_effectif.py:443:4: W0612: Unused variable 'fig' (unused-variable)
+ctg\ctgfuncts\ctg_effectif.py:18:0: W0611: Unused Counter imported from collections (unused-import)
+************* Module ctgfuncts.ctg_plot
+ctg\ctgfuncts\ctg_plot.py:67:0: W0311: Bad indentation. Found 16 spaces, expected 12 (bad-indentation)
+ctg\ctgfuncts\ctg_plot.py:113:0: C0301: Line too long (118/100) (line-too-long)
+ctg\ctgfuncts\ctg_plot.py:113:0: W0311: Bad indentation. Found 14 spaces, expected 12 (bad-indentation)
+ctg\ctgfuncts\ctg_plot.py:114:0: W0311: Bad indentation. Found 14 spaces, expected 12 (bad-indentation)
+ctg\ctgfuncts\ctg_plot.py:133:0: C0301: Line too long (104/100) (line-too-long)
+ctg\ctgfuncts\ctg_plot.py:183:0: C0301: Line too long (103/100) (line-too-long)
+ctg\ctgfuncts\ctg_plot.py:197:0: C0304: Final newline missing (missing-final-newline)
+ctg\ctgfuncts\ctg_plot.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\ctg_plot.py:6:0: C0413: Import "import datetime" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:7:0: C0413: Import "import os" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:8:0: C0413: Import "from collections import Counter" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:9:0: C0413: Import "from math import asin, cos, radians, sin, sqrt" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:10:0: C0413: Import "from pathlib import Path" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:11:0: C0413: Import "from tkinter import messagebox" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:14:0: E0401: Unable to import 'folium' (import-error)
+ctg\ctgfuncts\ctg_plot.py:14:0: C0413: Import "import folium" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:15:0: E0401: Unable to import 'numpy' (import-error)
+ctg\ctgfuncts\ctg_plot.py:15:0: C0413: Import "import numpy as np" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:16:0: E0401: Unable to import 'matplotlib.pyplot' (import-error)
+ctg\ctgfuncts\ctg_plot.py:16:0: C0413: Import "import matplotlib.pyplot as plt" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:17:0: E0401: Unable to import 'pandas' (import-error)
+ctg\ctgfuncts\ctg_plot.py:17:0: C0413: Import "import pandas as pd" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:18:0: W0404: Reimport 'pandas' (imported line 17) (reimported)
+ctg\ctgfuncts\ctg_plot.py:18:0: E0401: Unable to import 'pandas' (import-error)
+ctg\ctgfuncts\ctg_plot.py:18:0: C0413: Import "import pandas" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:21:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_effectif' (import-error)
+ctg\ctgfuncts\ctg_plot.py:21:0: C0413: Import "from ctg.ctgfuncts.ctg_effectif import read_effectif" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:22:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_effectif' (import-error)
+ctg\ctgfuncts\ctg_plot.py:22:0: C0413: Import "from ctg.ctgfuncts.ctg_effectif import read_effectif_corrected" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:23:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_effectif' (import-error)
+ctg\ctgfuncts\ctg_plot.py:23:0: C0413: Import "from ctg.ctgfuncts.ctg_effectif import count_participation" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:24:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_effectif' (import-error)
+ctg\ctgfuncts\ctg_plot.py:24:0: C0413: Import "from ctg.ctgfuncts.ctg_effectif import parse_date" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:25:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_tools' (import-error)
+ctg\ctgfuncts\ctg_plot.py:25:0: C0413: Import "from ctg.ctgfuncts.ctg_tools import built_lat_long" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_plot.py:27:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_plot.py:27:0: R0914: Too many local variables (19/15) (too-many-locals)
+ctg\ctgfuncts\ctg_plot.py:32:21: C3001: Lambda expression assigned to a variable. Define a function using the "def" keyword instead. (unnecessary-lambda-assignment)
+ctg\ctgfuncts\ctg_plot.py:32:4: W0612: Unused variable 'group_adjacent' (unused-variable)
+ctg\ctgfuncts\ctg_plot.py:76:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_plot.py:76:0: R0914: Too many local variables (23/15) (too-many-locals)
+ctg\ctgfuncts\ctg_plot.py:80:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+ctg\ctgfuncts\ctg_plot.py:84:20: E0606: Possibly using variable 'info_rando' before assignment (possibly-used-before-assignment)
+ctg\ctgfuncts\ctg_plot.py:81:12: W0612: Unused variable 'd' (unused-variable)
+ctg\ctgfuncts\ctg_plot.py:116:11: C1802: Do not use `len(SEQUENCE)` without comparison to determine if a sequence is empty (use-implicit-booleaness-not-len)
+ctg\ctgfuncts\ctg_plot.py:116:31: C0321: More than one statement on a single line (multiple-statements)
+ctg\ctgfuncts\ctg_plot.py:119:8: C0103: Variable name "currentDateTime" doesn't conform to snake_case naming style (invalid-name)
+ctg\ctgfuncts\ctg_plot.py:136:15: R1735: Consider using '{"M": 'Homme', "F": 'Femme'}' instead of a call to 'dict'. (use-dict-literal)
+ctg\ctgfuncts\ctg_plot.py:137:14: R1735: Consider using '{"Oui": 'VAE', "Non": 'Musculaire'}' instead of a call to 'dict'. (use-dict-literal)
+ctg\ctgfuncts\ctg_plot.py:161:21: C0321: More than one statement on a single line (multiple-statements)
+ctg\ctgfuncts\ctg_plot.py:76:0: R0915: Too many statements (72/50) (too-many-statements)
+ctg\ctgfuncts\ctg_plot.py:146:4: W0612: Unused variable 'error' (unused-variable)
+ctg\ctgfuncts\ctg_plot.py:149:4: W0612: Unused variable 'fig' (unused-variable)
+ctg\ctgfuncts\ctg_plot.py:1:0: F0002: ctg\ctgfuncts\ctg_plot.py: Fatal error while checking 'ctg\ctgfuncts\ctg_plot.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in 'C:\Users\franc\AppData\Local\pylint\pylint\Cache\pylint-crash-2024-05-30-15-25-32.txt'. (astroid-error)
+************* Module ctgfuncts.ctg_synthese
+ctg\ctgfuncts\ctg_synthese.py:44:0: C0301: Line too long (103/100) (line-too-long)
+ctg\ctgfuncts\ctg_synthese.py:209:0: C0301: Line too long (104/100) (line-too-long)
+ctg\ctgfuncts\ctg_synthese.py:211:0: C0301: Line too long (105/100) (line-too-long)
+ctg\ctgfuncts\ctg_synthese.py:257:0: C0301: Line too long (123/100) (line-too-long)
+ctg\ctgfuncts\ctg_synthese.py:377:0: C0304: Final newline missing (missing-final-newline)
+ctg\ctgfuncts\ctg_synthese.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\ctg_synthese.py:10:0: C0413: Import "import datetime" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:11:0: C0413: Import "import pathlib" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:12:0: C0413: Import "import os" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:13:0: C0413: Import "import os.path" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:14:0: C0413: Import "from collections import Counter" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:15:0: C0413: Import "from collections import namedtuple" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:16:0: C0413: Import "from pathlib import Path" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:19:0: E0401: Unable to import 'matplotlib.pyplot' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:19:0: C0413: Import "import matplotlib.pyplot as plt" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:20:0: E0401: Unable to import 'numpy' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:20:0: C0413: Import "import numpy as np" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:21:0: E0401: Unable to import 'pandas' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:21:0: C0413: Import "import pandas as pd" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:22:0: E0401: Unable to import 'yaml' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:22:0: C0413: Import "import yaml" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:25:0: E0401: Unable to import 'ctg.ctggui.guiglobals' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:25:0: C0413: Import "from ctg.ctggui.guiglobals import ACTIVITE_LIST" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:26:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_classes' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:26:0: C0413: Import "from ctg.ctgfuncts.ctg_classes import EffectifCtg" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:27:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_tools' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:27:0: C0413: Import "from ctg.ctgfuncts.ctg_tools import get_cout_total" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:28:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_effectif' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:28:0: C0413: Import "from ctg.ctgfuncts.ctg_effectif import read_effectif_corrected" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:29:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_tools' (import-error)
+ctg\ctgfuncts\ctg_synthese.py:29:0: C0413: Import "from ctg.ctgfuncts.ctg_tools import get_sejour_info" should be placed at the top of the module (wrong-import-position)
+ctg\ctgfuncts\ctg_synthese.py:31:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_synthese.py:48:4: W0612: Unused variable 'df_effectif' (unused-variable)
+ctg\ctgfuncts\ctg_synthese.py:59:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_synthese.py:94:4: W0612: Unused variable 'fig' (unused-variable)
+ctg\ctgfuncts\ctg_synthese.py:112:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_synthese.py:112:0: R0914: Too many local variables (20/15) (too-many-locals)
+ctg\ctgfuncts\ctg_synthese.py:185:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_synthese.py:188:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+ctg\ctgfuncts\ctg_synthese.py:198:4: W0612: Unused variable 'file_info' (unused-variable)
+ctg\ctgfuncts\ctg_synthese.py:201:4: W0612: Unused variable 'fig' (unused-variable)
+ctg\ctgfuncts\ctg_synthese.py:215:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_synthese.py:221:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+ctg\ctgfuncts\ctg_synthese.py:235:4: W0612: Unused variable 'fig' (unused-variable)
+ctg\ctgfuncts\ctg_synthese.py:258:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+ctg\ctgfuncts\ctg_synthese.py:264:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_synthese.py:264:22: W0622: Redefining built-in 'type' (redefined-builtin)
+ctg\ctgfuncts\ctg_synthese.py:306:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+ctg\ctgfuncts\ctg_synthese.py:10:0: C0411: standard import "datetime" should be placed before third party imports "folium", "numpy", "matplotlib.pyplot", "pandas", "pandas" and first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:11:0: C0411: standard import "pathlib" should be placed before third party imports "folium", "numpy", "matplotlib.pyplot", "pandas", "pandas" and first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:12:0: C0411: standard import "os" should be placed before third party imports "folium", "numpy", "matplotlib.pyplot", "pandas", "pandas" and first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:13:0: C0411: standard import "os.path" should be placed before third party imports "folium", "numpy", "matplotlib.pyplot", "pandas", "pandas" and first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:14:0: C0411: standard import "collections.Counter" should be placed before third party imports "folium", "numpy", "matplotlib.pyplot", "pandas", "pandas" and first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:15:0: C0411: standard import "collections.namedtuple" should be placed before third party imports "folium", "numpy", "matplotlib.pyplot", "pandas", "pandas" and first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:16:0: C0411: standard import "pathlib.Path" should be placed before third party imports "folium", "numpy", "matplotlib.pyplot", "pandas", "pandas" and first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:19:0: C0411: third party import "matplotlib.pyplot" should be placed before first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:20:0: C0411: third party import "numpy" should be placed before first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:21:0: C0411: third party import "pandas" should be placed before first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:22:0: C0411: third party import "yaml" should be placed before first party imports "ctg.ctgfuncts.ctg_effectif.read_effectif", "ctg.ctgfuncts.ctg_effectif.read_effectif_corrected", "ctg.ctgfuncts.ctg_effectif.count_participation", "ctg.ctgfuncts.ctg_effectif.parse_date", "ctg.ctgfuncts.ctg_tools.built_lat_long"  (wrong-import-order)
+ctg\ctgfuncts\ctg_synthese.py:10:0: C0412: Imports from package datetime are not grouped (ungrouped-imports)
+ctg\ctgfuncts\ctg_synthese.py:12:0: C0412: Imports from package os are not grouped (ungrouped-imports)
+ctg\ctgfuncts\ctg_synthese.py:14:0: C0412: Imports from package collections are not grouped (ungrouped-imports)
+ctg\ctgfuncts\ctg_synthese.py:16:0: C0412: Imports from package pathlib are not grouped (ungrouped-imports)
+ctg\ctgfuncts\ctg_synthese.py:19:0: C0412: Imports from package matplotlib are not grouped (ungrouped-imports)
+ctg\ctgfuncts\ctg_synthese.py:20:0: C0412: Imports from package numpy are not grouped (ungrouped-imports)
+ctg\ctgfuncts\ctg_synthese.py:21:0: C0412: Imports from package pandas are not grouped (ungrouped-imports)
+ctg\ctgfuncts\ctg_synthese.py:25:0: C0412: Imports from package ctg are not grouped (ungrouped-imports)
+************* Module ctgfuncts.ctg_tools
+ctg\ctgfuncts\ctg_tools.py:32:0: C0301: Line too long (107/100) (line-too-long)
+ctg\ctgfuncts\ctg_tools.py:70:0: C0301: Line too long (107/100) (line-too-long)
+ctg\ctgfuncts\ctg_tools.py:117:0: C0301: Line too long (111/100) (line-too-long)
+ctg\ctgfuncts\ctg_tools.py:133:0: C0301: Line too long (115/100) (line-too-long)
+ctg\ctgfuncts\ctg_tools.py:169:0: C0304: Final newline missing (missing-final-newline)
+ctg\ctgfuncts\ctg_tools.py:152:43: W1401: Anomalous backslash in string: '\-'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\ctg_tools.py:152:46: W1401: Anomalous backslash in string: '\-'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\ctg_tools.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\ctg_tools.py:12:0: E0401: Unable to import 'pandas' (import-error)
+ctg\ctgfuncts\ctg_tools.py:14:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_tools.py:16:22: C3001: Lambda expression assigned to a variable. Define a function using the "def" keyword instead. (unnecessary-lambda-assignment)
+ctg\ctgfuncts\ctg_tools.py:23:4: W0702: No exception type(s) specified (bare-except)
+ctg\ctgfuncts\ctg_tools.py:30:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_tools.py:49:14: C0321: More than one statement on a single line (multiple-statements)
+ctg\ctgfuncts\ctg_tools.py:53:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_tools.py:53:0: E0102: function already defined line 14 (function-redefined)
+ctg\ctgfuncts\ctg_tools.py:55:22: C3001: Lambda expression assigned to a variable. Define a function using the "def" keyword instead. (unnecessary-lambda-assignment)
+ctg\ctgfuncts\ctg_tools.py:62:4: W0702: No exception type(s) specified (bare-except)
+ctg\ctgfuncts\ctg_tools.py:69:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_tools.py:69:0: E0102: function already defined line 30 (function-redefined)
+ctg\ctgfuncts\ctg_tools.py:87:14: C0321: More than one statement on a single line (multiple-statements)
+ctg\ctgfuncts\ctg_tools.py:91:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_tools.py:101:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_tools.py:116:24: W0613: Unused argument 'type_sejour' (unused-argument)
+ctg\ctgfuncts\ctg_tools.py:124:8: W0612: Unused variable 'date_rando' (unused-variable)
+ctg\ctgfuncts\ctg_tools.py:131:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_tools.py:141:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+ctg\ctgfuncts\ctg_tools.py:141:16: C0201: Consider iterating the dictionary directly instead of calling .keys() (consider-iterating-dictionary)
+ctg\ctgfuncts\ctg_tools.py:2:0: W0611: Unused import itertools (unused-import)
+ctg\ctgfuncts\ctg_tools.py:3:0: W0611: Unused import os (unused-import)
+ctg\ctgfuncts\ctg_tools.py:5:0: W0611: Unused monthrange imported from calendar (unused-import)
+************* Module ctgfuncts.ctg_utils
+ctg\ctgfuncts\ctg_utils.py:23:0: C0301: Line too long (106/100) (line-too-long)
+ctg\ctgfuncts\ctg_utils.py:42:0: C0301: Line too long (107/100) (line-too-long)
+ctg\ctgfuncts\ctg_utils.py:89:0: C0301: Line too long (111/100) (line-too-long)
+ctg\ctgfuncts\ctg_utils.py:105:0: C0301: Line too long (115/100) (line-too-long)
+ctg\ctgfuncts\ctg_utils.py:141:0: C0304: Final newline missing (missing-final-newline)
+ctg\ctgfuncts\ctg_utils.py:124:43: W1401: Anomalous backslash in string: '\-'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\ctg_utils.py:124:46: W1401: Anomalous backslash in string: '\-'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\ctg_utils.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\ctg_utils.py:19:0: E0401: Unable to import 'pandas' (import-error)
+ctg\ctgfuncts\ctg_utils.py:26:22: C3001: Lambda expression assigned to a variable. Define a function using the "def" keyword instead. (unnecessary-lambda-assignment)
+ctg\ctgfuncts\ctg_utils.py:33:4: W0702: No exception type(s) specified (bare-except)
+ctg\ctgfuncts\ctg_utils.py:40:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_utils.py:59:14: C0321: More than one statement on a single line (multiple-statements)
+ctg\ctgfuncts\ctg_utils.py:73:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_utils.py:88:24: W0613: Unused argument 'type_sejour' (unused-argument)
+ctg\ctgfuncts\ctg_utils.py:96:8: W0612: Unused variable 'date_rando' (unused-variable)
+ctg\ctgfuncts\ctg_utils.py:103:0: C0116: Missing function or method docstring (missing-function-docstring)
+ctg\ctgfuncts\ctg_utils.py:113:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+ctg\ctgfuncts\ctg_utils.py:113:16: C0201: Consider iterating the dictionary directly instead of calling .keys() (consider-iterating-dictionary)
+ctg\ctgfuncts\ctg_utils.py:9:0: W0611: Unused import itertools (unused-import)
+ctg\ctgfuncts\ctg_utils.py:10:0: W0611: Unused import os (unused-import)
+ctg\ctgfuncts\ctg_utils.py:12:0: W0611: Unused monthrange imported from calendar (unused-import)
+************* Module ctgfuncts.pagesynthese
+ctg\ctgfuncts\pagesynthese.py:61:0: C0301: Line too long (120/100) (line-too-long)
+ctg\ctgfuncts\pagesynthese.py:62:0: C0301: Line too long (107/100) (line-too-long)
+ctg\ctgfuncts\pagesynthese.py:70:0: C0301: Line too long (102/100) (line-too-long)
+ctg\ctgfuncts\pagesynthese.py:83:0: C0301: Line too long (103/100) (line-too-long)
+ctg\ctgfuncts\pagesynthese.py:84:0: C0301: Line too long (103/100) (line-too-long)
+ctg\ctgfuncts\pagesynthese.py:226:0: C0304: Final newline missing (missing-final-newline)
+ctg\ctgfuncts\pagesynthese.py:63:37: W1401: Anomalous backslash in string: '\{'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\pagesynthese.py:63:56: W1401: Anomalous backslash in string: '\S'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+ctg\ctgfuncts\pagesynthese.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+ctg\ctgfuncts\pagesynthese.py:13:0: E0401: Unable to import 'pandas' (import-error)
+ctg\ctgfuncts\pagesynthese.py:16:0: E0401: Unable to import 'ctg.ctggui.guiglobals' (import-error)
+ctg\ctgfuncts\pagesynthese.py:17:0: E0401: Unable to import 'ctg.ctggui.useful_functions' (import-error)
+ctg\ctgfuncts\pagesynthese.py:18:0: E0401: Unable to import 'ctg.ctggui.useful_functions' (import-error)
+ctg\ctgfuncts\pagesynthese.py:19:0: E0401: Unable to import 'ctg.ctggui.useful_functions' (import-error)
+ctg\ctgfuncts\pagesynthese.py:20:0: E0401: Unable to import 'ctg.ctggui.useful_functions' (import-error)
+ctg\ctgfuncts\pagesynthese.py:21:0: E0401: Unable to import 'ctg.ctggui.useful_functions' (import-error)
+ctg\ctgfuncts\pagesynthese.py:22:0: E0401: Unable to import 'ctg.ctggui.useful_functions' (import-error)
+ctg\ctgfuncts\pagesynthese.py:23:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_synthese' (import-error)
+ctg\ctgfuncts\pagesynthese.py:24:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_synthese' (import-error)
+ctg\ctgfuncts\pagesynthese.py:25:0: E0401: Unable to import 'ctg.ctgfuncts.ctg_synthese' (import-error)
+ctg\ctgfuncts\pagesynthese.py:27:0: R0914: Too many local variables (38/15) (too-many-locals)
+ctg\ctgfuncts\pagesynthese.py:62:21: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+ctg\ctgfuncts\pagesynthese.py:67:4: E0401: Unable to import 'ctg.ctggui.pageclasses' (import-error)
+ctg\ctgfuncts\pagesynthese.py:67:4: C0415: Import outside toplevel (ctg.ctggui.pageclasses.AppMain) (import-outside-toplevel)
+ctg\ctgfuncts\pagesynthese.py:148:58: W0108: Lambda may not be necessary (unnecessary-lambda)
+ctg\ctgfuncts\pagesynthese.py:27:0: R0915: Too many statements (58/50) (too-many-statements)
+ctg\ctgfuncts\pagesynthese.py:27:35: W0613: Unused argument 'master' (unused-argument)
+ctg\ctgfuncts\pagesynthese.py:27:43: W0613: Unused argument 'page_name' (unused-argument)
+ctg\ctgfuncts\pagesynthese.py:27:54: W0613: Unused argument 'institute' (unused-argument)
+ctg\ctgfuncts\pagesynthese.py:86:4: W0612: Unused variable 'ds_year' (unused-variable)
+ctg\ctgfuncts\pagesynthese.py:4:0: W0611: Unused import os (unused-import)
+ctg\ctgfuncts\pagesynthese.py:5:0: W0611: Unused import shutil (unused-import)
+ctg\ctgfuncts\pagesynthese.py:8:0: W0611: Unused filedialog imported from tkinter (unused-import)
+ctg\ctgfuncts\pagesynthese.py:10:0: W0611: Unused Path imported from pathlib (unused-import)
+ctg\ctgfuncts\pagesynthese.py:13:0: W0611: Unused pandas imported as pd (unused-import)
+ctg\ctgfuncts\pagesynthese.py:17:0: W0611: Unused encadre_RL imported from ctg.ctggui.useful_functions (unused-import)
+ctg\ctgfuncts\pagesynthese.py:1:0: R0801: Similar lines in 2 files
+==ctgfuncts.ctg_tools:[105:169]
+==ctgfuncts.ctg_utils:[77:141]
+    info_sejour = df.query('type=="sejour"')['nbr_jours'].tolist()
+
+    c = Counter()
+    c = Counter(info_sejour)
+
+
+    sejour_info_tup = sejour_info( sum(info_sejour),len(info_sejour),c)
+
+    return sejour_info_tup
+
+def get_cout_total(year,type_sejour,dg,ctg_path):
+    ''' Calcul du coût total des randonnées (type='randonnee") ou des séjours (type="sejour") pour l'année year
+    '''
+
+    file_info = Path(ctg_path) / Path(str(year)) / Path('DATA') / Path('info_randos.xlsx')
+    df_indo = pd.read_excel(file_info)
+    cout_total = 0
+    for evenement in dg.index:
+        date_rando = f"{str(year)[2:4]}-{evenement[0:5].replace('_','-')}"
+        cout_rando = df_indo.query('date==@date_rando and type==@type_sejour')['Cout'].tolist()[0]
+        nbr_participants = dg[evenement]
+        cout_total += cout_rando * nbr_participants
+
+    return cout_total
+
+def built_lat_long(df):
+
+    path_villes_de_france = Path(__file__).parent.parent / Path('ctgfuncts/CTG_RefFiles/villes_france_premium.csv')
+
+    def normalize_ville(x):
+        dic_ville = {'SAINT-HILAIRE-DU-TOUVET':"SAINT-HILAIRE-38",
+                     'SAINT-HILAIRE':"SAINT-HILAIRE-38",
+                     'LAVAL-EN-BELLEDONNE':'LAVAL-38',
+                     'LAVAL':"LAVAL-38",
+                     'CRETS-EN-BELLEDONNE':"SAINT-PIERRE-D'ALLEVARD"}
+        if x in dic_ville.keys():
+            return dic_ville[x]
+        else:
+            return x
+
+    df_villes = pd.read_csv(path_villes_de_france,header=None,usecols=[3,19,20])
+    dic_long = dict(zip(df_villes[3] , df_villes[19]))
+    dic_lat = dict(zip(df_villes[3] , df_villes[20]))
+
+    df['Ville'] = df['Ville'].str.replace(' ','-')
+    df['Ville'] = df['Ville'].str.replace('ST-','SAINT-')
+    df['Ville'] = df['Ville'].str.replace('\-D\-+',"-D'",regex=True)
+    df['Ville'] = df['Ville'].str.replace('^LA-',"LA ",regex=True)
+    df['Ville'] = df['Ville'].str.replace('^LE-',"LE ",regex=True)
+
+    df['Ville'] = df['Ville'].apply(normalize_ville)
+
+
+    df['long'] = df['Ville'].map(dic_long)
+    df['lat'] = df['Ville'].map(dic_lat)
+    list_villes = df['Ville'].tolist()
+    Counter(list_villes)
+    dg = df.groupby(['Ville']).count()['N° Licencié']
+
+    dh = pd.DataFrame.from_dict({'Ville':dg.index,
+                                'long':dg.index.map(dic_long),
+                                'lat':dg.index.map(dic_lat),
+                                'number':dg.tolist()})
+    return df,dh (duplicate-code)
+ctg\ctgfuncts\pagesynthese.py:1:0: R0801: Similar lines in 2 files
+==ctgfuncts.ctg_tools:[27:54]
+==ctgfuncts.ctg_utils:[37:65]
+    return date
+
+def day_of_the_date(day,month,year):
+
+    # Compute the day of the week of the date after "Elementary Number Theory David M. Burton Chap 6.4" [1]
+    days_dict = {0: 'dimanche',
+                 1: 'Lundi',
+                 2: 'mardi',
+                 3: 'mercredi',
+                 4: 'jeudi',
+                 5: 'vendredi',
+                 6: 'samedi'}
+
+    #month_dict = dict(zip(itertools.islice(itertools.cycle(l:=range(1,13)),2,2+len(l)),l))
+    month_dict = {3: 1, 4: 2, 5: 3, 6: 4, 7: 5,
+                  8: 6, 9: 7, 10: 8, 11: 9, 12:
+                  10, 1: 11, 2: 12} # [1] p. 125
+
+    y = year%100
+    c = int(year/100)
+    m = month_dict[month]
+    if m>10 : y = y-1
+
+    return days_dict[(day + int(2.6*m - 0.2) - 2*c + y + int(c/4) + int(y/4))%7] # [1] thm 6.12
+
+def parse_date(s,year):
+ (duplicate-code)
+ctg\ctgfuncts\pagesynthese.py:1:0: R0801: Similar lines in 2 files
+==ctgfuncts.ctg_tools:[79:104]
+==ctgfuncts.ctg_utils:[51:76]
+    month_dict = {3: 1, 4: 2, 5: 3, 6: 4, 7: 5,
+                  8: 6, 9: 7, 10: 8, 11: 9, 12:
+                  10, 1: 11, 2: 12} # [1] p. 125
+
+    y = year%100
+    c = int(year/100)
+    m = month_dict[month]
+    if m>10 : y = y-1
+
+    return days_dict[(day + int(2.6*m - 0.2) - 2*c + y + int(c/4) + int(y/4))%7] # [1] thm 6.12
+
+def yamlinfo_randos2df(ctg_path,year):
+
+    # Reads the yaml file
+    info_path = ctg_path / Path(str(year)) / Path('DATA') / Path('info_randos.xlsx')
+
+
+    df = pd.read_excel(info_path)
+
+    return df
+
+def get_sejour_info(ctg_path,year):
+
+
+    sejour_info = namedtuple('sejour_info', 'nbr_jours nbr_sejours histo') (duplicate-code)
+ctg\ctgfuncts\pagesynthese.py:1:0: R0801: Similar lines in 2 files
+==ctgfuncts.ctg_effectif:[209:227]
+==ctgfuncts.ctg_tools:[16:32]
+    s = re.sub(r"-","_",s)
+
+    try:
+        pattern = re.compile(r"(?P<year>\b\d{4}_)(?P<month>\d{1,2}_)(?P<day>\d{1,2})")
+        match = pattern.search(s)
+        date = convert_to_date(match.group("year")+match.group("month")+match.group("day"))
+    except:
+        pattern = re.compile(r"(?P<month>\d{1,2}_)(?P<day>\d{1,2})")
+        match = pattern.search(s)
+        date = convert_to_date(str(year)+'_'+match.group("month")+match.group("day"))
+
+    return date
+
+def day_of_the_date(day,month,year):
+
+    # Compute the day of the week of the date after "Elementary Number Theory David M. Burton Chap 6.4" [1] (duplicate-code)
+ctg\ctgfuncts\pagesynthese.py:1:0: R0801: Similar lines in 2 files
+==ctgfuncts.club38:[8:13]
+==ctgfuncts.ctg_tools:[149:155]
+    df['Ville'] = df['Ville'].str.replace(' ','-')
+    df['Ville'] = df['Ville'].str.replace('ST-','SAINT-')
+    df['Ville'] = df['Ville'].str.replace('\-D\-+',"-D'",regex=True)
+    df['Ville'] = df['Ville'].str.replace('^LA-',"LA ",regex=True)
+    df['Ville'] = df['Ville'].str.replace('^LE-',"LE ",regex=True) (duplicate-code)
+
+-----------------------------------
+Your code has been rated at 0.00/10
+

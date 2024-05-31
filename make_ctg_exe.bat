@@ -32,6 +32,7 @@ echo app_main.mainloop() >> %PGM%
 :: install packages
 ::pip install git+https://github.com/Bertin-fap/ctg.git#egg=ctg
 pip install %userprofile%\pyvenv\ctg
+::pip install ctg
 pip install auto-py-to-exe
 
 :: set the default directories

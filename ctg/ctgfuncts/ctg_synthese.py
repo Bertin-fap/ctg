@@ -41,7 +41,8 @@ def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
     for path_dir in path_dir_list:
         if os.path.isdir(path_dir):
             files = [x for x in os.listdir(path_dir) if x.endswith('.xlsx') and "~$" not in x]
-            list_df.extend([pd.read_excel(path_dir / Path(file), engine='openpyxl') for file in files])
+            list_df.extend([pd.read_excel(path_dir / Path(file), engine='openpyxl')
+                           for file in files])
 
     df_total = pd.concat(list_df, ignore_index=True)
 
@@ -254,7 +255,8 @@ def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
 def _read_memory_sorties():
 
     # Reads the default PVcharacterization.yaml config file
-    path_config_file = Path(__file__).parent.parent / Path('ctgfuncts') / Path('CTG_RefFiles') / Path('memory_sorties.yml')
+    parent = Path(__file__).parent.parent
+    path_config_file = parent  / Path('ctgfuncts/CTG_RefFiles') / Path('memory_sorties.yml')
     with open(path_config_file) as file:
         memory = yaml.safe_load(file)
 

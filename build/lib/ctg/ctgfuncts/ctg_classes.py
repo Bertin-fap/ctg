@@ -19,25 +19,32 @@ class EffectifCtg():
 
         self.year = year
         self.ctg_path = ctg_path
-        df = pd.read_excel(self.ctg_path / Path(str(year))/ Path('DATA')/Path(str(year)+'.xlsx'))
+        path_root = self.ctg_path / Path(str(year))/ Path('DATA')
+        df = pd.read_excel(path_root / Path(str(year)+'.xlsx'))
 
         year_1 = int(year)-1
-        df_1 = pd.read_excel(self.ctg_path / Path(str(year_1))/ Path('DATA')/Path(str(year_1)+'.xlsx'))
+        df_1 = pd.read_excel(path_root /Path(str(year_1)+'.xlsx'))
 
-        df['Date de naissance'] = pd.to_datetime(df['Date de naissance'], format="%d/%m/%Y")
-        df_1['Date de naissance'] = pd.to_datetime(df_1['Date de naissance'], format="%d/%m/%Y")
+        df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
+                                                 format="%d/%m/%Y")
+        df_1['Date de naissance'] = pd.to_datetime(df_1['Date de naissance'],
+                                                   format="%d/%m/%Y")
 
-        df['Age']  = df['Date de naissance'].apply(lambda x : (pd.Timestamp(int(year), 9, 30)-x).days/365)
-        df_1['Age']  = df_1['Date de naissance'].apply(lambda x : (pd.Timestamp(int(year), 9, 30)-x).days/365)
+        df['Age']  = df['Date de naissance'].apply(lambda x : 
+                                                   (pd.Timestamp(int(year), 9, 30)-x).days/365)
+        df_1['Age']  = df_1['Date de naissance'].apply(lambda x :
+                                                      (pd.Timestamp(int(year), 9, 30)-x).days/365)
 
-        df,dh = built_lat_long(df)
+        dh = built_lat_long(df)
 
         df['distance'] = df.apply(lambda row: self.distance_(row, dh),axis=1)
 
         self.effectif = df      # effectif year
         self.effectif_1 = df_1  # effectif year moins un
 
-        self.moy_age_entrants, self.nbr_nouveaux_licencié, self.nouveaux_licenciés_noms = self.nouveaux_entrants()
+        (self.moy_age_entrants,
+        self.nbr_nouveaux_membres,
+        self.nouveaux_membres_noms) = self.nouveaux_entrants()
         self.moy_age_sortants, self.nbr_sortants, self.sortants_noms = self.sortants()
 
         self.cotisation_licence,self.cotisation_totale, self.cotisation_ctg = self.cotisation()
@@ -85,10 +92,15 @@ class EffectifCtg():
         stat.append(f'Membres sympatisants : {self.membres_sympathisants}')
         stat.append(' ')
 
-
-        stat.append(f"{self.nbr_nouveaux_licencié} nouveaux licenciés de moyenne d'âge de {round(self.moy_age_entrants,1)} ans")
-        stat.append(f"Liste des nouveaux :\n{self.nouveaux_licenciés_noms}")
-        stat.append(f"{self.nbr_sortants} licences non renouvellées de moyenne d'âge de {round(self.moy_age_sortants,1)} ans")
+        long_str = (f"{self.nbr_nouveaux_membres} "
+                     "nouveaux membres de moyenne d'âge de "
+                    f"{round(self.moy_age_entrants,1)} ans")
+        stat.append(long_str)
+        stat.append(f"Liste des nouveaux :\n{self.nouveaux_membres_noms}")
+        long_str = (f"{self.nbr_sortants} "
+                     "licences non renouvellées de moyenne d'âge de "
+                    f"{round(self.moy_age_sortants,1)} ans")
+        stat.append(long_str)
         stat.append(f"Liste des sortants :\n{self.sortants_noms}")
         stat.append(' ')
 
@@ -97,9 +109,15 @@ class EffectifCtg():
             nbr_vae_femme = nbr_femmes-da.loc['F','Non']['count']
             nbr_vae_homme = nbr_hommes-da.loc['M','Non']['count']
             nbr_vae_tot = nbr_vae_femme + nbr_vae_homme
-            stat.append(f"Nombre de membres équippées de VAE : {nbr_vae_tot} ({round(100*nbr_vae_tot/nbr_membres,1)} %)")
-            stat.append(f"Nombre de femmes équippées de VAE : {nbr_vae_femme} ({round(100*nbr_vae_femme/nbr_femmes,1)} %)")
-            stat.append(f"Nombre d'hommes équippés de VAE: {nbr_vae_homme} ({round(100*nbr_vae_homme/nbr_hommes)} %)")
+            long_string = ("Nombre de membres équippées de VAE : "
+                          f"{nbr_vae_tot} ({round(100*nbr_vae_tot/nbr_membres,1)} %)"
+            stat.append(long_string)
+            long_string = ("Nombre de femmes équippées de VAE : "
+                          f"{nbr_vae_femme} ({round(100*nbr_vae_femme/nbr_femmes,1)} %)")
+            stat.append(long_string)
+            long_string = ("Nombre d'hommes équippés de VAE: "
+                          f"{nbr_vae_homme} ({round(100*nbr_vae_homme/nbr_hommes)} %)")
+            stat.append(long_string)
 
         stat.append(' ')
         da = self.effectif.groupby(['Discipline'])['Nom'].agg('count')
@@ -109,12 +127,16 @@ class EffectifCtg():
 
         self.effectif = self.effectif.rename(columns={'\n\t\t\t\tAbonnements':'Abonnements'})
         nbr_abonnements = len(self.effectif.query('Abonnements == "Oui"'))
-        stat.append(f"Nombre d'abonnés à la revue FFCT : {nbr_abonnements} ({round(100*nbr_abonnements/nbr_membres)} %)")
+        long_string = (f"Nombre d'abonnés à la revue FFCT : {nbr_abonnements} "
+                       f"({round(100*nbr_abonnements/nbr_membres)} %)")
+        stat.append()
         stat.append(f"\ncotisation licence ffct : {self.cotisation_licence} €")
         stat.append(f"cotisation totale : {self.cotisation_totale} €")
         stat.append(f"cotisation CTG : {self.cotisation_ctg} €")
-        path_info_effectif = self.ctg_path / Path(str(self.year)) / Path('STATISTIQUES')/Path(f'info_effectif_{self.year}.txt')
-        stat.append(f"\n Ces information sont disponibles dans le fichier : \n{path_info_effectif}")
+        path_root = self.ctg_path / Path(str(self.year)) / Path('STATISTIQUES')
+        path_info_effectif = path_root / Path(f'info_effectif_{self.year}.txt')
+        stat.append(("\n Ces information sont disponibles dans le fichier : "
+                    f"\n{path_info_effectif}"))
         stat ='\n'.join(stat)
         messagebox.showinfo(f'Statistique {self.year}',stat)
 
@@ -123,27 +145,29 @@ class EffectifCtg():
             f.write(stat)
 
     def nouveaux_entrants(self):
-        nouveaux_licenciés_id = set(self.effectif["N° Licencié"])- \
+        nouveaux_membres_id = set(self.effectif["N° Licencié"])- \
                                 set(self.effectif_1["N° Licencié"])
 
 
-        dg = self.effectif[self.effectif['N° Licencié'].isin(nouveaux_licenciés_id)]
+        dg = self.effectif[self.effectif['N° Licencié'].isin(nouveaux_membres_id)]
         moy_age_entrants = dg['Age'].mean() + 1
 
-        nouveaux_licenciés_list = []
+        nouveaux_membres_list = []
         for idx,row in dg.iterrows():
-            nouveaux_licenciés_list.append(f"{row['Prénom'][0]}. {row['Nom']}")
-        nouveaux_licenciés_noms = '; '.join(nouveaux_licenciés_list)
-        nbr_nouveaux_licencié = len(dg)
+            nouveaux_membres_list.append(f"{row['Prénom'][0]}. {row['Nom']}")
+        nouveaux_membres_noms = '; '.join(nouveaux_membres_list)
+        nbr_nouveaux_membres = len(dg)
 
-        return moy_age_entrants, nbr_nouveaux_licencié, nouveaux_licenciés_noms
+        return moy_age_entrants, nbr_nouveaux_membres, nouveaux_membres_noms
 
     def membres_sympathisants(self):
-
-        file_path = self.ctg_path / Path(str(self.year))/Path('DATA')/ Path('membres_sympatisants.xlsx')
+        path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
+        file_path = path_root / Path('membres_sympatisants.xlsx')
         if os.path.isfile(file_path):
             membres_sympathisants_df = pd.read_excel(file_path)
-            membres_sympathisants_df['Nom_Prenom'] = membres_sympathisants_df['Nom']+" "+membres_sympathisants_df['Prénom'].str[0]
+            membres_sympathisants_df['Nom_Prenom'] = membres_sympathisants_df['Nom']+\
+                                                     " "+\
+                                                     membres_sympathisants_df['Prénom'].str[0]
             membres_sympathisants = ', '.join(membres_sympathisants_df['Nom_Prenom'].tolist())
             nbr_membres_sympathisants = len(membres_sympathisants_df)
         else:
@@ -184,7 +208,9 @@ class EffectifCtg():
 
         fig, ax = plt.subplots(figsize=(10,10))
         self.effectif['age group'] = pd.cut(self.effectif.Age, bins=range(0, 95, 5), right=False)
-        result_hist = self.effectif.groupby('Sexe')['age group'].value_counts().unstack().T.plot.bar(width=1, stacked=False,ax=ax)
+        result_hist = self.effectif.groupby('Sexe')['age group']
+        result_hist = result_hist.value_counts().unstack().T
+        result_hist = result_hist.plot.bar(width=1, stacked=False,ax=ax)
 
         plt.tick_params(axis='x', labelsize=20)
         plt.tick_params(axis='y', labelsize=20)

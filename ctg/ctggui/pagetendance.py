@@ -17,12 +17,12 @@ import ctg.ctggui.guiglobals as gg
 from ctg.ctgfuncts.ctg_effectif import statistique_vae
 from ctg.ctgfuncts.ctg_effectif import builds_excel_presence_au_club
 from ctg.ctgfuncts.ctg_effectif import anciennete_au_club
-from ctg.ctggui.useful_functions import encadre_RL
-from ctg.ctggui.useful_functions import font_size
-from ctg.ctggui.useful_functions import mm_to_px
-from ctg.ctggui.useful_functions import place_after
-from ctg.ctggui.useful_functions import place_bellow
-from ctg.ctggui.useful_functions import last_available_years
+from ctg.ctggui.guitools import encadre_RL
+from ctg.ctggui.guitools import font_size
+from ctg.ctggui.guitools import mm_to_px
+from ctg.ctggui.guitools import place_after
+from ctg.ctggui.guitools import place_bellow
+from ctg.ctggui.guitools import last_available_years
 from ctg.ctgfuncts.ctg_synthese import evolution_sorties
 
 def create_tendance_analysis(self, master, page_name, institute, ctg_path):

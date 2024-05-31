@@ -9,14 +9,11 @@ ctg.egg-info/dependency_links.txt
 ctg.egg-info/requires.txt
 ctg.egg-info/top_level.txt
 ctg/ctgfuncts/__init__.py
-ctg/ctgfuncts/club38.py
 ctg/ctgfuncts/ctg_classes.py
 ctg/ctgfuncts/ctg_effectif.py
 ctg/ctgfuncts/ctg_plot.py
 ctg/ctgfuncts/ctg_synthese.py
 ctg/ctgfuncts/ctg_tools.py
-ctg/ctgfuncts/ctg_utils.py
-ctg/ctgfuncts/pagesynthese.py
 ctg/ctgfuncts/CTG_RefFiles/CTG.yaml
 ctg/ctgfuncts/CTG_RefFiles/CTG_correction.yaml
 ctg/ctgfuncts/CTG_RefFiles/help.txt
@@ -29,10 +26,10 @@ ctg/ctgfuncts/CTG_RefFiles/memory_sorties_old.yml
 ctg/ctgfuncts/CTG_RefFiles/villes_france_premium.csv
 ctg/ctggui/__init__.py
 ctg/ctggui/guiglobals.py
+ctg/ctggui/guitools.py
 ctg/ctggui/page_effectif.py
 ctg/ctggui/pageclasses.py
 ctg/ctggui/pagedivers.py
 ctg/ctggui/pagesorties.py
 ctg/ctggui/pagesynthese.py
 ctg/ctggui/pagetendance.py
-ctg/ctggui/useful_functions.py

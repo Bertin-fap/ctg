@@ -1,6 +1,7 @@
 __all__ = ['anciennete_au_club',
            'builds_excel_presence_au_club',
            'count_participation',
+           'evolution_age_median',
            'evolution_effectif',
            'inscrit_sejour',
            'parse_date',
@@ -43,11 +44,16 @@ def read_effectif_corrected(ctg_path, year=None):
 
     effectif_df = pd.read_excel(ctg_path / Path(str(year))/Path('DATA')/ Path(file_effectif))
     effectif_df = effectif_df[['N° Licencié', 'Nom','Prénom','Sexe','Pratique VAE']]
-
-    correction_effectif = pd.read_excel(ctg_path / Path(str(year))/Path('DATA')/ Path('correction_effectif.xlsx'))
+    path_root = ctg_path / Path(str(year))/Path('DATA')
+    correction_effectif = pd.read_excel(path_root/Path('correction_effectif.xlsx'))
     correction_effectif.index = correction_effectif['N° Licencié']
-    membres_sympathisants_df = pd.read_excel(ctg_path / Path(str(year))/Path('DATA')/ Path('membres_sympatisants.xlsx'))
-    membres_sympathisants_df = membres_sympathisants_df[['N° Licencié', 'Nom','Prénom','Sexe','Pratique VAE']]
+    root_path = ctg_path / Path(str(year))/Path('DATA')
+    membres_sympathisants_df = pd.read_excel(root_path/Path('membres_sympatisants.xlsx'))
+    membres_sympathisants_df = membres_sympathisants_df[['N° Licencié',
+                                                         'Nom',
+                                                         'Prénom',
+                                                         'Sexe',
+                                                         'Pratique VAE']]
 
     for num_licence in correction_effectif.index:
         idx = effectif_df[effectif_df["N° Licencié"]==num_licence].index
@@ -119,7 +125,8 @@ def inscrit_sejour(file,no_match,df_effectif):
         else:
             dg = pd.DataFrame([[None,None,None,None,sejour,]], columns=['N° Licencié','Nom','Prénom','Sexe','sejour',])
     else:
-        dg = pd.DataFrame([[None,None,None,None,sejour,]], columns=['N° Licencié','Nom','Prénom','Sexe','sejour',])
+        col = ['N° Licencié','Nom','Prénom','Sexe','sejour',]
+        dg = pd.DataFrame([[None,None,None,None,sejour,]], columns=col)
 
     return dg
 
@@ -171,15 +178,18 @@ def count_participation(path,ctg_path,year,info_rando):
         if dg.reset_index().loc[0,'Nom'] is not None:
             nbr_inscrits = len(dg)
             if nbr_inscrits != 0:
-                nbr_moyen_participants = nbr_moyen_participants + (nbr_inscrits - nbr_moyen_participants)/counter
+                nbr_moyen_participants = nbr_moyen_participants +\
+                                        (nbr_inscrits - nbr_moyen_participants)/counter
                 counter += 1
-                info_sejours.append(f"{os.path.split(path)[-1]} :{sejour}, Nombre d'inscrits : {nbr_inscrits}")
+                long_string = f"{os.path.split(path)[-1]} :{sejour}, Nombre d'inscrits : {nbr_inscrits}"
+                info_sejours.append(long_string)
 
         df_list.append(dg)
         file_store = os.path.splitext(sejour)[0]+'.xlsx'
         dg.to_excel(path / Path('EXCEL') / Path(file_store))
-
-    info_sejours.append(f"Nombre d'évènenements : {counter-1}. Nombre moyen de participants : {nbr_moyen_participants}")
+    long_string = ("Nombre d'évènenements : "
+                  f"{counter-1}. Nombre moyen de participants : {nbr_moyen_participants}")
+    info_sejours.append(long_string)
     info_sejours = '\n'.join(info_sejours)
     info_sejours_path = ctg_path / Path(str(year)) / Path('STATISTIQUES')/ Path(type_sortie_default+'.txt')
     with open(info_sejours_path,'w') as f:
@@ -243,7 +253,7 @@ def read_effectif(ctg_path,year):
 
     df['Age']  = df['Date de naissance'].apply(lambda x : (pd.Timestamp(year, 9, 30)-x).days/365)
 
-    df,dh = built_lat_long(df)
+    dh = built_lat_long(df)
 
     df['distance'] = df.apply(distance_,axis=1)
 
@@ -285,7 +295,7 @@ def evolution_effectif(ctg_path):
     years = [2006] + [int(x) for x in os.listdir(ctg_path) if re.findall('^\d{4}$',x)]
     nbr_hommes, nbr_femmes,nbr_total,ratio_femmes = _evolution_effectif(years)
 
-    title='Evolution du nombre de licenciés CTG'
+    title='Evolution du nombre de membres CTG'
 
     ax = plt.axes()
     plt.bar(years, nbr_femmes,label= 'Femme')
@@ -316,8 +326,9 @@ def evolution_age_median(ctg_path):
     age_naturel = []
     for idx,year in enumerate(years):
         df_effectif = pd.read_excel(ctg_path / Path(str(year)) / Path('DATA') / Path(str(year)+'.xlsx'))
-        df_effectif['Date de naissance'] = pd.to_datetime(df_effectif['Date de naissance'], format="%d/%m/%Y")
-        df_effectif['Age']  = df_effectif['Date de naissance'].apply(lambda x : (pd.Timestamp(year, 9, 30)-x).days/365)#.astype(int)
+        df_effectif['Date de naissance'] = pd.to_datetime(df_effectif['Date de naissance'],format="%d/%m/%Y")
+        df_effectif['Age']  = df_effectif['Date de naissance'].apply(lambda x : 
+                                                              (pd.Timestamp(year, 9, 30)-x).days/365)
         age_median = df_effectif['Age'].median()
         age_mean.append(age_median)
         if idx == 0:
@@ -380,7 +391,8 @@ def builds_excel_presence_au_club(ctg_path):
 
     df = pd.concat([df, split_df], axis=1)
     df = df.drop('date',axis=1)
-    out_path = ctg_path / Path(str(list_date[-1])) / Path('STATISTIQUES') / Path('effectif_history.xlsx')
+    out_path = ctg_path / Path(str(list_date[-1])) 
+    out_path = out_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
     df.to_excel(out_path)
     return out_path
 
@@ -429,7 +441,8 @@ def anciennete_au_club(ctg_path):
     date = currentDateTime.date()
     current_year = int(date.strftime("%Y"))
 
-    in_path = ctg_path / Path(str(current_year)) / Path('STATISTIQUES') / Path('effectif_history.xlsx')
+    in_path = ctg_path / Path(str(current_year)) 
+    in_path = in_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
     df = pd.read_excel(in_path)
     eff = []
 

@@ -26,8 +26,18 @@ from ctg.ctgfuncts.ctg_tools import built_lat_long
 
 def plot_ctg(df:pandas.core.frame.DataFrame):
 
+    '''generates an html file of the membrers geographical location using the
+    column ville of the DataFrame df
+    '''
+
     trace_radius = True
-    _,dh = built_lat_long(df)
+    dh = built_lat_long(df)
+    
+    villes_set = set(dh['Ville'])
+    dh = dh.dropna()
+    villes1_set = set(dh['Ville'])
+    if len(villes_set-villes1_set) !=0:
+        messagebox.showwarning('Villes non reconnues',';'.join(list(villes_set-villes1_set)))
 
     group_adjacent = lambda a, k: list(zip(*([iter(a)] * k)))
 
@@ -38,7 +48,7 @@ def plot_ctg(df:pandas.core.frame.DataFrame):
             chunk.append(','.join(y[i:i+3] ))
 
         dict_cyclo[ville] = '\n'.join(chunk)
-
+    dict_cyclo = {k[0]:v for k,v in dict_cyclo.items()}
     kol = folium.Map(location=[45.2,5.7], tiles='openstreetmap', zoom_start=12)
 
     long_genoble, lat_grenoble = dh.query("Ville=='GRENOBLE'")[['long','lat']].values.flatten()
@@ -74,6 +84,9 @@ def plot_ctg(df:pandas.core.frame.DataFrame):
     return kol
 
 def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,year = None):
+
+    ''' to do
+    '''
 
     def addlabels(x,y):
 
@@ -185,6 +198,10 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
     return df_total
 
 def _distance(ϕ1:float, λ1:float,ϕ2:float, λ2:float)->float:
+
+    '''Computes the distance in kilometers between to points referenced 
+    by there longitudes (in decimal degrees) and there latitudes (in decimal degrees)
+    '''
 
     ϕ1, λ1 = radians(ϕ1), radians(λ1)
     ϕ2, λ2 = radians(ϕ2), radians(λ2)
