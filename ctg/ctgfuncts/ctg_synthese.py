@@ -110,7 +110,7 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
 
 
 
-def synthese_adherent(year:str,ctg_path:pathlib.WindowsPath):
+def synthese_adherent(year,ctg_path):
 
     file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
@@ -149,6 +149,10 @@ def synthese_adherent(year:str,ctg_path:pathlib.WindowsPath):
                           nb_sejour_jours +
                           nb_hiver]
         nbre[id_licence] = nbre[id_licence] + nbr_evenements
+        
+        dg['cout_sejour'] = dg['cout_sejour'].fillna(0)
+        nbre[id_licence] = nbre[id_licence] + [sum(dg['cout_sejour'])]
+                
 
     dg = pd.DataFrame.from_dict(nbre).T
     dg.columns = [
@@ -162,6 +166,7 @@ def synthese_adherent(year:str,ctg_path:pathlib.WindowsPath):
                  'Nbr_SEJOURS',
                  'SORTIE HIVER',
                  'TOTAL',
+                 'COUT_SEJOUR',
                  ]
 
     effectif = EffectifCtg(year,ctg_path)
@@ -176,7 +181,8 @@ def synthese_adherent(year:str,ctg_path:pathlib.WindowsPath):
                'SEJOUR-JOUR',
                'Nbr_SEJOURS',
                'SORTIE HIVER',
-               'TOTAL']] = [0,0,0,0,0,0,0,0]
+               'TOTAL',
+               'COUT_SEJOUR',]] = [0,0,0,0,0,0,0,0,0]
 
     dg = pd.concat([dg, df_orphan], axis=0)
 
@@ -184,6 +190,9 @@ def synthese_adherent(year:str,ctg_path:pathlib.WindowsPath):
     dg.to_excel(file_out)
 
 def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
+
+    '''
+    '''
 
     def addlabels(x,y,offset):
         for i in range(len(x)):
@@ -214,6 +223,9 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
     plt.show()
 
 def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
+
+    '''
+    '''
 
     plt.style.use('ggplot')
 

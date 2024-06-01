@@ -1,2 +1,0 @@
-ctg\ctgfuncts
-ctg\ctggui

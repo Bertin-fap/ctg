@@ -18,6 +18,7 @@ def parse_date(tag:str,year:int)->datetime:
     convert_to_date = lambda tag: datetime.strptime(tag,"%Y_%m_%d")
 
     tag = re.sub(r"-","_",tag)
+    tag = tag+" "
 
     if re.findall(r'^\d{4}_\d{1,2}_\d{1,2}\s',tag):
         pattern = re.compile(r"(?P<year>\b\d{4}_)(?P<month>\d{1,2}_)(?P<day>\d{1,2})")
@@ -28,7 +29,7 @@ def parse_date(tag:str,year:int)->datetime:
         match = pattern.search(tag)
         date = convert_to_date(str(year)+'_'+match.group("month")+match.group("day"))
     else:
-        raise Exception('erreur in parse_date: unknown tag format')
+        raise Exception(f'erreur in parse_date: unknown tag format {tag}')
     return date
 
 def day_of_the_date(day:int,month:int,year:int)->str:

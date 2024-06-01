@@ -68,15 +68,26 @@ def read_effectif_corrected(ctg_path, year=None):
 
 def inscrit_sejour(file,no_match,df_effectif):
 
+    '''builds the DataFrame dg for one event using the csv file of this event. 
+    The DataFrame dg has 5 columns named :'N° Licencié','Nom','Prénom','Sexe','sejour'
+    And EXCEL file is stored in the corresponding EXCEL directory.
+    '''
+    
+    # used to supress no ascii characters suh as accent cedilla,...
     nfc = functools.partial(unicodedata.normalize,'NFD')
     convert_to_ascii = lambda text : nfc(text). \
                                      encode('ascii', 'ignore'). \
                                      decode('utf-8').\
                                      strip()
+                                     
+    # read the csv file of the event with full path file
     df = read_sortie_csv(file)
+    
+    # extract the event type (SEJOUR, SORTIES DU JEUDI,...)
     sejour = os.path.splitext(os.path.basename(file))[0]
-
-    if df is not None:
+    
+    col = ['N° Licencié','Nom','Prénom','Sexe','Pratique VAE','sejour',]
+    if df is not None: # file a valid non-empty file
         dg = df[0].str.upper()
         dg = dg.dropna()
         dg = dg.str.replace(' \t?','',regex=False)
@@ -120,17 +131,23 @@ def inscrit_sejour(file,no_match,df_effectif):
 
         dg = pd.DataFrame.from_dict(dic).T
         if len(dg) !=0:
-            dg.columns = ['N° Licencié','Nom','Prénom','Sexe','Pratique VAE','sejour',]
+            dg.columns = col
         else:
-            dg = pd.DataFrame([[None,None,None,None,sejour,]], columns=['N° Licencié','Nom','Prénom','Sexe','sejour',])
+            dg = pd.DataFrame([[None,None,None,None,None,sejour,]], columns=col)
+   
     else:
-        col = ['N° Licencié','Nom','Prénom','Sexe','sejour',]
-        dg = pd.DataFrame([[None,None,None,None,sejour,]], columns=col)
+        dg = pd.DataFrame([[None,None,None,None,None,sejour,]], columns=col)
 
     return dg
 
 
 def count_participation(path,ctg_path,year,info_rando):
+
+    '''Creates the DataFrame df_total with 11 columns:
+    'N° Licencié', 'Nom', 'Prénom', 'Sexe', 'Pratique VAE', 'sejour',
+       'nbr_jours', 'Type', 'Prénom1', 'sexe', 'VAE'
+    'sejour' is set to 'aucun' if the member has participate to no event.
+    '''
 
     flag_sejour = False
     if os.path.split(path)[-1] == 'SEJOUR' :
@@ -171,8 +188,13 @@ def count_participation(path,ctg_path,year,info_rando):
 
             dg['nbr_jours'] = 1
             dh = info_rando.query('type=="sejour" and date==@date')
+            dg['cout_sejour'] = 0
             if flag_sejour and len(dh) != 0:
                 dg['nbr_jours'] = dh['nbr_jours'].tolist()[0]
+                dg['cout_sejour'] = 0
+                if type_sortie_default == 'SEJOUR':
+                    dg['cout_sejour'] = dh['Cout'].tolist()[0]
+                
 
         if dg.reset_index().loc[0,'Nom'] is not None:
             nbr_inscrits = len(dg)
@@ -184,8 +206,11 @@ def count_participation(path,ctg_path,year,info_rando):
                 info_sejours.append(long_string)
 
         df_list.append(dg)
+        
+        # Store ae an EXCEL file
         file_store = os.path.splitext(sejour)[0]+'.xlsx'
         dg.to_excel(path / Path('EXCEL') / Path(file_store))
+        
     long_string = ("Nombre d'évènenements : "
                   f"{counter-1}. Nombre moyen de participants : {nbr_moyen_participants}")
     info_sejours.append(long_string)
@@ -204,7 +229,8 @@ def count_participation(path,ctg_path,year,info_rando):
     liste_licence = df_effectif['N° Licencié']
     liste_licence_sejour = df_total['N° Licencié']
     index = list(set(liste_licence)-set(liste_licence_sejour))
-
+ 
+    # take care of the member with no participation to the events
     df_non_inscrits = df_effectif.copy()
     df_non_inscrits = df_non_inscrits[df_non_inscrits['N° Licencié'].isin(index)]
     df_non_inscrits['sejour'] = 'aucun'

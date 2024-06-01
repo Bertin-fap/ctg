@@ -133,34 +133,21 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
         date = currentDateTime.date()
         year = date.strftime("%Y")
 
-    df_effectif = read_effectif_corrected(ctg_path,
-                                          year)
-
-    dic_sexe = dict(zip(df_effectif['N° Licencié'], df_effectif['Sexe']))
-    dic_sexe[None] = 'irrelevant'
-    dic_vae =dict(zip(df_effectif['N° Licencié'],df_effectif['Pratique VAE']))
-
-    df_total['sexe'] = df_total['N° Licencié'].map(dic_sexe)
-
-    df_total = df_total[df_total['sejour']!='aucun' ]
-    df_total['sejour'] = df_total['sejour'].apply(lambda s:parse_date(s,str(year)).strftime('%y-%m-%d'))
-    df_total['VAE'] = df_total['N° Licencié'].map(dic_vae)
-    df_total['VAE'].fillna('Non',inplace=True)
+    df_effectif = read_effectif_corrected(ctg_path,year)
+    df_total = df_total[df_total['sejour']!='aucun' ] # skip the member with no event
+    df_total['sejour'] = df_total['sejour'].apply(lambda s:
+                                           parse_date(s,str(year)).strftime('%y-%m-%d'))
+    df_total = df_total.fillna(0)
+    
     dic_sexe = dict(M="Homme",F="Femme")
     dic_vae = dict(Oui="VAE",Non="Musculaire")
-    df_total = df_total.replace({"sexe": dic_sexe})
-    df_total = df_total.replace({"VAE": dic_vae})
+    df_total = df_total.replace({"Sexe": dic_sexe})
+    df_total = df_total.replace({"Pratique VAE": dic_vae})
     if df_total['Nom'].isna().all():
         return None
-    dg = df_total.groupby(['sexe','VAE'])['sejour'].value_counts().unstack().T
-
-    try:
-        dg['irrelevant'] = dg['irrelevant'] - 1
-    except KeyError as error:
-        pass
+    dg = df_total.groupby(['Sexe','Pratique VAE'])['sejour'].value_counts().unstack().T
 
     fig, ax = plt.subplots(figsize=(15, 5))
-
 
     dg[['Femme','Homme']].plot(kind='bar',
                        ax=ax,
