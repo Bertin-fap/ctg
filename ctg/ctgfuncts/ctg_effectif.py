@@ -4,6 +4,7 @@ __all__ = ['anciennete_au_club',
            'evolution_age_median',
            'evolution_effectif',
            'inscrit_sejour',
+           'plot_rebond',
            'read_effectif',
            'read_effectif_corrected',
            'statistique_vae',
@@ -124,10 +125,13 @@ def inscrit_sejour(file,no_match,df_effectif):
                     elif len((dr:=df_effectif.query('Prénom==@row.name1 and Nom==@row.name2'))):
                          dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
                     else:
-                        print(f'{sejour} : no match, prénom/prénom:{row.name2}, nom/prénom: {row.name1}')
+                        print((f'{sejour} : no match, '
+                               f'prénom/prénom:{row.name2}, '
+                               f'nom/prénom: {row.name1}'))
                         no_match.append((file,row.name2,row.name1))
             else:
-                print(f'WARNING: incorrect name {row.name1}, {row.name2}, {row.name3} in sejour {sejour}')
+                print((f'WARNING: incorrect name {row.name1}, '
+                       f'{row.name2}, {row.name3} in sejour {sejour}'))
 
         dg = pd.DataFrame.from_dict(dic).T
         if len(dg) !=0:
@@ -202,7 +206,8 @@ def count_participation(path,ctg_path,year,info_rando):
                 nbr_moyen_participants = nbr_moyen_participants +\
                                         (nbr_inscrits - nbr_moyen_participants)/counter
                 counter += 1
-                long_string = f"{os.path.split(path)[-1]} :{sejour}, Nombre d'inscrits : {nbr_inscrits}"
+                long_string = (f'{os.path.split(path)[-1]} :{sejour}, '
+                               f"Nombre d'inscrits : {nbr_inscrits}")
                 info_sejours.append(long_string)
 
         df_list.append(dg)
@@ -215,7 +220,9 @@ def count_participation(path,ctg_path,year,info_rando):
                   f"{counter-1}. Nombre moyen de participants : {nbr_moyen_participants}")
     info_sejours.append(long_string)
     info_sejours = '\n'.join(info_sejours)
-    info_sejours_path = ctg_path / Path(str(year)) / Path('STATISTIQUES')/ Path(type_sortie_default+'.txt')
+    info_sejours_path = ctg_path / Path(str(year)) 
+    info_sejours_path = info_sejours_path / Path('STATISTIQUES')
+    info_sejours_path = info_sejours_path / Path(type_sortie_default+'.txt')
     with open(info_sejours_path,'w') as f:
         f.write(info_sejours)
 
@@ -334,10 +341,12 @@ def evolution_age_median(ctg_path):
     age_mean = []
     age_naturel = []
     for idx,year in enumerate(years):
-        df_effectif = pd.read_excel(ctg_path / Path(str(year)) / Path('DATA') / Path(str(year)+'.xlsx'))
-        df_effectif['Date de naissance'] = pd.to_datetime(df_effectif['Date de naissance'],format="%d/%m/%Y")
+        file = ctg_path / Path(str(year)) / Path('DATA') / Path(str(year)+'.xlsx')
+        df_effectif = pd.read_excel(file)
+        df_effectif['Date de naissance'] = pd.to_datetime(df_effectif['Date de naissance'],
+                                                                      format="%d/%m/%Y")
         df_effectif['Age']  = df_effectif['Date de naissance'].apply(lambda x : 
-                                                              (pd.Timestamp(year, 9, 30)-x).days/365)
+                                                        (pd.Timestamp(year, 9, 30)-x).days/365)
         age_median = df_effectif['Age'].median()
         age_mean.append(age_median)
         if idx == 0:
@@ -472,3 +481,62 @@ def anciennete_au_club(ctg_path):
     addlabels(list(range(2012,2025)), eff,0)
     plt.tight_layout()
     plt.show()
+
+
+def plot_rebond(ctg_path):
+
+    '''
+    '''
+    
+    def addlabels(x,y):
+        for i in range(len(x)):
+            ax[0].text(i-0.2,-23,y[i],size=10)
+
+    current_year = int(datetime.now().year)
+    file_path = ctg_path / Path(str(current_year)) 
+    file_path = file_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
+    if not os.path.isfile(file_path):
+        builds_excel_presence_au_club(ctg_path)
+
+    years_list = [int(x) for x in os.listdir(ctg_path) if re.findall('^\d{4}$',x)]
+    year_dep = min(years_list)+2
+        
+    df = pd.read_excel(file_path)
+    df = df.fillna(0)
+    dic = {}
+    years = range(year_dep,current_year+1)
+    for year in years:
+        list_rebond = []
+        list_entrant = []
+        list_sortant = []
+        for idx,row in df.iterrows():
+            if (row[year-2] == 0 and row[year-1] == year-1 and row[year] ==0):
+                #print(year,row['Nom'],row['Prénom'],row['N° Licencié'])
+                list_rebond.append('-'.join([row['Nom'],row['Prénom']]))
+            if row[year-1] == 0 and row[year] == year:
+                list_entrant.append('-'.join([row['Nom'],row['Prénom']]))
+            if row[year] == 0 and row[year-1] == year-1:
+                list_sortant.append('-'.join([row['Nom'],row['Prénom']]))
+        dic[year]=[len(list_rebond),'; '.join(list_rebond),
+                   len(list_entrant),'; '.join(list_entrant),
+                   -len(list_sortant),'; '.join(list_sortant)]
+        
+    dg = pd.DataFrame.from_dict(dic).T
+    dg.columns=['# rebonds',
+                'Nom rebonds',
+                '# entrants',
+                'Nom entrants',
+                '# sortants',
+                'Nom sortants']
+    dg.to_excel(r'C:\Users\franc\CTG\SORTIES\2024\STATISTIQUES\rebond1.xlsx')
+    
+    fig, ax = plt.subplots(nrows=1, ncols=2)
+    dg[['# entrants','# sortants']].plot.bar(stacked=True,ax=ax[0])
+    addlabels(dg.index.tolist(),(dg['# entrants']+dg['# sortants']).tolist())
+    ax[0].yaxis.grid()
+    ax[0].set_ylabel('# membres')
+    ax[0].set_ylim((-25,40))
+    ax[0].legend(loc='upper center',ncol=1)
+    
+    dg[['# rebonds']].plot.bar(ax=ax[1])
+    ax[1].yaxis.grid()

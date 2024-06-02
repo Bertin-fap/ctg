@@ -112,6 +112,11 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
 
 def synthese_adherent(year,ctg_path):
 
+    '''generates the EXCEL file 'synthese_adherent.xlsx' with 11 columns :'Nom','Prénom',
+    'SORTIE DU DIMANCHE CLUB','SORTIE DU SAMEDI CLUB','SORTIE DU JEUDI CLUB',
+    'RANDONNEE','SEJOUR-JOUR','Nbr_SEJOURS', 'SORTIE HIVER','TOTAL','COUT_SEJOUR',
+    '''
+
     file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
     df_total = df_total.dropna(subset=['Type'])
@@ -216,15 +221,21 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
     plt.tick_params(axis='y',labelsize=10)
 
     if type_sejour == 'RANDONNEE':
-        _ = plt.title(f'# randos : {len(dg)} , # participants : {sum(dg)}, Coût : {cout_total_rando} €')
+        long_string = (f'# randos : {len(dg)} , '
+                       f'# participants : '
+                       f'{sum(dg)}, Coût : {cout_total_rando} €')
+        _ = plt.title(long_string)
     else:
-        _ = plt.title(f'# sejours : {len(dg)} , # participants : {sum(dg)}, Coût : {cout_total_rando} €')
+        long_string = (f'# sejours : {len(dg)} , '
+                       f'# participants : {sum(dg)}'
+                       f', Coût : {cout_total_rando} €')
+        _ = plt.title(long_string)
     plt.tight_layout()
     plt.show()
 
 def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
 
-    '''
+    '''Generates the histgramm of the number of sejour versus the number of members
     '''
 
     plt.style.use('ggplot')
@@ -266,12 +277,12 @@ def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
 
 def _read_memory_sorties():
 
-    # Reads the default PVcharacterization.yaml config file
+    '''Reads the default PVcharacterization.yaml config file'''
+    
     parent = Path(__file__).parent.parent
     path_config_file = parent  / Path('ctgfuncts/CTG_RefFiles') / Path('memory_sorties.yml')
     with open(path_config_file) as file:
         memory = yaml.safe_load(file)
-
 
     return memory
 
@@ -299,8 +310,8 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
 
         sejour_info = get_sejour_info(ctg_path,year)
 
-
-        file_in = ctg_path / Path(str(year)) / Path('STATISTIQUES') / Path('synthese_adherent.xlsx')
+        file_in = ctg_path / Path(str(year)) / Path('STATISTIQUES') 
+        file_in = file_in / Path('synthese_adherent.xlsx')
 
         df = pd.read_excel(file_in)
 
@@ -389,3 +400,33 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
                   [stat_dic[year].nbr_jours_sejours for year in years],
                   'Nombre de jours séjours',
                   '# jours séjour')
+                  
+def stat_cout_sejour(year,ctg_path):
+
+    def plot_histo(col_name,idx_plot,labelx,labely):
+        df.hist(column=col_name,bins=40,ax=ax[idx_plot])
+        ax[idx_plot].set_xlabel(labelx)
+        ax[idx_plot].set_ylabel(labely)
+    
+        col_without_zero = [x for x in df[col_name] if x>0]
+        
+        mean_col = round(np.mean(df[col_name]),1)
+        mean_col_without_zero = round(np.mean(col_without_zero),1)
+        med_col = round(np.median(df[col_name]),1)
+        med_col_without_zero = round(np.median(col_without_zero),1)
+        long_string = (f'{col_name}\n'
+                       f'     moyenne : {mean_col}\n'
+                       f'     median : {med_col}\n'
+                       'Sans prendre en compte la classe 0\n'
+                       f'     moyenn : {mean_col_without_zero}\n'
+                       f'     median : {med_col_without_zero}\n')
+        print(long_string)
+                       
+        
+    file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese_adherent.xlsx')
+    df = pd.read_excel(file)
+    fig, ax = plt.subplots(nrows=1, ncols=2)
+    plot_histo('COUT_SEJOUR',0, '€','# membres')
+    plot_histo('SEJOUR-JOUR',1,'# jours séjour','')
+    fig.suptitle(str(year)) 
+    plt.show()

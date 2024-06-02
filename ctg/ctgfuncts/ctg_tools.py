@@ -1,3 +1,12 @@
+__all__ = ['built_lat_long',
+           'day_of_the_date',
+           'get_cout_total',
+           'get_info_randos2df',
+           'get_sejour_info',
+           'parse_date',
+           'read_sortie_csv',
+           ]
+
 # Standard library imports
 import re
 from collections import Counter
