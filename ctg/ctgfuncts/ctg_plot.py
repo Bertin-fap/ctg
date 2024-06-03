@@ -124,7 +124,7 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
         text_message = ''
         for tup in no_match:
               text_message += (f'Le nom {tup[1]}, {tup[2]} '
-                                'est inconnu dans le fichier : "{os.path.split(tup[0])[-1]}"')
+                               f'est inconnu dans le fichier : {os.path.split(tup[0])[-1]}')
               text_message += '\n'
 
         if len(text_message) : messagebox.showinfo('WARNING',text_message )

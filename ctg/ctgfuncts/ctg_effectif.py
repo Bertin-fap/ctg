@@ -487,20 +487,20 @@ def plot_rebond(ctg_path):
 
     '''
     '''
-
+    
     def addlabels(x,y):
         for i in range(len(x)):
             ax[0].text(i-0.2,-23,y[i],size=10)
 
+
     current_year = int(datetime.now().year)
-    file_path = ctg_path / Path(str(current_year))
-    file_path = file_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
+    file_path = ctg_path / Path(str(current_year)) / Path('STATISTIQUES') / Path('effectif_history.xlsx')
     if not os.path.isfile(file_path):
         builds_excel_presence_au_club(ctg_path)
 
     years_list = [int(x) for x in os.listdir(ctg_path) if re.findall('^\d{4}$',x)]
     year_dep = min(years_list)+2
-
+        
     df = pd.read_excel(file_path)
     df = df.fillna(0)
     dic = {}
@@ -520,7 +520,7 @@ def plot_rebond(ctg_path):
         dic[year]=[len(list_rebond),'; '.join(list_rebond),
                    len(list_entrant),'; '.join(list_entrant),
                    -len(list_sortant),'; '.join(list_sortant)]
-
+        
     dg = pd.DataFrame.from_dict(dic).T
     dg.columns=['# rebonds',
                 'Nom rebonds',
@@ -528,8 +528,12 @@ def plot_rebond(ctg_path):
                 'Nom entrants',
                 '# sortants',
                 'Nom sortants']
-    dg.to_excel(r'C:\Users\franc\CTG\SORTIES\2024\STATISTIQUES\rebond1.xlsx')
-
+    rebond_pourcent = [None] + [round(100*x[0]/x[1],1) for x in 
+                       zip(dg['# rebonds'].tolist()[1:], dg['# entrants'].tolist()[:-1])]
+    dg['% rebond'] = rebond_pourcent
+    dg.to_excel(r'C:\Users\franc\CTG\SORTIES\2024\STATISTIQUES\rebond.xlsx')
+    year_pourcent = list(years[1:])
+    
     fig, ax = plt.subplots(nrows=1, ncols=2)
     dg[['# entrants','# sortants']].plot.bar(stacked=True,ax=ax[0])
     addlabels(dg.index.tolist(),(dg['# entrants']+dg['# sortants']).tolist())
@@ -537,6 +541,7 @@ def plot_rebond(ctg_path):
     ax[0].set_ylabel('# membres')
     ax[0].set_ylim((-25,40))
     ax[0].legend(loc='upper center',ncol=1)
-
+    
     dg[['# rebonds']].plot.bar(ax=ax[1])
     ax[1].yaxis.grid()
+    return dg
