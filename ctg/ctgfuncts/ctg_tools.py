@@ -97,7 +97,7 @@ def get_sejour_info(ctg_path,year):
 
 def get_cout_total(year,type_sejour,dg,ctg_path):
 
-    ''' Calcul du coût total des randonnées (type='randonnee") ou 
+    ''' Calcul du coût total des randonnées (type='randonnee") ou
     des séjours (type="sejour") pour l'année year
     '''
 
@@ -115,8 +115,8 @@ def get_cout_total(year,type_sejour,dg,ctg_path):
 def built_lat_long(df:pd.DataFrame)->pd.DataFrame:
 
     '''
-    Add the two columns `long`and `lat` to the DataFrame df of the effectif. 
-    Return the DataFrame dg     with columns `Ville`, `long`, `lat`, `number` 
+    Add the two columns `long`and `lat` to the DataFrame df of the effectif.
+    Return the DataFrame dg     with columns `Ville`, `long`, `lat`, `number`
     where number is the number of occurrence of ville in the DataFrame df
     '''
     path_villes_france = Path('ctgfuncts/CTG_RefFiles/villes_france_premium.csv')
@@ -161,7 +161,7 @@ def built_lat_long(df:pd.DataFrame)->pd.DataFrame:
                                 'lat':dg.index.map(dic_lat),
                                 'number':dg.tolist()})
     return dh
-    
+
 def read_sortie_csv(file):
 
     '''
@@ -174,5 +174,5 @@ def read_sortie_csv(file):
     except ParserError :
         print(f'WARNING : The csv file {file} is hill configurated')
         df = None
-        
+
     return df

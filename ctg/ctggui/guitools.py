@@ -171,13 +171,15 @@ def window_properties(screen_width_px, screen_height_px):
     screen_width_mm  = gg.DISPLAYS[gg.BM_GUI_DISP]["width_mm"]
     screen_height_mm = gg.DISPLAYS[gg.BM_GUI_DISP]["height_mm"]
 
-    # Setting screen reference sizes in pixels and mm from globals internal to module "Coordinates.py"
+    # Setting screen reference sizes in pixels and mm 
+    #from globals internal to module "Coordinates.py"
     ref_width_px  = gg.REF_SCREEN_WIDTH_PX
     ref_height_px = gg.REF_SCREEN_HEIGHT_PX
     ref_width_mm  = gg.REF_SCREEN_WIDTH_MM
     ref_height_mm = gg.REF_SCREEN_HEIGHT_MM
 
-    # Setting secondary window reference sizes in mm from globals internal to module "Coordinates.py"
+    # Setting secondary window reference sizes in mm 
+    #from globals internal to module "Coordinates.py"
     ref_window_width_mm  = gg.REF_WINDOW_WIDTH_MM
     ref_window_height_mm = gg.REF_WINDOW_HEIGHT_MM
 
@@ -223,19 +225,26 @@ def create_archi(ctg_path, year_folder, verbose = False):
 
     '''
 
-    dir_list = ['DATA','SEJOUR', 'SORTIES DE DERNIERE MINUTE','SORTIES DU DIMANCHE', 'SORTIES DU JEUDI',
-                'SORTIES DU SAMEDI','SORTIES HIVER', 'SORTIES VTT', 'STATISTIQUES']
+    dir_list = ['DATA','SEJOUR', 'SORTIES DE DERNIERE MINUTE',
+                'SORTIES DU DIMANCHE', 'SORTIES DU JEUDI',
+                'SORTIES DU SAMEDI','SORTIES HIVER',
+                'SORTIES VTT', 'STATISTIQUES']
 
     new_year_folder_path = create_folder(ctg_path, year_folder, verbose = verbose)
     for dir in dir_list:
         _ = create_folder(new_year_folder_path, dir, verbose = verbose)
 
-    dir_list_sorties = ['SEJOUR', 'SORTIES DE DERNIERE MINUTE','SORTIES DU DIMANCHE', 'SORTIES DU JEUDI',
-                'SORTIES DU SAMEDI','SORTIES HIVER', 'SORTIES VTT']
+    dir_list_sorties = ['SEJOUR', 'SORTIES DE DERNIERE MINUTE',
+                        'SORTIES DU DIMANCHE', 'SORTIES DU JEUDI',
+                        'SORTIES DU SAMEDI','SORTIES HIVER', 'SORTIES VTT']
 
     for dir in dir_list_sorties:
-        _ = create_folder(Path(ctg_path) / Path(year_folder) / Path(dir), 'CSV', verbose = verbose)
-        _ = create_folder(Path(ctg_path) / Path(year_folder) / Path(dir), 'EXCEL', verbose = verbose)
+        _ = create_folder(Path(ctg_path) / Path(year_folder) / Path(dir),
+                         'CSV',
+                          verbose = verbose)
+        _ = create_folder(Path(ctg_path) / Path(year_folder) / Path(dir),
+                          'EXCEL',
+                          verbose = verbose)
 
     jours_sortie_club(year_folder,ctg_path)
     message = f"Architecture created for {year_folder} folder"

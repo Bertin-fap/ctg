@@ -95,9 +95,13 @@ __all__ = ['ACTIVITE_LIST',
            'BUTT_GEO',
            'TEXT_NBR_SEJOURS',
            'HELP_NBR_SEJOURS',
-           'BUTT_NBR_SEJOURS']
-# Standard library imports
-import math
+           'BUTT_NBR_SEJOURS',
+           'TEXT_SEJOUR',
+           'BUTT_SEJOUR',
+           'HELP_SEJOUR',]
+           
+# Standard HELP_SEJOURlibrary imports
+import math           
 
 # 3rd party imports
 from screeninfo import get_monitors
@@ -141,7 +145,8 @@ def _get_displays(in_to_mm):
         width_mm = displays[disp]['width_mm']
         height_mm = displays[disp]['height_mm']
         if width_mm is None or height_mm is None:
-            diag_in = float(input('Enter the diagonal size of the screen n°' + str(disp) + ' (inches)'))
+            diag_in = float(input(('Enter the diagonal size of the screen n°'
+                                   f'{str(disp)} (inches)')))
             width_mm = round(int(width_px) * (diag_in/diag_px) * in_to_mm,1)
             height_mm = round(int(height_px) * (diag_in/diag_px) * in_to_mm,1)
             displays[disp]['width_mm'] = str(width_mm)
@@ -358,28 +363,35 @@ BUTT_MEMBER_ANALYSIS    = "Construction du fichier EXCEL"
 ### - Page analyse tendancielle
 TEXT_ACTIVITE_PI = "Choix de l'activité"
 TEXT_TENDANCE_SORTIES     = "Analyse tendancielle des sorties"
-HELP_TENDANCE_SORTIES     = " La synthèse est effectuée à partir des fichiers"
-HELP_TENDANCE_SORTIES    += " d'émargement aux sorties, randonnées et séjours"
+HELP_TENDANCE_SORTIES     = (" La synthèse est effectuée à partir des fichiers"
+                             " d'émargement aux sorties, randonnées et séjours")
 BUTT_TENDANCE_SORTIES     = "Lancer l'analyse"
 TEXT_PRESENCE_EFFECTIF    = "Analyse de la présence an club"
-HELP_PRESENCE_EFFECTIF    = " L'analyse de l'évolution de l'effectif est issue"
-HELP_PRESENCE_EFFECTIF   += " des archives disponnibles à partir de 2012."
+HELP_PRESENCE_EFFECTIF    = (" L'analyse de l'évolution de l'effectif est issue"
+                             " des archives disponnibles à partir de 2012.")
 BUTT_PRESENCE_EFFECTIF    = "Lancer l'analyse de l'évolution des effectifs"
 TEXT_VAE_ANALYSIS         = "Analyse tendancielle depuis 2019 de la population de VAE"
-HELP_VAE_ANALYSIS         = " L'analyse de l'évolution de l'effectif est issue"
-HELP_VAE_ANALYSIS        += " des fichiers EXCEL https://ffcyclo.org/"
+HELP_VAE_ANALYSIS         = (" L'analyse de l'évolution de l'effectif est issue"
+                             " des fichiers EXCEL https://ffcyclo.org/")
 BUTT_VAE_ANALYSIS         = "Lancer l'analyse de l'évolution des VAE"
 
-### - Page analyse tendancielle
+### - Page divers
 TEXT_GEO_PI               = "Choix de l'année"
 TEXT_GEO                  = "Analyse de la répartition géographique des adhérents"
-HELP_GEO                  = " La synthèse est effectuée à partir des fichiers"
-HELP_GEO                 += " EXCEL extraits de https://cyclo38ffct.fr/"
+HELP_GEO                  = (" La synthèse est effectuée à partir des fichiers"
+                             " EXCEL extraits de https://cyclo38ffct.fr/")
 BUTT_GEO                  = "Lancer la construction du fichier html"
 TEXT_NBR_SEJOURS          = "Histogramme de nombre de membres ayant participé à N séjours"
-HELP_NBR_SEJOURS    = " La construction de l'histogramme est issue"
-HELP_NBR_SEJOURS   += " de l'anlyse du fichier EXCEL : 'synthese_adherent.xl'."
+HELP_NBR_SEJOURS    = (" La construction de l'histogramme est issue"
+                       " de l'anlyse du fichier EXCEL : 'synthese_adherent.xl'.")
 BUTT_NBR_SEJOURS = "Lancer la construction de l'histogramme"
+
+### - Page analyse tendancielle
+TEXT_SEJOUR               = "Analyse des sejours en termes de cout et de duree"
+HELP_SEJOUR               = (" La synthèse est effectuée à partir du fichiers"
+                             " EXCEL synthese_adherents.xlsx")
+BUTT_SEJOUR               = "Lancer l'analyse"
+
 
 
 ################# Liste répertoires

@@ -32,7 +32,7 @@ def plot_ctg(df:pandas.core.frame.DataFrame):
 
     trace_radius = True
     dh = built_lat_long(df)
-    
+
     villes_set = set(dh['Ville'])
     dh = dh.dropna()
     villes1_set = set(dh['Ville'])
@@ -139,7 +139,7 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
     df_total['sejour'] = df_total['sejour'].apply(lambda s:
                                            parse_date(s,str(year)).strftime('%y-%m-%d'))
     df_total = df_total.fillna(0)
-    
+
     dic_sexe = dict(M="Homme",F="Femme")
     dic_vae = dict(Oui="VAE",Non="Musculaire")
     df_total = df_total.replace({"Sexe": dic_sexe})
@@ -188,7 +188,7 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
 
 def _distance(ϕ1:float, λ1:float,ϕ2:float, λ2:float)->float:
 
-    '''Computes the distance in kilometers between to points referenced 
+    '''Computes the distance in kilometers between to points referenced
     by there longitudes (in decimal degrees) and there latitudes (in decimal degrees)
     '''
 

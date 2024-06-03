@@ -69,24 +69,24 @@ def read_effectif_corrected(ctg_path, year=None):
 
 def inscrit_sejour(file,no_match,df_effectif):
 
-    '''builds the DataFrame dg for one event using the csv file of this event. 
+    '''builds the DataFrame dg for one event using the csv file of this event.
     The DataFrame dg has 5 columns named :'N° Licencié','Nom','Prénom','Sexe','sejour'
     And EXCEL file is stored in the corresponding EXCEL directory.
     '''
-    
+
     # used to supress no ascii characters suh as accent cedilla,...
     nfc = functools.partial(unicodedata.normalize,'NFD')
     convert_to_ascii = lambda text : nfc(text). \
                                      encode('ascii', 'ignore'). \
                                      decode('utf-8').\
                                      strip()
-                                     
+
     # read the csv file of the event with full path file
     df = read_sortie_csv(file)
-    
+
     # extract the event type (SEJOUR, SORTIES DU JEUDI,...)
     sejour = os.path.splitext(os.path.basename(file))[0]
-    
+
     col = ['N° Licencié','Nom','Prénom','Sexe','Pratique VAE','sejour',]
     if df is not None: # file a valid non-empty file
         dg = df[0].str.upper()
@@ -138,7 +138,7 @@ def inscrit_sejour(file,no_match,df_effectif):
             dg.columns = col
         else:
             dg = pd.DataFrame([[None,None,None,None,None,sejour,]], columns=col)
-   
+
     else:
         dg = pd.DataFrame([[None,None,None,None,None,sejour,]], columns=col)
 
@@ -198,7 +198,7 @@ def count_participation(path,ctg_path,year,info_rando):
                 dg['cout_sejour'] = 0
                 if type_sortie_default == 'SEJOUR':
                     dg['cout_sejour'] = dh['Cout'].tolist()[0]
-                
+
 
         if dg.reset_index().loc[0,'Nom'] is not None:
             nbr_inscrits = len(dg)
@@ -211,16 +211,16 @@ def count_participation(path,ctg_path,year,info_rando):
                 info_sejours.append(long_string)
 
         df_list.append(dg)
-        
+
         # Store ae an EXCEL file
         file_store = os.path.splitext(sejour)[0]+'.xlsx'
         dg.to_excel(path / Path('EXCEL') / Path(file_store))
-        
+
     long_string = ("Nombre d'évènenements : "
                   f"{counter-1}. Nombre moyen de participants : {nbr_moyen_participants}")
     info_sejours.append(long_string)
     info_sejours = '\n'.join(info_sejours)
-    info_sejours_path = ctg_path / Path(str(year)) 
+    info_sejours_path = ctg_path / Path(str(year))
     info_sejours_path = info_sejours_path / Path('STATISTIQUES')
     info_sejours_path = info_sejours_path / Path(type_sortie_default+'.txt')
     with open(info_sejours_path,'w') as f:
@@ -236,7 +236,7 @@ def count_participation(path,ctg_path,year,info_rando):
     liste_licence = df_effectif['N° Licencié']
     liste_licence_sejour = df_total['N° Licencié']
     index = list(set(liste_licence)-set(liste_licence_sejour))
- 
+
     # take care of the member with no participation to the events
     df_non_inscrits = df_effectif.copy()
     df_non_inscrits = df_non_inscrits[df_non_inscrits['N° Licencié'].isin(index)]
@@ -345,7 +345,7 @@ def evolution_age_median(ctg_path):
         df_effectif = pd.read_excel(file)
         df_effectif['Date de naissance'] = pd.to_datetime(df_effectif['Date de naissance'],
                                                                       format="%d/%m/%Y")
-        df_effectif['Age']  = df_effectif['Date de naissance'].apply(lambda x : 
+        df_effectif['Age']  = df_effectif['Date de naissance'].apply(lambda x :
                                                         (pd.Timestamp(year, 9, 30)-x).days/365)
         age_median = df_effectif['Age'].median()
         age_mean.append(age_median)
@@ -409,7 +409,7 @@ def builds_excel_presence_au_club(ctg_path):
 
     df = pd.concat([df, split_df], axis=1)
     df = df.drop('date',axis=1)
-    out_path = ctg_path / Path(str(list_date[-1])) 
+    out_path = ctg_path / Path(str(list_date[-1]))
     out_path = out_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
     df.to_excel(out_path)
     return out_path
@@ -459,7 +459,7 @@ def anciennete_au_club(ctg_path):
     date = currentDateTime.date()
     current_year = int(date.strftime("%Y"))
 
-    in_path = ctg_path / Path(str(current_year)) 
+    in_path = ctg_path / Path(str(current_year))
     in_path = in_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
     df = pd.read_excel(in_path)
     eff = []
@@ -487,20 +487,20 @@ def plot_rebond(ctg_path):
 
     '''
     '''
-    
+
     def addlabels(x,y):
         for i in range(len(x)):
             ax[0].text(i-0.2,-23,y[i],size=10)
 
     current_year = int(datetime.now().year)
-    file_path = ctg_path / Path(str(current_year)) 
+    file_path = ctg_path / Path(str(current_year))
     file_path = file_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
     if not os.path.isfile(file_path):
         builds_excel_presence_au_club(ctg_path)
 
     years_list = [int(x) for x in os.listdir(ctg_path) if re.findall('^\d{4}$',x)]
     year_dep = min(years_list)+2
-        
+
     df = pd.read_excel(file_path)
     df = df.fillna(0)
     dic = {}
@@ -520,7 +520,7 @@ def plot_rebond(ctg_path):
         dic[year]=[len(list_rebond),'; '.join(list_rebond),
                    len(list_entrant),'; '.join(list_entrant),
                    -len(list_sortant),'; '.join(list_sortant)]
-        
+
     dg = pd.DataFrame.from_dict(dic).T
     dg.columns=['# rebonds',
                 'Nom rebonds',
@@ -529,7 +529,7 @@ def plot_rebond(ctg_path):
                 '# sortants',
                 'Nom sortants']
     dg.to_excel(r'C:\Users\franc\CTG\SORTIES\2024\STATISTIQUES\rebond1.xlsx')
-    
+
     fig, ax = plt.subplots(nrows=1, ncols=2)
     dg[['# entrants','# sortants']].plot.bar(stacked=True,ax=ax[0])
     addlabels(dg.index.tolist(),(dg['# entrants']+dg['# sortants']).tolist())
@@ -537,6 +537,6 @@ def plot_rebond(ctg_path):
     ax[0].set_ylabel('# membres')
     ax[0].set_ylim((-25,40))
     ax[0].legend(loc='upper center',ncol=1)
-    
+
     dg[['# rebonds']].plot.bar(ax=ax[1])
     ax[1].yaxis.grid()

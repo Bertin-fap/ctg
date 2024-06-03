@@ -58,16 +58,18 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
 
         synthese_adherent(year_select,ctg_path)
         info_title = "- Information -"
-        info_text  = f"L'analyse de la participation aux sorties par membre a été effectuée pour l'année {year_select} "
-        info_text += f"\n\nLe fichier EXCEL obtenu : 'synthese_adherent.xlsx' a été créé dans le dossier :"
-        info_text += f"\n\n{ctg_path}\{str(year_select)}\STATISTIQUES."
+        info_text  = ("L'analyse de la participation aux sorties par membre "
+                     f"a été effectuée pour l'année {year_select} "
+                     f"\n\nLe fichier EXCEL obtenu : 'synthese_adherent.xlsx' "
+                      "a été créé dans le dossier :"
+                     f"\n\n{ctg_path}\{str(year_select)}\STATISTIQUES.")
 
         messagebox.showinfo(info_title, info_text)
 
     from ctg.ctggui.pageclasses import AppMain
 
     # Setting effective font sizes and positions (numbers are reference values)
-    eff_etape_font_size      = font_size(gg.REF_ETAPE_FONT_SIZE,   AppMain.width_sf_min)           #14
+    eff_etape_font_size      = font_size(gg.REF_ETAPE_FONT_SIZE,   AppMain.width_sf_min)
     eff_launch_font_size     = font_size(gg.REF_ETAPE_FONT_SIZE-1, AppMain.width_sf_min)
     eff_help_font_size       = font_size(gg.REF_ETAPE_FONT_SIZE-2, AppMain.width_sf_min)
     eff_select_font_size     = font_size(gg.REF_ETAPE_FONT_SIZE, AppMain.width_sf_min)
@@ -80,8 +82,8 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
     launch_dx_px             = mm_to_px( 0 * AppMain.width_sf_mm,  gg.PPI)
     launch_dy_px             = mm_to_px( 5 * AppMain.height_sf_mm, gg.PPI)
 
-    year_button_x_pos        = mm_to_px(gg.REF_YEAR_BUT_POS_X_MM * AppMain.width_sf_mm,  gg.PPI)    #10
-    year_button_y_pos        = mm_to_px(gg.REF_YEAR_BUT_POS_Y_MM * AppMain.height_sf_mm, gg.PPI)    #26
+    year_button_x_pos        = mm_to_px(gg.REF_YEAR_BUT_POS_X_MM * AppMain.width_sf_mm,  gg.PPI)
+    year_button_y_pos        = mm_to_px(gg.REF_YEAR_BUT_POS_Y_MM * AppMain.height_sf_mm, gg.PPI)
     dy_year                  = -6
     ds_year                  = 5
 

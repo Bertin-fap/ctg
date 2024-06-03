@@ -25,6 +25,7 @@ from ctg.ctggui.page_effectif import create_effectif_analysis
 from ctg.ctggui.pagesorties import create_sorties_analysis
 from ctg.ctggui.pagesynthese import create_synthese_analysis
 from ctg.ctggui.pagetendance import create_tendance_analysis
+from ctg.ctggui.pagesejour import create_sejour_analysis
 from ctg.ctggui.pagedivers import create_divers_analysis
 from ctg.ctggui.guitools import place_bellow
 from ctg.ctggui.guitools import show_frame
@@ -47,7 +48,9 @@ class AppMain(tk.Tk):
         master.attributes("-topmost", True)
 
         # Setting the icon
-        master.iconbitmap( Path(__file__).parent.parent / Path('ctgfuncts') / Path('CTG_RefFiles') / Path( 'logoctg4.ico') )
+        file = Path(__file__).parent.parent / Path('ctgfuncts') 
+        file = file / Path('CTG_RefFiles') / Path( 'logoctg4.ico') 
+        master.iconbitmap( )
 
         # Setting title window
         master.title(gg.APPLICATION_WINDOW_TITLE)
@@ -67,6 +70,7 @@ class AppMain(tk.Tk):
         # Defining pages classes and pages list
         AppMain.pages = ( PageHelp,
                           PageDivers,
+                          PageSejours,
                           PageTendance,
                           PageSynthese,
                           PageEffectif,
@@ -375,7 +379,8 @@ class PageTitle(tk.Tk):
         eff_page_title_font_size = guf.font_size(gg.REF_PAGE_TITLE_FONT_SIZE, AppMain.width_sf_min)
 
         # Setting reference Y position in mm and effective Y position in pixels for page label
-        eff_page_title_pos_y_px = guf.mm_to_px(gg.REF_PAGE_TITLE_POS_Y_MM * AppMain.height_sf_mm, gg.PPI)
+        eff_page_title_pos_y_px = guf.mm_to_px(gg.REF_PAGE_TITLE_POS_Y_MM * AppMain.height_sf_mm,
+                                               gg.PPI)
 
         # Setting x position in pixels for page title
         mid_page_pos_x_px = AppMain.win_width_px  * 0.5
@@ -451,7 +456,22 @@ class PageEffectif(tk.Frame):
 
         quitapp = QuitApp(self, master, container_button)
 
+class PageSejours(tk.Frame):
+    '''
+    '''
+    def __init__(self, container_frame, master, container_button, institute, ctg_path):
 
+        super().__init__(container_frame)
+
+        page_name  = self.__class__.__name__
+
+        create_sejour_analysis(self, master, page_name, institute, ctg_path)
+
+        setcontrollerbutton = SetControllerButton(master, container_button,page_name)
+
+        settitleclass = SetTitltleClass(self,page_name,institute)
+
+        quitapp = QuitApp(self, master, container_button)
 
 class PageSorties(tk.Frame):
     '''
@@ -555,7 +575,8 @@ class PageHelp(tk.Frame):
         # Write into the Text box
         #version_gui = ctg.ctggui.__version__
         #help_box.insert(tk.END,f'Version : {version_gui} \n\n')
-        path_help = Path(__file__).parent.parent / Path('ctgfuncts') / Path('CTG_RefFiles') / Path( 'help.txt')
+        path_help = Path(__file__).parent.parent / Path('ctgfuncts') 
+        path_help = path_help / Path('CTG_RefFiles') / Path( 'help.txt')
         with open(path_help,'r',encoding="utf-8")as file_text:
             help_content =  file_text.read()
         help_box.insert(tk.END,help_content)
@@ -617,18 +638,18 @@ class QuitApp(tk.Frame):
         ################## Bouton pour sortir de la page
         eff_button_font_size = font_size(gg.REF_BUTTON_FONT_SIZE, AppMain.width_sf_min)
         eff_buttons_font_size    = font_size(gg.REF_ETAPE_FONT_SIZE-3, AppMain.width_sf_min)
-        exit_button_x_pos_px     = mm_to_px(gg.REF_EXIT_BUT_POS_X_MM * AppMain.width_sf_mm,  gg.PPI)    #193
-        exit_button_y_pos_px     = mm_to_px(gg.REF_EXIT_BUT_POS_Y_MM * AppMain.height_sf_mm, gg.PPI)    #145
+        exit_button_x_pos_px     = mm_to_px(gg.REF_EXIT_BUT_POS_X_MM * AppMain.width_sf_mm,  gg.PPI)
+        exit_button_y_pos_px     = mm_to_px(gg.REF_EXIT_BUT_POS_Y_MM * AppMain.height_sf_mm, gg.PPI)
         quit_font = tkFont.Font(family = gg.FONT_NAME,
                                 size   = eff_buttons_font_size)
 
         quit_button = tk.Button(parent,
                                 text = gg.TEXT_PAUSE,
                                 font = quit_font,
-                                command = lambda: self._launch_exit(master)).place(x = exit_button_x_pos_px,
-                                                                                       y = exit_button_y_pos_px,
-                                                                                       anchor = 'n')
-
+                                command = lambda: self._launch_exit(master))
+        quit_button.place(x = exit_button_x_pos_px,
+                          y = exit_button_y_pos_px,
+                          anchor = 'n')
 
     def _launch_exit(self,controller):
 
