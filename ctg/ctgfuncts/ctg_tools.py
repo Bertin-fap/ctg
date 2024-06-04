@@ -3,6 +3,7 @@ __all__ = ['built_lat_long',
            'get_cout_total',
            'get_info_randos2df',
            'get_sejour_info',
+           'normalize_tag',
            'parse_date',
            'read_sortie_csv',
            ]
@@ -176,3 +177,21 @@ def read_sortie_csv(file):
         df = None
 
     return df
+    
+def normalize_tag(tag:str,year:str)->str:
+
+    '''
+    Convert a tag formatted as yyyy[_-]mm[_-]dd\s<text> or mm[_-]dd\s<text> in 
+    yy-mm-dd where year is used if missing in the tag
+    '''
+    
+    tag = re.sub(r"_","-",tag)
+    tag = tag+" "
+   
+    if re.findall(r'^\d{4}-\d{1,2}-\d{1,2}\s',tag):
+        return tag[2:10]
+        
+    elif re.findall(r'^\d{1,2}-\d{1,2}\s',tag):
+        return f'{year[2:4]}-{tag[0:5]}'
+    else:
+        raise Exception(f'erreur in normaize_tag: unknown tag format {tag}')

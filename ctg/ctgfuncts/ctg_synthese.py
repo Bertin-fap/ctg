@@ -29,6 +29,7 @@ from ctg.ctgfuncts.ctg_classes import EffectifCtg
 from ctg.ctgfuncts.ctg_effectif import read_effectif_corrected
 from ctg.ctgfuncts.ctg_tools import get_sejour_info
 from ctg.ctgfuncts.ctg_tools import get_cout_total
+from ctg.ctgfuncts.ctg_tools import normalize_tag
 
 def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
 
@@ -211,14 +212,20 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
     df_total = pd.read_excel(file_in)
     df_total = df_total.dropna(subset=['Nom'])
     dg = df_total.query('Type==@type_sejour').groupby('sejour').agg('count')['N° Licencié']
-
+    
     file_info = Path(ctg_path) / Path(year) / Path('DATA') / Path('info_randos.xlsx')
+    info_df = pd.read_excel(file_info)
+    info_dic = dict(zip(info_df['date'],info_df['name_activite']))
+    
+    tag_list = [normalize_tag(x,year) for x in dg.index]
+    labelx = [f'{k[3:8]} {info_dic[k].strip()}' for k in tag_list]
+
     cout_total_rando = get_cout_total(year,type_sejour.lower(),dg,ctg_path)
 
     fig = plt.figure()
     plt.bar(range(len(dg)),dg.tolist())
     addlabels(list(range(len(dg))),dg.tolist(),0.2)
-    plt.xticks(range(len(dg)), dg.index, rotation='vertical')
+    plt.xticks(range(len(dg)), labelx, rotation='vertical')
     plt.tick_params(axis='x', rotation=90, labelsize=10)
     plt.tick_params(axis='y',labelsize=10)
 

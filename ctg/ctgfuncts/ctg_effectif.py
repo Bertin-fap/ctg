@@ -533,6 +533,7 @@ def plot_rebond(ctg_path):
     dg['% rebond'] = rebond_pourcent
     dg.to_excel(r'C:\Users\franc\CTG\SORTIES\2024\STATISTIQUES\rebond.xlsx')
     year_pourcent = list(years[1:])
+    print(rebond_pourcent,year_pourcent)
     
     fig, ax = plt.subplots(nrows=1, ncols=2)
     dg[['# entrants','# sortants']].plot.bar(stacked=True,ax=ax[0])
@@ -544,4 +545,3 @@ def plot_rebond(ctg_path):
     
     dg[['# rebonds']].plot.bar(ax=ax[1])
     ax[1].yaxis.grid()
-    return dg
