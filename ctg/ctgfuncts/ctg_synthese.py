@@ -215,6 +215,8 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
     
     file_info = Path(ctg_path) / Path(year) / Path('DATA') / Path('info_randos.xlsx')
     info_df = pd.read_excel(file_info)
+    type_sejour_m = type_sejour.lower()
+    info_df=info_df.query('type==@type_sejour_m')
     info_dic = dict(zip(info_df['date'],info_df['name_activite']))
     
     tag_list = [normalize_tag(x,year) for x in dg.index]
