@@ -57,7 +57,7 @@ def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
     for x in df_total.groupby(['Type']):
         print(x[0],len(x[1]),len(set(x[1]['sejour'])),len(x[1])/len(set(x[1]['sejour'])))
 
-    file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese.xlsx')
+    file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
     df_total.to_excel(file)
 
 def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
@@ -67,7 +67,7 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
         #return "{:.1f}%\n({:d})".format(pct, absolute)
         return  f"{int(round(absolute,1))}\n{round(pct,1)} %"
 
-    file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese.xlsx')
+    file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
     df_total = df_total.dropna(subset=['Type'])
     df_total = df_total.dropna(subset=['Nom'])
@@ -109,7 +109,7 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
     plt.show()
 
     fig_file = 'SORTIES_PIE.png'
-    plt.savefig(ctg_path / Path(year) / Path('STATISTIQUES') / Path(fig_file),bbox_inches='tight')
+    plt.savefig(ctg_path / Path(year) / Path('STATISTIQUES/IMAGE') / Path(fig_file),bbox_inches='tight')
 
 
 
@@ -120,7 +120,7 @@ def synthese_adherent(year,ctg_path):
     'RANDONNEE','SEJOUR-JOUR','Nbr_SEJOURS', 'SORTIE HIVER','TOTAL','COUT_SEJOUR',
     '''
 
-    file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese.xlsx')
+    file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
     df_total = df_total.dropna(subset=['Type'])
     nbre = {}
@@ -194,7 +194,8 @@ def synthese_adherent(year,ctg_path):
 
     dg = pd.concat([dg, df_orphan], axis=0)
 
-    file_out = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese_adherent.xlsx')
+    file_out = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL')
+    file_out = file_out / Path('synthese_adherent.xlsx')
     dg.to_excel(file_out)
 
 def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
@@ -208,7 +209,8 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
                 plt.text(x[i],y[i]+offset,round(y[i],1),size=10)
 
 
-    file_in = Path(ctg_path) / Path(year) / Path('STATISTIQUES') / Path('synthese.xlsx')
+    file_in = Path(ctg_path) / Path(year) / Path('STATISTIQUES') / Path('EXCEL')
+    file_in = file_in / Path('EXCEL') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
     df_total = df_total.dropna(subset=['Nom'])
     dg = df_total.query('Type==@type_sejour').groupby('sejour').agg('count')['N° Licencié']
@@ -256,7 +258,8 @@ def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
         for i in range(len(x)):
             plt.text(x[i]-0.2,y[i]+1,y[i],size=label_size)
     label_size = 15
-    file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese_adherent.xlsx')
+    file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL')
+    file_in = file_in / Path('synthese_adherent.xlsx')
     df_total = pd.read_excel(file_in)
 
     c = Counter()
@@ -284,7 +287,7 @@ def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
     plt.show()
 
     fig_file = 'SEJOURS_STAT_PARTICIPATION.png'
-    plt.savefig(ctg_path / Path(year) / Path('STATISTIQUES') / Path(fig_file),bbox_inches='tight')
+    plt.savefig(ctg_path / Path(year) / Path('STATISTIQUES/IMAGE') / Path(fig_file),bbox_inches='tight')
 
 def _read_memory_sorties():
 
@@ -321,7 +324,7 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
 
         sejour_info = get_sejour_info(ctg_path,year)
 
-        file_in = ctg_path / Path(str(year)) / Path('STATISTIQUES')
+        file_in = ctg_path / Path(str(year)) / Path('STATISTIQUES') / Path('EXCEL')
         file_in = file_in / Path('synthese_adherent.xlsx')
 
         df = pd.read_excel(file_in)
@@ -415,9 +418,13 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
 def stat_cout_sejour(year,ctg_path):
 
     def plot_histo(col_name,idx_plot,labelx,labely,unit):
-        df.hist(column=col_name,bins=40,ax=ax[idx_plot])
-        ax[idx_plot].set_xlabel(labelx)
-        ax[idx_plot].set_ylabel(labely)
+        df.hist(column=col_name,
+                bins=80,
+                ax=ax[idx_plot],
+                xlabelsize=15,
+                ylabelsize=15,)
+        ax[idx_plot].set_xlabel(labelx,fontsize=18)
+        ax[idx_plot].set_ylabel(labely,fontsize=18)
 
         col_without_zero = [x for x in df[col_name] if x>0]
 
@@ -433,9 +440,10 @@ def stat_cout_sejour(year,ctg_path):
                        f'     Mediane : {med_col_without_zero} {unit}\n\n')
         return long_string
 
-    fig, ax = plt.subplots(nrows=1, ncols=2)
+    fig, ax = plt.subplots(nrows=1, ncols=2, sharey=True)
 
-    file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese_adherent.xlsx')
+    file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') 
+    file = file / Path('synthese_adherent.xlsx')
     if not os.path.isfile(file):
         synthese_adherent(year,ctg_path)
 
@@ -457,8 +465,10 @@ def stat_cout_sejour(year,ctg_path):
     comment_jour = plot_histo('SEJOUR-JOUR',1,'# jours séjour','','jours')
     comment += comment_jour
     messagebox.showinfo('info sejour', comment)
-    fig.suptitle(str(year))
+    fig.suptitle(f'Année : {str(year)}',fontsize=20)
+    plt.tight_layout()
     plt.show()
-    file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('synthese_sejour.txt')
+    file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('TEXT')
+    file = file / Path('synthese_sejour.txt')
     with open(file,'w', encoding='utf-8') as f:
         f.write(comment)

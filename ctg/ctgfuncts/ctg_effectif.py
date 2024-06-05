@@ -221,7 +221,7 @@ def count_participation(path,ctg_path,year,info_rando):
     info_sejours.append(long_string)
     info_sejours = '\n'.join(info_sejours)
     info_sejours_path = ctg_path / Path(str(year))
-    info_sejours_path = info_sejours_path / Path('STATISTIQUES')
+    info_sejours_path = info_sejours_path / Path('STATISTIQUES') / Path('TEXT')
     info_sejours_path = info_sejours_path / Path(type_sortie_default+'.txt')
     with open(info_sejours_path,'w') as f:
         f.write(info_sejours)
@@ -410,7 +410,7 @@ def builds_excel_presence_au_club(ctg_path):
     df = pd.concat([df, split_df], axis=1)
     df = df.drop('date',axis=1)
     out_path = ctg_path / Path(str(list_date[-1]))
-    out_path = out_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
+    out_path = out_path / Path('STATISTIQUES') / Path('EXCEL') / Path('effectif_history.xlsx')
     df.to_excel(out_path)
     return out_path
 
@@ -460,7 +460,7 @@ def anciennete_au_club(ctg_path):
     current_year = int(date.strftime("%Y"))
 
     in_path = ctg_path / Path(str(current_year))
-    in_path = in_path / Path('STATISTIQUES') / Path('effectif_history.xlsx')
+    in_path = in_path / Path('STATISTIQUES') /Path('EXCEL') / Path('effectif_history.xlsx')
     df = pd.read_excel(in_path)
     eff = []
 
@@ -493,8 +493,9 @@ def plot_rebond(ctg_path):
             ax[0].text(i-0.2,-23,y[i],size=10)
 
 
-    current_year = int(datetime.now().year)
-    file_path = ctg_path / Path(str(current_year)) / Path('STATISTIQUES') / Path('effectif_history.xlsx')
+    current_year = int(datetime.datetime.now().year)
+    file_path = ctg_path / Path(str(current_year)) / Path('STATISTIQUES') / Path('EXCEL')
+    file_path = file_path / Path('effectif_history.xlsx')
     if not os.path.isfile(file_path):
         builds_excel_presence_au_club(ctg_path)
 
@@ -531,9 +532,10 @@ def plot_rebond(ctg_path):
     rebond_pourcent = [None] + [round(100*x[0]/x[1],1) for x in 
                        zip(dg['# rebonds'].tolist()[1:], dg['# entrants'].tolist()[:-1])]
     dg['% rebond'] = rebond_pourcent
-    dg.to_excel(r'C:\Users\franc\CTG\SORTIES\2024\STATISTIQUES\rebond.xlsx')
+    file_rebond = ctg_path / Path(str(current_year)) / Path('STATISTIQUES')
+    file_rebond = file_rebond / Path('EXCEL') / Path('rebond.xlsx')
+    dg.to_excel(file_rebond)
     year_pourcent = list(years[1:])
-    print(rebond_pourcent,year_pourcent)
     
     fig, ax = plt.subplots(nrows=1, ncols=2)
     dg[['# entrants','# sortants']].plot.bar(stacked=True,ax=ax[0])
@@ -545,3 +547,4 @@ def plot_rebond(ctg_path):
     
     dg[['# rebonds']].plot.bar(ax=ax[1])
     ax[1].yaxis.grid()
+    plt.show()

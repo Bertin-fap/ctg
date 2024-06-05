@@ -23,6 +23,7 @@ from ctg.ctggui.guitools import last_available_years
 from ctg.ctgfuncts.ctg_classes import EffectifCtg
 from ctg.ctgfuncts.ctg_effectif import evolution_age_median
 from ctg.ctgfuncts.ctg_effectif import evolution_effectif
+from ctg.ctgfuncts.ctg_effectif import plot_rebond
 
 def _launch_year_analysis(ctg_path, year_select):
     """
@@ -59,6 +60,11 @@ def _launch_effectif_year_analysis(ctg_path,
 def _launch_effectif_analysis(ctg_path):
 
     evolution_effectif(ctg_path)
+    
+def _launch_rebond_analysis(ctg_path):
+
+    plot_rebond(ctg_path)
+
 
 def _launch_age_analysis(ctg_path):
 
@@ -141,7 +147,7 @@ def create_effectif_analysis(self, master, page_name, institute, ctg_path):
 
     place_after(self.Label_years, self.OptionButton_years, dy = dy_year)
 
-    ################## Analyse des IFs
+    ################## Analyse de l'effectif annuel
 
     ### Titre
     if_analysis_font = tkFont.Font(family = gg.FONT_NAME,
@@ -166,7 +172,7 @@ def create_effectif_analysis(self, master, page_name, institute, ctg_path):
     place_bellow(if_analysis_label,
                  help_label)
 
-    ### Bouton pour lancer l'analyse des IFs
+    ### Bouton pour lancer l'analyse de l'effecif annuel
     if_analysis_launch_font = tkFont.Font(family = gg.FONT_NAME,
                                           size = eff_launch_font_size)
     if_analysis_launch_button = tk.Button(self,
@@ -178,7 +184,7 @@ def create_effectif_analysis(self, master, page_name, institute, ctg_path):
                  dx = launch_dx_px,
                  dy = launch_dy_px)
 
-    ################## Analyse de l'effectif
+    ################## Analyse de l'évolution de l'effectif
 
     ### Titre
     effectif_analysis_label_font = tkFont.Font(family = gg.FONT_NAME,
@@ -214,6 +220,15 @@ def create_effectif_analysis(self, master, page_name, institute, ctg_path):
                  effectif_analysis_button,
                  dx = launch_dx_px,
                  dy = launch_dy_px)
+                 
+    rebond_analysis_button = tk.Button(self,
+                                       text = gg.BUTT_REBOND,
+                                       font = effectif_analysis_launch_font,
+                                       command = lambda: _launch_rebond_analysis(ctg_path))
+    place_after( effectif_analysis_button,
+                 rebond_analysis_button,
+                 dx = 100,
+                 dy = 0)
 
 ################## Analyse de l'évolution de la moyenne d'âge
 

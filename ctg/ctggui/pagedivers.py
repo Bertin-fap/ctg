@@ -52,14 +52,16 @@ def create_divers_analysis(self, master, page_name, institute, ctg_path):
         df_effectif = pd.read_excel(file)
         kol = plot_ctg(df_effectif)
 
-        kol.save(ctg_path / Path(str(year_select)) / Path('STATISTIQUES') / Path("ctg.html"))
+        path_html = ctg_path / Path(str(year_select)) / Path('STATISTIQUES') / Path('HTML') 
+        path_html = path_html / Path("ctg.html")
+        kol.save(path_html)
 
         info_title = "- Information -"
         info_text  = ("L'analyse de la localisation géographique des membres a été effectuée"
                       f"pour l'année {year_select} "
                       f"\n\nLe fichier .html obtenu : 'ctg.html' "
                       "a été créé dans le dossier :"
-                      f"\n\n{ctg_path}\{str(year_select)}\STATISTIQUES.")
+                      f"\n\n{ctg_path}\{str(year_select)}\STATISTIQUES\HTML.")
 
         messagebox.showinfo(info_title, info_text)
 

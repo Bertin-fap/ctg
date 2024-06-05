@@ -144,16 +144,19 @@ class EffectifCtg():
         stat.append(f"\ncotisation licence ffct : {self.cotisation_licence} €")
         stat.append(f"cotisation totale : {self.cotisation_totale} €")
         stat.append(f"cotisation CTG : {self.cotisation_ctg} €")
-        path_root = self.ctg_path / Path(str(self.year)) / Path('STATISTIQUES')
-        path_info_effectif = path_root / Path(f'info_effectif_{self.year}.txt')
-        stat.append(("\n Ces information sont disponibles dans le fichier : "
-                    f"\n{path_info_effectif}"))
+        
+        path_root = self.ctg_path / Path(str(self.year)) / Path('STATISTIQUES') / Path('TEXT')
+        path_root = path_root / Path(f'info_effectif_{self.year}.txt')
+        with open(path_root,'w') as f:
+            f.write('\n'.join(stat))
+
+        stat.append(("\n Ces informations sont disponibles dans le fichier : "
+                    f"\n{path_root}"))
         stat ='\n'.join(stat)
         messagebox.showinfo(f'Statistique {self.year}',stat)
 
 
-        with open(path_info_effectif,'w') as f:
-            f.write(stat)
+        
 
     def nouveaux_entrants(self):
         nouveaux_membres_id = set(self.effectif["N° Licencié"])- \
@@ -217,7 +220,7 @@ class EffectifCtg():
     def get_rebond(self):
         current_year = datetime.now().year
         path_history = self.ctg_path / Path(str(current_year))
-        path_history = path_history / Path('STATISTIQUES/effectif_history.xlsx')
+        path_history = path_history / Path('STATISTIQUES/EXCEL/effectif_history.xlsx')
         df = pd.read_excel(path_history)
         df = df.fillna(0)
 

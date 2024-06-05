@@ -181,7 +181,7 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
     plt.tight_layout()
     plt.show()
     fig_file = os.path.split(path_sorties_club)[-1].replace(' ','_')+'.png'
-    file = ctg_path / Path(str(year)) / Path('STATISTIQUES') / Path(fig_file)
+    file = ctg_path / Path(str(year)) / Path('STATISTIQUES/IMAGE') / Path(fig_file)
     plt.savefig(file,bbox_inches='tight')
 
     return df_total

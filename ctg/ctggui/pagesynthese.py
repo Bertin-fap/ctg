@@ -62,7 +62,7 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
                      f"a été effectuée pour l'année {year_select} "
                      f"\n\nLe fichier EXCEL obtenu : 'synthese_adherent.xlsx' "
                       "a été créé dans le dossier :"
-                     f"\n\n{ctg_path}\{str(year_select)}\STATISTIQUES.")
+                     f"\n\n{ctg_path}\{str(year_select)}\STATISTIQUES\EXCEL.")
 
         messagebox.showinfo(info_title, info_text)
 
