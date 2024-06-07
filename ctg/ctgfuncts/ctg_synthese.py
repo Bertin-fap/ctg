@@ -62,6 +62,9 @@ def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
 
 def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
 
+    '''Plot from the EXCEL file `synthese.xlsx` the pie plot of 
+    the number of participation to the evenments'''
+
     def func(pct, allvalues):
         absolute = round(pct / 100.*np.sum(allvalues),0)
         #return "{:.1f}%\n({:d})".format(pct, absolute)
@@ -101,7 +104,9 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
                               autopct = lambda pct: func(pct, data),
                               explode = explode,
                               textprops={'fontsize': 18})
-    plt.title(year, pad=50, fontsize=20)
+                              
+    title = f'{year} (Nombre total de participations: {sum(data)})'
+    plt.title(title, pad=50, fontsize=20)
 
     _ = plt.setp(autotexts, **{'color':'k', 'weight':'bold', 'fontsize':14})
 
@@ -203,26 +208,32 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
     '''
     '''
 
-    def addlabels(x,y,offset):
+    def addlabels(x,y,offset,y_val=None):
         for i in range(len(x)):
             if y[i] != 0:
-                plt.text(x[i],y[i]+offset,round(y[i],1),size=10)
+                if y_val is None:
+                    plt.text(x[i]-0.25,y[i]+offset,round(y[i],1),size=10)
+                else:
+                    plt.text(x[i]-0.25,y[i]+offset,round(y_val[i],1),size=10)
 
 
-    file_in = Path(ctg_path) / Path(year) / Path('STATISTIQUES') / Path('EXCEL')
+    file_in = Path(ctg_path) / Path(year) / Path('STATISTIQUES')
     file_in = file_in / Path('EXCEL') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
     df_total = df_total.dropna(subset=['Nom'])
-    dg = df_total.query('Type==@type_sejour').groupby('sejour').agg('count')['N° Licencié']
+    df_total = df_total.query('Type==@type_sejour')
+    dg = df_total.groupby('sejour').agg('count')['N° Licencié']
     
     file_info = Path(ctg_path) / Path(year) / Path('DATA') / Path('info_randos.xlsx')
     info_df = pd.read_excel(file_info)
     type_sejour_m = type_sejour.lower()
     info_df=info_df.query('type==@type_sejour_m')
     info_dic = dict(zip(info_df['date'],info_df['name_activite']))
+    info_duree = dict(zip(info_df['date'],info_df['nbr_jours']))    
     
     tag_list = [normalize_tag(x,year) for x in dg.index]
     labelx = [f'{k[3:8]} {info_dic[k].strip()}' for k in tag_list]
+    duree_sejour = [info_duree[k] for k in tag_list]
 
     cout_total_rando = get_cout_total(year,type_sejour.lower(),dg,ctg_path)
 
@@ -234,12 +245,17 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
     plt.tick_params(axis='y',labelsize=10)
 
     if type_sejour == 'RANDONNEE':
-        long_string = (f'# randos : {len(dg)} , '
+        long_string = (f'Année : {year}\n'
+                       f'# randos : {len(dg)} , '
                        f'# participants : '
                        f'{sum(dg)}, Coût : {cout_total_rando} €')
         _ = plt.title(long_string)
     else:
-        long_string = (f'# sejours : {len(dg)} , '
+        y = [1] *  len(duree_sejour)
+        addlabels(list(range(len(dg))),y,1,duree_sejour)
+        long_string = (f'Année : {year}\n'
+                       f'# jours : {sum(duree_sejour)} '
+                       f'# sejours : {len(dg)} , '
                        f'# participants : {sum(dg)}'
                        f', Coût : {cout_total_rando} €')
         _ = plt.title(long_string)

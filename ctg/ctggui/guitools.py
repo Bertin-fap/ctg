@@ -233,6 +233,11 @@ def create_archi(ctg_path, year_folder, verbose = False):
     new_year_folder_path = create_folder(ctg_path, year_folder, verbose = verbose)
     for dir in dir_list:
         _ = create_folder(new_year_folder_path, dir, verbose = verbose)
+        
+    for dir in ['EXCEL','HTML', 'IMAGE', 'TEXT']:
+        _ = create_folder(Path(ctg_path) / Path(year_folder) / Path('STATISTIQUES'),
+                          dir,
+                          verbose = verbose)    
 
     dir_list_sorties = ['SEJOUR', 'SORTIES DE DERNIERE MINUTE',
                         'SORTIES DU DIMANCHE', 'SORTIES DU JEUDI',

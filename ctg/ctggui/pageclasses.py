@@ -2,6 +2,7 @@ __all__ = ['AppMain']
 
 # Standard library imports
 import tkinter as tk
+from datetime import datetime
 from functools import partial
 from pathlib import Path
 from tkinter import filedialog
@@ -163,8 +164,16 @@ class InitApp(tk.Tk):
                 # Setting new corpus year folder name
                 corpuses_list    = last_available_years(bmf_path, gg.FIRST_YEAR)
                 last_corpus_year = corpuses_list[-1]
+                current_year = datetime.now().year
+                if int(last_corpus_year) == int(current_year):
+                    message = ('Vous ne pouvez pas créer une nouvelle année '
+                              f"tant que l'année en cours {current_year} ne sera pas "
+                               "terminée.")
+                    messagebox.showwarning("Warning",message)
+                    corpi_val.set(str(corpuses_list))
+                    return
+                    
                 new_corpus_year_folder = str(int(last_corpus_year) + 1)
-
                 # Creating required folders for new corpus year
                 message = create_archi(bmf_path, new_corpus_year_folder, verbose = False)
                 print("\n",message)
