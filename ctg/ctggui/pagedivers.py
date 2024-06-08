@@ -47,10 +47,7 @@ def create_divers_analysis(self, master, page_name, institute, ctg_path):
 
         # Getting year selection
         year_select =  variable_years.get()
-        file = ctg_path / Path(str(year_select)) 
-        file = file / Path('DATA')/ Path(str(year_select)+'.xlsx')
-        df_effectif = pd.read_excel(file)
-        kol = plot_ctg(df_effectif)
+        kol = plot_ctg(ctg_path,year_select)
 
         path_html = ctg_path / Path(str(year_select)) / Path('STATISTIQUES') / Path('HTML') 
         path_html = path_html / Path("ctg.html")

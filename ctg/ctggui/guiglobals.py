@@ -84,6 +84,7 @@ __all__ = ['ACTIVITE_LIST',
            'TEXT_LAUNCH_PARSING',
            'TEXT_LAUNCH_SYNTHESE',
            'TEXT_MEMBER_ANALYSIS',
+           'TEXT_METHOD',
            'TEXT_NBR_SEJOURS',
            'TEXT_PAUSE',
            'TEXT_PRESENCE_EFFECTIF',
@@ -361,6 +362,7 @@ TEXT_MEMBER_ANALYSIS    = "Analyse des sorties par adhérent"
 HELP_MEMBER_ANALYSIS    = " Analyse de la participation aux sorties, randonnées et séjour "
 HELP_MEMBER_ANALYSIS   += " par adhérent. Un fichier EXCEL est généré."
 BUTT_MEMBER_ANALYSIS    = "Construction du fichier EXCEL"
+TEXT_METHOD             = "Choix du type de comptage"
 
 ### - Page analyse tendancielle
 TEXT_ACTIVITE_PI = "Choix de l'activité"

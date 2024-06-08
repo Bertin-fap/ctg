@@ -4,6 +4,7 @@ __all_ = ["built_lat_long",
 
 # Standard library import
 import datetime
+import operator
 import os
 from collections import Counter
 from math import asin, cos, radians, sin, sqrt
@@ -24,12 +25,16 @@ from ctg.ctgfuncts.ctg_effectif import count_participation
 from ctg.ctgfuncts.ctg_tools import parse_date
 from ctg.ctgfuncts.ctg_tools import built_lat_long
 
-def plot_ctg(df:pandas.core.frame.DataFrame):
+def plot_ctg(ctg_path,year:str):
 
     '''generates an html file of the membrers geographical location using the
     column ville of the DataFrame df
     '''
 
+    trace_radius = True
+    file = ctg_path / Path(f'{str(year)}/DATA/{str(year)}.xlsx')
+    df = pd.read_excel(file)
+    
     trace_radius = True
     dh = built_lat_long(df)
 
@@ -60,6 +65,7 @@ def plot_ctg(df:pandas.core.frame.DataFrame):
                       color="black",
                       fill=False,
                       ).add_to(kol)
+                      
     for latitude,longitude,size, ville in zip(dh['lat'],dh['long'],dh['number'],dh['Ville']):
 
         long_ville, lat_ville =dh.query("Ville==@ville")[['long','lat']].values.flatten()
@@ -81,6 +87,15 @@ def plot_ctg(df:pandas.core.frame.DataFrame):
                 color=color,
                 fill=True,
             ).add_to(kol)
+    dict_cyclo_l = {k:len(v.split(',')) for k,v in dict_cyclo.items()}
+    list_villes = sorted(dict_cyclo_l.items(), key=operator.itemgetter(1),reverse=True)
+    list_villes = '\n\n'.join([f'{t[0]} ({str(t[1])}) : {dict_cyclo[t[0]]}' for t in list_villes])
+
+    file = ctg_path / Path(f'{str(year)}/STATISTIQUES/TEXT/info_effectif_{str(year)}.txt')
+    with open(file,'a',encoding='utf-8') as f:
+        f.write(f'\n\nNombre de villes : {len(dict_cyclo)}\n')
+        f.write(list_villes)
+        
     return kol
 
 def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,year = None):

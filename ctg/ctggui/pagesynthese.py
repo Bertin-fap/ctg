@@ -47,9 +47,10 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
 
         # Getting year selection
         year_select =  variable_years.get()
-
+        method = variable_methods.get()
+        mode = False if method=='jours' else True
         synthese(year_select,ctg_path)
-        plot_pie_synthese(year_select,ctg_path)
+        plot_pie_synthese(year_select,ctg_path,mode)
 
     def _launch_member_analysis(ctg_path):
 
@@ -115,8 +116,9 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
     self.Label_years.place(x = year_button_x_pos, y = year_button_y_pos)
 
     place_after(self.Label_years, self.OptionButton_years, dy = dy_year)
+    
 
-    ################## Synthèse des activité
+    ################## Synthèse des sorties
 
     ### Titre
     synthese_analysis_font = tkFont.Font(family = gg.FONT_NAME,
@@ -141,7 +143,7 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
     place_bellow(synthese_analysis_label,
                  help_label)
 
-    ### Bouton pour lancer l'analyse des IFs
+    ### Bouton pour lancer l'analyse de la synthese des activités
     synthese_analysis_launch_font = tkFont.Font(family = gg.FONT_NAME,
                                                 size = eff_launch_font_size)
     synthese_analysis_launch_button = tk.Button(self,
@@ -152,8 +154,27 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
                  synthese_analysis_launch_button,
                  dx = launch_dx_px,
                  dy = launch_dy_px)
+                 
+    ### Choix de la méthode
+    list_methods = ['activités', 'jours']
+    default_methods = list_methods[0]
+    variable_methods = tk.StringVar(self)
+    variable_methods.set(default_methods)
+    OptionButton_methods = tk.OptionMenu(self,
+                                         variable_methods,
+                                         *list_methods)
+    OptionButton_methods.config(font = self.font_OptionButton_years)
+    font_Label_years = tkFont.Font(family = gg.FONT_NAME,
+                                            size = eff_select_font_size,
+                                            weight = 'bold')
+    Label_methods = tk.Label(self,
+                             text = gg.TEXT_METHOD,
+                             font = self.font_Label_years)
 
-    ################## Analyse des mots clefs
+    place_after(synthese_analysis_launch_button, Label_methods, dx=200, dy = 0)
+    place_after(Label_methods, OptionButton_methods, dy = dy_year)
+
+    ################## Analyse des sorties par adhérent
 
     ### Titre
     member_analysis_label_font = tkFont.Font(family = gg.FONT_NAME,
@@ -178,7 +199,7 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
     place_bellow(member_analysis_label,
                  help_label)
 
-    ### Bouton pour lancer l'analyse des mots clefs
+    ### Bouton pour lancer l'analyse des sorties par adhérent
     member_analysis_launch_font = tkFont.Font(family = gg.FONT_NAME,
                                                 size = eff_launch_font_size)
     member_analysis_button = tk.Button(self,
@@ -189,40 +210,3 @@ def create_synthese_analysis(self, master, page_name, institute, ctg_path):
                  member_analysis_button,
                  dx = launch_dx_px,
                  dy = launch_dy_px)
-
-################## Analyse de l'évolution de la moyenne d'âge
-
-    ### Titre
-    #age_analysis_label_font = tkFont.Font(family = gg.FONT_NAME,
-    #                                      size = eff_etape_font_size,
-    #                                      weight = 'bold')
-    #age_analysis_label = tk.Label(self,
-    #                              text = gg.TEXT_AGE_ANALYSIS,
-    #                              justify = "left",
-    #                              font = age_analysis_label_font)
-    #place_bellow(member_analysis_button,
-    #             age_analysis_label,
-    #             dx = year_analysis_label_dx_px,
-    #             dy = year_analysis_label_dy_px)
-    #
-    #### Explication de l'étape
-    #help_label_font = tkFont.Font(family = gg.FONT_NAME,
-    #                           size = eff_help_font_size)
-    #help_label_age = tk.Label(self,
-    #                          text = gg.HELP_AGE_ANALYSIS,
-    #                          justify = "left",
-    #                          font = help_label_font)
-    #place_bellow(age_analysis_label,
-    #             help_label_age)
-    #
-    #### Bouton pour lancer l'analyse des mots clefs
-    #age_analysis_launch_font = tkFont.Font(family = gg.FONT_NAME,
-    #                                     size = eff_launch_font_size)
-    #age_analysis_button = tk.Button(self,
-    #                                text = gg.BUTT_AGE_ANALYSIS,
-    #                                font = age_analysis_launch_font,
-    #                                command = lambda: _launch_age_analysis(ctg_path))
-    #place_bellow(help_label_age,
-    #             age_analysis_button,
-    #             dx = launch_dx_px,
-    #             dy = launch_dy_px)

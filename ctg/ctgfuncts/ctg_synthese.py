@@ -16,6 +16,7 @@ from collections import Counter
 from collections import namedtuple
 from pathlib import Path
 from tkinter import messagebox
+from typing import Optional
 
 # Third party imports
 import matplotlib.pyplot as plt
@@ -60,7 +61,7 @@ def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
     file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
     df_total.to_excel(file)
 
-def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
+def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath,mode: Optional[bool] = False)->None:
 
     '''Plot from the EXCEL file `synthese.xlsx` the pie plot of 
     the number of participation to the evenments'''
@@ -69,11 +70,14 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
         absolute = round(pct / 100.*np.sum(allvalues),0)
         #return "{:.1f}%\n({:d})".format(pct, absolute)
         return  f"{int(round(absolute,1))}\n{round(pct,1)} %"
-
+    
     file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
     df_total = df_total.dropna(subset=['Type'])
     df_total = df_total.dropna(subset=['Nom'])
+    
+    if mode: # un sejour vaut pour un jour 
+        df_total['nbr_jours'] = 1
 
     dagg = df_total.groupby('Type')['nbr_jours'].agg('sum')
 
