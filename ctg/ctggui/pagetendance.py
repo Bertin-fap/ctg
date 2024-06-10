@@ -96,12 +96,12 @@ def create_tendance_analysis(self, master, page_name, institute, ctg_path):
     etape_underline    = -1
 
     ### Choix de l'année
-    list_activites = gg.ACTIVITE_LIST
+    list_activites = gg.ACTIVITE_LIST + ['synthese']
     default_activite = list_activites[-1]
     variable_activite = tk.StringVar(self)
     variable_activite.set(default_activite)
 
-        # Création de l'option button des années
+        # Création de l'option button des activités
     self.font_OptionButton_years = tkFont.Font(family = gg.FONT_NAME,
                                                size = eff_buttons_font_size)
     self.OptionButton_years = tk.OptionMenu(self,

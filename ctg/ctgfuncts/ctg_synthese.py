@@ -102,7 +102,7 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath,mode: Optional[bool]
 
 
     # Creating plot
-    fig = plt.figure(figsize =(10, 7))
+    #fig = plt.figure(figsize =(10, 7))
     _, _, autotexts = plt.pie(data,
                               labels = sorties,
                               autopct = lambda pct: func(pct, data),
@@ -328,15 +328,15 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
 
         for year,v in memory['memory'].items():
 
-            stat_dic[str(year)] = statyear(v['PARTICIPATION_SEJOURS'],                # nbr_sejours
-                                           0,                          # jours_sejour
+            stat_dic[str(year)] = statyear(v['PARTICIPATION_SEJOURS'], # participants sejour
+                                           v['Nombre_sorties_sejour'], # jours_sejour
                                            v['SORTIES_CLUB_DIMANCHE'], # sortie_dimanche_club
                                            v['SORTIES_CLUB_SAMEDI'],   # sortie_samedi_club
                                            v['SORTIES_HIVER'],         # sortie_hiver_club
                                            v['SORTIES_CLUB_JEUDI'],    # sortie_jeudi_club
                                            v['RANDONNEES'],            # randonnee
                                            v['Nombre_sejours'],        # nbr_sejours
-                                           0,)                         # nbr_jours_sejours
+                                           v['Nombre_jours_sejour'],)  # nbr_jours_sejours
 
             years.append(str(year))
 
@@ -434,6 +434,9 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
                   [stat_dic[year].nbr_jours_sejours for year in years],
                   'Nombre de jours séjours',
                   '# jours séjour')
+    elif type == 'synthese':
+        plot_synthese_sortie(stat_dic)
+        
 
 def stat_cout_sejour(year,ctg_path):
 
@@ -492,3 +495,63 @@ def stat_cout_sejour(year,ctg_path):
     file = file / Path('synthese_sejour.txt')
     with open(file,'w', encoding='utf-8') as f:
         f.write(comment)
+
+def plot_synthese_sortie(stat_dic):
+    
+    '''
+    '''
+    df = pd.DataFrame.from_dict(stat_dic).T
+    df.columns = ['PARTICIPATION_SEJOURS',
+                  'Nombre_sorties_sejour',
+                  'SORTIES_CLUB_DIMANCHE',
+                  'SORTIES_CLUB_SAMEDI',
+                  'SORTIES_HIVER',      
+                  'SORTIES_CLUB_JEUDI', 
+                  'RANDONNEES',         
+                  'Nombre_sejours',     
+                  'Nombre_jours_sejour']
+    df = df.drop(['SORTIES_HIVER','Nombre_sejours',],axis=1)
+    df['total'] = (df['RANDONNEES']+
+                   df['Nombre_sorties_sejour']+ 
+                   df['SORTIES_CLUB_DIMANCHE']+
+                   df['SORTIES_CLUB_JEUDI']+
+                   df['SORTIES_CLUB_SAMEDI'])
+    
+    plt.style.use('ggplot')
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(15, 5))
+    fig.subplots_adjust(hspace=0.05) 
+    
+    ax2.plot(df.index[0:6],df['RANDONNEES'][0:6], '-*b',label = 'RANDONNEES')
+    ax2.plot(df.index[8:12],df['RANDONNEES'][8:],'-*b')
+    ax2.plot(df.index[0:6],df['PARTICIPATION_SEJOURS'][0:6],'r-',label='PARTICIPATION_SEJOURS',linewidth=3)
+    ax2.plot(df.index[8:12],df['PARTICIPATION_SEJOURS'][8:],'r-',linewidth=3)
+    ax1.plot(df.index[0:6],df['Nombre_sorties_sejour'][0:6],'r-',label='Nombre_sorties_sejour',linewidth=3)
+    ax1.plot(df.index[8:12],df['Nombre_sorties_sejour'][8:],'r-',linewidth=3)    
+    ax2.plot(df.index[0:6],df['SORTIES_CLUB_DIMANCHE'][0:6],'*-.k',label='SORTIES_CLUB_DIMANCHE')
+    ax2.plot(df.index[8:12],df['SORTIES_CLUB_DIMANCHE'][8:],'*-.k')
+    ax2.plot(df.index[1:6],df['SORTIES_CLUB_JEUDI'][1:6],'-..m',label='SORTIES_CLUB_JEUDI')
+    ax2.plot(df.index[8:12],df['SORTIES_CLUB_JEUDI'][8:],'-..m')
+    ax2.plot(df.index[0:6],df['SORTIES_CLUB_SAMEDI'][0:6],'-+g',label='SORTIES_CLUB_SAMEDI')
+    ax2.plot(df.index[8:12],df['SORTIES_CLUB_SAMEDI'][8:],'-+g')
+    
+    ax1.plot(df.index[0:6],df['total'][0:6],'-+y',label='total')
+    ax1.plot(df.index[8:12],df['total'][8:],'-+y')
+    ax2.legend(loc='upper right', bbox_to_anchor=(1.5, 1))
+    ax1.legend(loc='upper right', bbox_to_anchor=(1.5, 1))
+
+    ax1.set_ylim(1250, 3000)  # outliers only
+    ax2.set_ylim(50, 650)  # most of the data
+    # hide the spines between ax and ax2
+    ax1.spines.bottom.set_visible(False)
+    ax2.spines.top.set_visible(False)
+    ax1.xaxis.tick_top()
+    #ax1.tick_params(labeltop=False)  # don't put tick labels at the top
+    ax2.xaxis.tick_bottom()
+    
+    d = .5  # proportion of vertical to horizontal extent of the slanted line
+    kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
+                  linestyle="none", color='k', mec='k', mew=1, clip_on=False)
+    ax1.plot([0, 1], [0, 0], transform=ax1.transAxes, **kwargs)
+    ax2.plot([0, 1], [1, 1], transform=ax2.transAxes, **kwargs)
+    plt.tight_layout()
+    plt.show()

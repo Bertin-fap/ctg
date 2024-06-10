@@ -415,4 +415,5 @@ ACTIVITE_LIST =    ['nbr_participations_sejours',
                     'sortie_jeudi_club',
                     'randonnee',
                     'nbr_sejours',
-                    'nbr_jours_sejours']
+                    'nbr_jours_sejours',
+                   ]
