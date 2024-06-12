@@ -7,3 +7,4 @@ from ctg.ctgfuncts.ctg_effectif import *
 from ctg.ctgfuncts.ctg_synthese import *
 from ctg.ctgfuncts.ctg_classes import *
 from ctg.ctgfuncts.ctg_tools import *
+from ctg.ctgfuncts.ctg_cd import *

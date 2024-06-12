@@ -132,7 +132,7 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
         flag_labels = False
         print(file_label)
 
-    no_match,df_total,_ = count_participation(path_sorties_club,ctg_path,year,info_rando)
+    no_match,df_total,_ = count_participation(path_sorties_club,ctg_path,year,info_rando,)
     if no_match is None:
         messagebox.showinfo('WARNING',"Aucun participant n'a participé à ce type de sortie" )
     else:

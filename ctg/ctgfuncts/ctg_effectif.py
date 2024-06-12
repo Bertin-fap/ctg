@@ -14,6 +14,7 @@ __all__ = ['anciennete_au_club',
 import datetime
 import functools
 import os
+import pathlib
 import re
 import unicodedata
 from collections import Counter
@@ -29,7 +30,7 @@ import pandas as pd
 from ctg.ctgfuncts.ctg_tools import built_lat_long
 from ctg.ctgfuncts.ctg_tools import read_sortie_csv
 
-def read_effectif_corrected(ctg_path, year=None):
+def read_effectif_corrected(ctg_path:pathlib.WindowsPath, year=None):
 
     '''Lecture du fichier effectif et correction
     '''
@@ -67,7 +68,7 @@ def read_effectif_corrected(ctg_path, year=None):
 
     return effectif_df
 
-def inscrit_sejour(file,no_match,df_effectif):
+def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,df_effectif):
 
     '''builds the DataFrame dg for one event using the csv file of this event.
     The DataFrame dg has 5 columns named :'N° Licencié','Nom','Prénom','Sexe','sejour'
@@ -145,7 +146,11 @@ def inscrit_sejour(file,no_match,df_effectif):
     return dg
 
 
-def count_participation(path,ctg_path,year,info_rando):
+def count_participation(path:pathlib.WindowsPath,
+                        ctg_path:pathlib.WindowsPath,
+                        year:str,
+                        info_rando:pd.DataFrame,
+                        ):
 
     '''Creates the DataFrame df_total with 11 columns:
     'N° Licencié', 'Nom', 'Prénom', 'Sexe', 'Pratique VAE', 'sejour',
@@ -247,9 +252,9 @@ def count_participation(path,ctg_path,year,info_rando):
     return(no_match,df_total,index)
 
 
-def read_effectif(ctg_path,year):
+def read_effectif(ctg_path:pathlib.WindowsPath,year:str)->pd.DataFrame:
 
-    def distance_(row):
+    def distance_(row)->float:
 
         phi1, lon1 = dh.query("Ville=='GRENOBLE'")[['long','lat']].values.flatten()
         phi1, lon1 = radians(phi1), radians(lon1)
@@ -275,7 +280,7 @@ def read_effectif(ctg_path,year):
 
     return df
 
-def evolution_effectif(ctg_path):
+def evolution_effectif(ctg_path:pathlib.WindowsPath):
 
     # Evolution des effectifs hommes et femme de 2016 à 2022
 
@@ -324,7 +329,7 @@ def evolution_effectif(ctg_path):
     plt.tight_layout()
     plt.show()
 
-def evolution_age_median(ctg_path):
+def evolution_age_median(ctg_path:pathlib.WindowsPath):
 
     def addlabels(x,y,z=None):
         for i in range(len(x)):
@@ -483,7 +488,7 @@ def anciennete_au_club(ctg_path):
     plt.show()
 
 
-def plot_rebond(ctg_path):
+def plot_rebond(ctg_path:pathlib.WindowsPath):
 
     '''
     '''

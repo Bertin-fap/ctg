@@ -1,5 +1,6 @@
 # Standard library imports
 import os
+import pathlib
 from datetime import datetime
 from pathlib import Path
 from math import asin, cos, radians, sin, sqrt
@@ -16,7 +17,7 @@ from ctg.ctgfuncts.ctg_tools import built_lat_long
 class EffectifCtg():
 
 
-    def __init__(self,year,ctg_path):
+    def __init__(self,year:str,ctg_path:pathlib.WindowsPath):
 
         # get effectif of the year year
         self.year = year

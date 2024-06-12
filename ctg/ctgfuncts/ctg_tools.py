@@ -9,6 +9,7 @@ __all__ = ['built_lat_long',
            ]
 
 # Standard library imports
+import pathlib
 import re
 from collections import Counter
 from collections import namedtuple
@@ -70,7 +71,7 @@ def day_of_the_date(day:int,month:int,year:int)->str:
 
     return day_of_the_week
 
-def get_info_randos2df(ctg_path,year):
+def get_info_randos2df(ctg_path:pathlib.WindowsPath,year:str):
 
     '''Reads the Excel file info_randos of the year  `year`'''
 
@@ -79,9 +80,10 @@ def get_info_randos2df(ctg_path,year):
 
     return df
 
-def get_sejour_info(ctg_path,year):
+def get_sejour_info(ctg_path:pathlib.WindowsPath,year:str)->tuple:
 
-    '''get sejour information
+    '''get sejour information from the file `info_randos.xlsx` loacated in DATA
+    of the year
     '''
 
     sejour_info = namedtuple('sejour_info', 'nbr_jours nbr_sejours histo')
@@ -96,13 +98,15 @@ def get_sejour_info(ctg_path,year):
 
     return sejour_info_tup
 
-def get_cout_total(year,type_sejour,dg,ctg_path):
+def get_cout_total(year:str,type_sejour:str,
+                   dg:pd.DataFrame,
+                   ctg_path:pathlib.WindowsPath)->float:
 
     ''' Calcul du coût total des randonnées (type='randonnee") ou
     des séjours (type="sejour") pour l'année year
     '''
 
-    file_info = Path(ctg_path) / Path(str(year)) / Path('DATA') / Path('info_randos.xlsx')
+    file_info = Path(ctg_path) / Path(year) / Path('DATA') / Path('info_randos.xlsx')
     df_indo = pd.read_excel(file_info)
     cout_total = 0
     for evenement in dg.index:
@@ -163,7 +167,7 @@ def built_lat_long(df:pd.DataFrame)->pd.DataFrame:
                                 'number':dg.tolist()})
     return dh
 
-def read_sortie_csv(file):
+def read_sortie_csv(file:pathlib.WindowsPath):
 
     '''
     '''

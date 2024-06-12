@@ -122,7 +122,7 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath,mode: Optional[bool]
 
 
 
-def synthese_adherent(year,ctg_path):
+def synthese_adherent(year:str,ctg_path:pathlib.WindowsPath):
 
     '''generates the EXCEL file 'synthese_adherent.xlsx' with 11 columns :'Nom','Prénom',
     'SORTIE DU DIMANCHE CLUB','SORTIE DU SAMEDI CLUB','SORTIE DU JEUDI CLUB',
@@ -209,7 +209,7 @@ def synthese_adherent(year,ctg_path):
 
 def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
 
-    '''
+    '''Creates a plot synthetizing the participation at th randonnées.
     '''
 
     def addlabels(x,y,offset,y_val=None):
@@ -309,7 +309,7 @@ def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
     fig_file = 'SEJOURS_STAT_PARTICIPATION.png'
     plt.savefig(ctg_path / Path(year) / Path('STATISTIQUES/IMAGE') / Path(fig_file),bbox_inches='tight')
 
-def _read_memory_sorties():
+def _read_memory_sorties()->dict:
 
     '''Reads the default PVcharacterization.yaml config file'''
 
@@ -323,6 +323,12 @@ def _read_memory_sorties():
 def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
 
     def add_memory(stat_dic,years):
+        
+        '''Add years from 2014 to 2021to the dic `stat_year`. These statistics are stored
+        in the package and can only be modified by the package owner by pulling a request at
+        https://github.com/Bertin-fap/ctgutils.
+        '''
+        
         memory = _read_memory_sorties()
 
 
@@ -341,6 +347,9 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
             years.append(str(year))
 
     def fill_stat_year(year:str):
+    
+        '''Builds the dict stat_year using the EXCEL file 
+        '''
 
         sejour_info = get_sejour_info(ctg_path,year)
 
@@ -388,6 +397,7 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
 
     today = datetime.datetime.now()
     years_new = [str(year) for year in range(2022,today.year+1)]
+    
     for year in years_new:
         stat_dic[year] = fill_stat_year(year)
 
@@ -438,7 +448,10 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
         plot_synthese_sortie(stat_dic)
         
 
-def stat_cout_sejour(year,ctg_path):
+def stat_cout_sejour(year:str,ctg_path:pathlib.WindowsPath)->None:
+
+    '''Builds the histogramm of the number m of members whose have take part to n sejours.
+    '''
 
     def plot_histo(col_name,idx_plot,labelx,labely,unit):
         df.hist(column=col_name,
@@ -496,9 +509,9 @@ def stat_cout_sejour(year,ctg_path):
     with open(file,'w', encoding='utf-8') as f:
         f.write(comment)
 
-def plot_synthese_sortie(stat_dic):
+def plot_synthese_sortie(stat_dic:dict):
     
-    '''
+    '''Synthetic plot of the events
     '''
     df = pd.DataFrame.from_dict(stat_dic).T
     df.columns = ['PARTICIPATION_SEJOURS',
@@ -536,16 +549,21 @@ def plot_synthese_sortie(stat_dic):
     
     ax1.plot(df.index[0:6],df['total'][0:6],'-+y',label='total')
     ax1.plot(df.index[8:12],df['total'][8:],'-+y')
-    ax2.legend(loc='upper right', bbox_to_anchor=(1.5, 1))
-    ax1.legend(loc='upper right', bbox_to_anchor=(1.5, 1))
-
-    ax1.set_ylim(1250, 3000)  # outliers only
-    ax2.set_ylim(50, 650)  # most of the data
-    # hide the spines between ax and ax2
+    ax2.legend(loc='upper right', bbox_to_anchor=(1.25, 1))
+    ax1.legend(loc='upper right', bbox_to_anchor=(1.25, 1))
+    plt.xticks(rotation=90)
+    ax1.tick_params(axis='both', which='major', labelsize=16)
+    ax2.tick_params(axis='both', which='major', labelsize=16)
+   
+    ax1.set_ylabel('# participations', fontsize=16)
+    ax2.set_ylabel('# participations', fontsize=16)
+    
+    ax1.set_ylim(1250, 3000)
+    ax2.set_ylim(50, 650)
+    
     ax1.spines.bottom.set_visible(False)
     ax2.spines.top.set_visible(False)
     ax1.xaxis.tick_top()
-    #ax1.tick_params(labeltop=False)  # don't put tick labels at the top
     ax2.xaxis.tick_bottom()
     
     d = .5  # proportion of vertical to horizontal extent of the slanted line
