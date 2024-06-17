@@ -51,7 +51,7 @@ class AppMain(tk.Tk):
         # Setting the icon
         file = Path(__file__).parent.parent / Path('ctgfuncts') 
         file = file / Path('CTG_RefFiles') / Path( 'logoctg4.ico') 
-        master.iconbitmap( )
+        master.iconbitmap( file)
 
         # Setting title window
         master.title(gg.APPLICATION_WINDOW_TITLE)

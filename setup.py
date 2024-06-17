@@ -13,7 +13,7 @@ install_requires = open(path.join(this_directory, 'requirements.txt'), encoding=
 # This setup is suitable for "python setup.py develop".
 
 setup(name='ctg',
-      version='1.0.0',
+      version='1.1.0',
       description='A toolbox for ctg statistics analysis',
       long_description=long_description,
       long_description_content_type='text/markdown',
