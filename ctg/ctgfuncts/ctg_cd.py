@@ -1,6 +1,7 @@
 __all__ = ['plot_cd_evolution']
 
 # Standard library imports
+import collections
 import pathlib
 from pathlib import Path
 
@@ -9,7 +10,7 @@ import xlrd
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plot_cd_evolution(ctg_path:pathlib.WindowsPath)->pd.DataFrame:
+def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
     def getBGColor(book, sheet, row, col):
         xfx = sheet.cell_xf_index(row, col)
         xf = book.xf_list[xfx]
@@ -22,7 +23,7 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath)->pd.DataFrame:
             for i in range(len(y)):
                 plt.text(x[i],i,z[i],size=15)
     
-    file = ctg_path / Path(r'REUNION AG\DATA\Commité directeur\Membre_CD_2014-2024.xls')
+    file = ctg_path / Path(r'DATA\COMMITE DIRECTEUR\Membre_CD_2014-2024.xls')
     workbook = xlrd.open_workbook(file, formatting_info=True)
     worksheet = workbook.sheet_by_name('CD')
     dic_col = {}
@@ -36,6 +37,9 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath)->pd.DataFrame:
     ncolumn = worksheet.ncols
     cd = {}
     cdt = {}
+    
+
+    cd_dict = collections.defaultdict(lambda: collections.defaultdict(list))
     for col in range(1,ncolumn):
         year = int(worksheet.cell_value(0,col))
         n = 0
@@ -49,10 +53,15 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath)->pd.DataFrame:
                 n += 1
             if dic_col[c] == 'nouveau':
                 entrant += 1
+                cd_dict[year]['nouveau'].append(worksheet.cell_value(row,0))
             if dic_col[c] == 'demissionnaire':
                dem += 1
+               cd_dict[year]['demissionnaire'].append(worksheet.cell_value(row,0))
             if dic_col[c] =='reelu':
                reelu += 1
+               cd_dict[year]['reelu'].append(worksheet.cell_value(row,0))
+            if dic_col[c] == 'reconduit':
+                cd_dict[year]['reconduit'].append(worksheet.cell_value(row,0))
         cd[year] = [n,entrant,dem]
         cdt[year] = [n,entrant,dem,reelu]
     for year, val in cd.items():
@@ -70,21 +79,22 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath)->pd.DataFrame:
     df["# démissions"] = -df["# démissions"]
     df["# sortants"] = -df["# sortants"]
     df["# membres année précédente"] = df["# membres"] - df["# entrants"]
-    ax =  df.plot(
-                  y=["# membres année précédente","# entrants","# démissions","# sortants"],
-                  kind='barh',
-                  stacked=True,color=['g','y','r','m'],
-                  xlim=[-7,25],
-                  figsize=(5,10))
-    
-    ax.grid('on', which='minor', axis='x' )
-    ax.grid('on', which='major', axis='x' )
-    ax.legend(bbox_to_anchor=(1.0,1.0))
-    ax.tick_params(axis='x', rotation=0, labelsize=20)
-    ax.tick_params(axis='y', labelsize=20)
-    df['fac renouvellement'] = 50*(df["# entrants"]-df["# sortants"]-df["# démissions"]) /df["# membres"]
-    addlabels(df["# membres"].tolist(),
-               df.index.tolist(),
-               [f' {round(x,1)} %' for x in df['fac renouvellement'].tolist()])
+    if plot:
+        ax =  df.plot(
+                      y=["# membres année précédente","# entrants","# démissions","# sortants"],
+                      kind='barh',
+                      stacked=True,color=['g','y','r','m'],
+                      xlim=[-7,25],
+                      figsize=(5,10))
+        
+        ax.grid('on', which='minor', axis='x' )
+        ax.grid('on', which='major', axis='x' )
+        ax.legend(bbox_to_anchor=(1.0,1.0))
+        ax.tick_params(axis='x', rotation=0, labelsize=20)
+        ax.tick_params(axis='y', labelsize=20)
+        df['fac renouvellement'] = 50*(df["# entrants"]-df["# sortants"]-df["# démissions"]) /df["# membres"]
+        addlabels(df["# membres"].tolist(),
+                   df.index.tolist(),
+                   [f' {round(x,1)} %' for x in df['fac renouvellement'].tolist()])
 
-    return dg
+    return dg,cd_dict
