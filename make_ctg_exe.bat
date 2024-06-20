@@ -24,10 +24,10 @@ set PATH=%VIRTUAL_ENV%\Scripts;%PATH%
 
 
 :: builds the CTG_METER python program
-set "PGM=%TEMP%\CTG_exe\CTG_METER.py"#
-echo from ctg.ctggui import AppMain > %PGM%
-echo app_main = AppMain() >> %PGM%
-echo app_main.mainloop() >> %PGM%
+::set "PGM=%TEMP%\CTG_exe\CTG_METER.py"#
+::echo from ctg.ctggui import AppMain > %PGM%
+::echo app_main = AppMain() >> %PGM%
+::echo app_main.mainloop() >> %PGM%
 
 :: install packages
 ::pip install git+https://github.com/Bertin-fap/ctg.git#egg=ctg
@@ -41,6 +41,7 @@ pip install auto-py-to-exe
 
 set "ICON=%TEMP%/CTG_exe/venv/Lib/site-packages/ctg/ctgfuncts/CTG_RefFiles/logoctg4.ico"
 set "DATA=%TEMP%/CTG_exe/venv/Lib/site-packages/ctg;ctg/"
+set "PGM=%TEMP%/CTG_exe/venv/Lib/site-packages/ctg/ctgfuncts/CTG_RefFiles/CTG_METER.py"
 
 :: make the executable 
 pyinstaller --noconfirm --onefile --console^

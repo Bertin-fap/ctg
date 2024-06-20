@@ -16,6 +16,7 @@ ctg/ctgfuncts/ctg_plot.py
 ctg/ctgfuncts/ctg_synthese.py
 ctg/ctgfuncts/ctg_tools.py
 ctg/ctgfuncts/CTG_RefFiles/CTG.yaml
+ctg/ctgfuncts/CTG_RefFiles/CTG_METER.py
 ctg/ctgfuncts/CTG_RefFiles/CTG_correction.yaml
 ctg/ctgfuncts/CTG_RefFiles/help.txt
 ctg/ctgfuncts/CTG_RefFiles/help_config.txt
