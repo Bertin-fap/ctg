@@ -15,19 +15,7 @@ python -m venv venv
 
 :: activate the venv
 set VIRTUAL_ENV=%TEMP%\CTG_exe\venv
-if defined _OLD_VIRTUAL_PYTHONHOME set PYTHONHOME=%_OLD_VIRTUAL_PYTHONHOME%
-if defined PYTHONHOME set _OLD_VIRTUAL_PYTHONHOME=%PYTHONHOME%
-set PYTHONHOME=
-if defined _OLD_VIRTUAL_PATH set PATH=%_OLD_VIRTUAL_PATH%
-if not defined _OLD_VIRTUAL_PATH set _OLD_VIRTUAL_PATH=%PATH%
-set PATH=%VIRTUAL_ENV%\Scripts;%PATH%
-
-
-:: builds the CTG_METER python program
-::set "PGM=%TEMP%\CTG_exe\CTG_METER.py"#
-::echo from ctg.ctggui import AppMain > %PGM%
-::echo app_main = AppMain() >> %PGM%
-::echo app_main.mainloop() >> %PGM%
+call %VIRTUAL_ENV%\Scripts\activate.bat
 
 :: install packages
 ::pip install git+https://github.com/Bertin-fap/ctg.git#egg=ctg

@@ -13,6 +13,7 @@ import pandas as pd
 
 # Internal imports
 from ctg.ctgfuncts.ctg_tools import built_lat_long
+from ctg.ctgfuncts.ctg_cd import plot_cd_evolution
 
 class EffectifCtg():
 
@@ -114,6 +115,13 @@ class EffectifCtg():
         stat.append(f'Nombre de rebonds : {len(self.rebond)}')
         rebond_str = '; '.join(self.rebond)
         stat.append(f'Membres rebonds : {rebond_str}')
+        stat.append(' ')
+        
+        stat.append("Composition du commité directeur")
+        dg,cd_dict =  plot_cd_evolution(self.ctg_path,plot=False)
+        dict_cd_year = cd_dict[int(self.year)]
+        for typ in dict_cd_year.keys():
+            stat.append(f'{typ} : {"; ".join(dict_cd_year[typ])}')
         stat.append(' ')
 
         if 'Pratique VAE' in self.effectif.columns:

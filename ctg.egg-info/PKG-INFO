@@ -7,7 +7,6 @@ Author: f. bertin
 Author-email: francois.bertin7@wanadoo.fr
 License: MIT
 Keywords: ffvelo,ctg
-Platform: UNKNOWN
 Classifier: Development Status :: 4 - Beta
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3.9
@@ -16,6 +15,13 @@ Classifier: Operating System :: OS Independent
 Classifier: Intended Audience :: Science/Research
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Requires-Dist: openpyxl
+Requires-Dist: pandas
+Requires-Dist: plotly
+Requires-Dist: folium
+Requires-Dist: matplotlib
+Requires-Dist: screeninfo
+Requires-Dist: pyyaml
+Requires-Dist: pandastable
 
 # ctgutils
-

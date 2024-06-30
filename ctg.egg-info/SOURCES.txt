@@ -23,6 +23,7 @@ ctg/ctgfuncts/CTG_RefFiles/help_config.txt
 ctg/ctgfuncts/CTG_RefFiles/logo_ffvelo.ico
 ctg/ctgfuncts/CTG_RefFiles/logoctg4.PNG
 ctg/ctgfuncts/CTG_RefFiles/logoctg4.ico
+ctg/ctgfuncts/CTG_RefFiles/logoctg4__.ico
 ctg/ctgfuncts/CTG_RefFiles/memory_sorties.yml
 ctg/ctgfuncts/CTG_RefFiles/memory_sorties_old.yml
 ctg/ctgfuncts/CTG_RefFiles/villes_france_premium.csv

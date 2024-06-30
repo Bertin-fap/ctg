@@ -69,7 +69,8 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath,mode: Optional[bool]
     def func(pct, allvalues):
         absolute = round(pct / 100.*np.sum(allvalues),0)
         #return "{:.1f}%\n({:d})".format(pct, absolute)
-        return  f"{int(round(absolute,1))}\n{round(pct,1)} %"
+        label = f"{int(round(absolute,1))}\n{round(pct,1)} %"
+        return label
     
     file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
@@ -452,15 +453,18 @@ def stat_cout_sejour(year:str,ctg_path:pathlib.WindowsPath)->None:
 
     '''Builds the histogramm of the number m of members whose have take part to n sejours.
     '''
-
-    def plot_histo(col_name,idx_plot,labelx,labely,unit):
+    FONT_SIZE = 12
+    LABEL_SIZE = 10
+    def plot_histo(col_name,idx_col,idx_row,labelx,labely,unit,bins):
         df.hist(column=col_name,
-                bins=80,
-                ax=ax[idx_plot],
-                xlabelsize=15,
-                ylabelsize=15,)
-        ax[idx_plot].set_xlabel(labelx,fontsize=18)
-        ax[idx_plot].set_ylabel(labely,fontsize=18)
+                bins=bins,
+                ax=ax[idx_col,idx_row],
+                xlabelsize=LABEL_SIZE,
+                ylabelsize=LABEL_SIZE,
+                color='aqua',)
+        ax[idx_col,idx_row].set_xlabel(labelx,fontsize=FONT_SIZE)
+        ax[idx_col,idx_row].set_ylabel(labely,fontsize=FONT_SIZE)
+        ax[idx_col,idx_row].set_title('',fontsize=FONT_SIZE)
 
         col_without_zero = [x for x in df[col_name] if x>0]
 
@@ -476,7 +480,20 @@ def stat_cout_sejour(year:str,ctg_path:pathlib.WindowsPath)->None:
                        f'     Mediane : {med_col_without_zero} {unit}\n\n')
         return long_string
 
-    fig, ax = plt.subplots(nrows=1, ncols=2, sharey=True)
+    def lorentz(col,num_col,num_row,labely):
+        arr = np.array([x for x in df[col].tolist() if x>-1])
+        arr.sort()
+        
+        X_lorenz = 100*arr.cumsum() / arr.sum()
+        
+        ax[num_col,num_row].scatter(np.arange(X_lorenz.size), X_lorenz, 
+                   marker='o', color='darkgreen', s=10)
+        ax[num_col,num_row].set_ylabel(labely,fontsize=FONT_SIZE)
+        ax[num_col,num_row].set_xlabel('# adhérents',fontsize=FONT_SIZE)
+        ax[num_col,num_row].grid(True)
+        
+
+    fig, ax = plt.subplots(nrows=2, ncols=2, sharey=False)
 
     file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') 
     file = file / Path('synthese_adherent.xlsx')
@@ -493,17 +510,24 @@ def stat_cout_sejour(year:str,ctg_path:pathlib.WindowsPath)->None:
     comment = f'Année : {year}\n'
     comment += f'Nombre de séjours : {nbr_sejours}\n'
     comment += 'Analyse du coût des séjours :\n'
-    comment_cout = plot_histo('COUT_SEJOUR',0, '€','# membres','€')
+    comment_cout = plot_histo('COUT_SEJOUR',0,0, 'Coût séjour €','# membres','€',[0,50,600,1200,1800,2400,3000])
     comment += f'     Cout annuel des séjours : {sum(info_df["Cout"].fillna(0))} €\n'
     comment += comment_cout
     comment += 'Analyse de la durée des séjours :\n'
     comment += f'     Durée totale des séjours : {nbr_jours} jours\n'
-    comment_jour = plot_histo('SEJOUR-JOUR',1,'# jours séjour','','jours')
+    comment_jour = plot_histo('SEJOUR-JOUR',0,1,'# jours séjour','','jours',[0,1,5,10,15,20,25,30,35,40])
     comment += comment_jour
-    messagebox.showinfo('info sejour', comment)
+
+    lorentz("COUT_SEJOUR",1,0,'%')
+    lorentz("SEJOUR-JOUR",1,1,'')
+    
     fig.suptitle(f'Année : {str(year)}',fontsize=20)
     plt.tight_layout()
+    
+    fig.suptitle(f'Année : {str(year)}',fontsize=16)
+    plt.tight_layout()
     plt.show()
+    
     file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('TEXT')
     file = file / Path('synthese_sejour.txt')
     with open(file,'w', encoding='utf-8') as f:
