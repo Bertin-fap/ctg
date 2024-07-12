@@ -20,35 +20,43 @@ class EffectifCtg():
 
     def __init__(self,year:str,ctg_path:pathlib.WindowsPath):
 
-        # get effectif of the year year
+        
         self.year = year
         self.ctg_path = ctg_path
+        
+        # get effectif of the year year
         path_root = self.ctg_path / Path(str(year))/ Path('DATA')
         df = pd.read_excel(path_root / Path(str(year)+'.xlsx'))
+        
+        # add column Age compute at the 30 september of year
+        df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
+                                                 format="%d/%m/%Y")
+        df['Age']  = df['Date de naissance'].apply(lambda x :
+                                                  (pd.Timestamp(int(year), 9, 30)-x).days/365)
+        # add column distance from Grenoble
+        dh = built_lat_long(df)
+        df['distance'] = df.apply(lambda row: self.distance_(row, dh),axis=1)
+        
+        self.effectif = df      # effectif year
 
         # get effectif of the year year-1
         year_1 = int(year)-1
         path_root = self.ctg_path / Path(str(year_1))/ Path('DATA')
-        df_1 = pd.read_excel(path_root /Path(str(year_1)+'.xlsx'))
-
-        # add column Age compute at the 30 september of year
-        df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
-                                                 format="%d/%m/%Y")
-        df_1['Date de naissance'] = pd.to_datetime(df_1['Date de naissance'],
-                                                   format="%d/%m/%Y")
-
-        df['Age']  = df['Date de naissance'].apply(lambda x :
-                                                   (pd.Timestamp(int(year), 9, 30)-x).days/365)
-        df_1['Age']  = df_1['Date de naissance'].apply(lambda x :
-                                                      (pd.Timestamp(int(year), 9, 30)-x).days/365)
-
-        # add column distance from Grenoble
-        dh = built_lat_long(df)
-
-        df['distance'] = df.apply(lambda row: self.distance_(row, dh),axis=1)
-
-        self.effectif = df      # effectif year
-        self.effectif_1 = df_1  # effectif year moins un
+        path_file = path_root /Path(str(year_1)+'.xlsx')
+        if path_file.is_file():
+            df_1 = pd.read_excel(path_file)
+            
+            
+            df_1['Date de naissance'] = pd.to_datetime(df_1['Date de naissance'],
+                                                       format="%d/%m/%Y")
+            
+            
+            df_1['Age']  = df_1['Date de naissance'].apply(lambda x :
+                                                          (pd.Timestamp(int(year), 9, 30)-x).days/365)
+            
+            self.effectif_1 = df_1  # effectif year moins un
+        else:
+            self.effectif_1 = None
 
         # deal with nouveaux entrants and sortants
         (self.moy_age_entrants,
@@ -60,6 +68,7 @@ class EffectifCtg():
         self.cotisation_licence,self.cotisation_totale, self.cotisation_ctg = self.cotisation()
 
         self.membres_sympathisants, self.nbr_membres_sympathisants = self.membres_sympathisants()
+        self.effectif_tot = self.add_membres_sympathisants()
 
     @staticmethod
     def distance_(row,dh):
@@ -98,30 +107,33 @@ class EffectifCtg():
         stat.append(' ')
 
 
-        stat.append(f'Nombre de membres sympatisant : {self.nbr_membres_sympathisants}')
+        stat.append(f'Nombre de membres sympatisants : {self.nbr_membres_sympathisants}')
         stat.append(f'Membres sympatisants : {self.membres_sympathisants}')
         stat.append(' ')
-
-        long_str = (f"{self.nbr_nouveaux_membres} "
-                     "nouveaux membres de moyenne d'âge de "
-                    f"{round(self.moy_age_entrants,1)} ans")
-        stat.append(long_str)
-        stat.append(f"Liste des nouveaux :\n{self.nouveaux_membres_noms}")
-        long_str = (f"{self.nbr_sortants} "
-                     "licences non renouvellées de moyenne d'âge de "
-                    f"{round(self.moy_age_sortants,1)} ans")
-        stat.append(long_str)
-        stat.append(f"Liste des sortants :\n{self.sortants_noms}")
-        stat.append(f'Nombre de rebonds : {len(self.rebond)}')
-        rebond_str = '; '.join(self.rebond)
-        stat.append(f'Membres rebonds : {rebond_str}')
+        
+        if self.nbr_nouveaux_membres is not None:
+            long_str = (f"{self.nbr_nouveaux_membres} "
+                         "nouveaux membres de moyenne d'âge de "
+                        f"{round(self.moy_age_entrants,1)} ans")
+            stat.append(long_str)
+            stat.append(f"Liste des nouveaux :\n{self.nouveaux_membres_noms}")
+            long_str = (f"{self.nbr_sortants} "
+                         "licences non renouvellées de moyenne d'âge de "
+                        f"{round(self.moy_age_sortants,1)} ans")
+            stat.append(long_str)
+            stat.append(f"Liste des sortants :\n{self.sortants_noms}")
+        
+        if self.rebond:
+            stat.append(f'Nombre de rebonds : {len(self.rebond)}')
+            rebond_str = ' ; '.join(self.rebond)
+            stat.append(f'Membres rebonds : {rebond_str}')
         stat.append(' ')
         
         stat.append("Composition du commité directeur")
         dg,cd_dict =  plot_cd_evolution(self.ctg_path,plot=False)
         dict_cd_year = cd_dict[int(self.year)]
         for typ in dict_cd_year.keys():
-            stat.append(f'{typ} : {"; ".join(dict_cd_year[typ])}')
+            stat.append(f'{typ} : {" ; ".join(dict_cd_year[typ])}')
         stat.append(' ')
 
         if 'Pratique VAE' in self.effectif.columns:
@@ -168,20 +180,24 @@ class EffectifCtg():
         
 
     def nouveaux_entrants(self):
-        nouveaux_membres_id = set(self.effectif["N° Licencié"])- \
-                                set(self.effectif_1["N° Licencié"])
-
-
-        dg = self.effectif[self.effectif['N° Licencié'].isin(nouveaux_membres_id)]
-        moy_age_entrants = dg['Age'].mean() + 1
-
-        nouveaux_membres_list = []
-        for idx,row in dg.iterrows():
-            nouveaux_membres_list.append(f"{row['Prénom'][0]}. {row['Nom']}")
-        nouveaux_membres_noms = '; '.join(nouveaux_membres_list)
-        nbr_nouveaux_membres = len(dg)
-
-        return moy_age_entrants, nbr_nouveaux_membres, nouveaux_membres_noms
+    
+        if self.effectif_1 is not None:
+            nouveaux_membres_id = set(self.effectif["N° Licencié"])- \
+                                    set(self.effectif_1["N° Licencié"])
+            
+            
+            dg = self.effectif[self.effectif['N° Licencié'].isin(nouveaux_membres_id)]
+            moy_age_entrants = dg['Age'].mean() + 1
+            
+            nouveaux_membres_list = []
+            for idx,row in dg.iterrows():
+                nouveaux_membres_list.append(f"{row['Prénom'][0]}. {row['Nom']}")
+            nouveaux_membres_noms = ' ; '.join(nouveaux_membres_list)
+            nbr_nouveaux_membres = len(dg)
+            
+            return moy_age_entrants, nbr_nouveaux_membres, nouveaux_membres_noms
+        else:
+            return None, None, None
 
     def membres_sympathisants(self):
         path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
@@ -191,7 +207,7 @@ class EffectifCtg():
             membres_sympathisants_df['Nom_Prenom'] = membres_sympathisants_df['Nom']+\
                                                      " "+\
                                                      membres_sympathisants_df['Prénom'].str[0]
-            membres_sympathisants = ', '.join(membres_sympathisants_df['Nom_Prenom'].tolist())
+            membres_sympathisants = ' , '.join(membres_sympathisants_df['Nom_Prenom'].tolist())
             nbr_membres_sympathisants = len(membres_sympathisants_df)
         else:
             nbr_membres_sympathisants = 'inconnu'
@@ -199,20 +215,52 @@ class EffectifCtg():
 
         return membres_sympathisants, nbr_membres_sympathisants
 
+    def add_membres_sympathisants(self):
+        path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
+        file_path = path_root / Path('membres_sympatisants.xlsx')
+        
+        if os.path.isfile(file_path):
+            path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
+            correction_effectif = pd.read_excel(path_root/Path('correction_effectif.xlsx'))
+            correction_effectif.index = correction_effectif['N° Licencié']
+            
+            membres_sympathisants_df = pd.read_excel(file_path)
+            membres_sympathisants_df = membres_sympathisants_df[['N° Licencié',
+                                                                 'Nom',
+                                                                 'Prénom',
+                                                                 'Sexe',
+                                                                 'Pratique VAE']]
+
+            for num_licence in correction_effectif.index:
+                idx = self.effectif[self.effectif["N° Licencié"]==num_licence].index
+                self.effectif.loc[idx,'Prénom'] = correction_effectif.loc[num_licence,'Prénom']
+                self.effectif.loc[idx,'Nom'] = correction_effectif.loc[num_licence,'Nom']
+            
+            self.effectif = pd.concat([self.effectif, membres_sympathisants_df], ignore_index=True, axis=0)
+            self.effectif['Prénom'] = self.effectif['Prénom'].str.replace(' ','-')
+
+            return self.effectif
+            
+        else:
+            return self.effectif
+
     def sortants(self):
-        sortants_id = set(self.effectif_1["N° Licencié"]) - set(self.effectif["N° Licencié"])
-
-        dg = self.effectif_1[self.effectif_1['N° Licencié'].isin(sortants_id)]
-
-        moy_age_sortants = dg['Age'].mean() + 1
-
-        sortants_list = []
-        for idx,row in dg.iterrows():
-            sortants_list.append(f"{row['Prénom'][0]}. {row['Nom']}")
-        sortants_noms = '; '.join(sortants_list)
-        nbr_sortants = len(dg)
-
-        return moy_age_sortants, nbr_sortants, sortants_noms
+        if self.effectif_1 is not None:
+            sortants_id = set(self.effectif_1["N° Licencié"]) - set(self.effectif["N° Licencié"])
+            
+            dg = self.effectif_1[self.effectif_1['N° Licencié'].isin(sortants_id)]
+            
+            moy_age_sortants = dg['Age'].mean() + 1
+            
+            sortants_list = []
+            for idx,row in dg.iterrows():
+                sortants_list.append(f"{row['Prénom'][0]}. {row['Nom']}")
+            sortants_noms = ' ; '.join(sortants_list)
+            nbr_sortants = len(dg)
+            
+            return moy_age_sortants, nbr_sortants, sortants_noms
+        else:
+            return None, None, None
 
     def cotisation(self):
         cotisation_licence = 'inconnue'
@@ -235,9 +283,10 @@ class EffectifCtg():
 
         year_int = int(self.year)
         list_rebond = []
-        for idx,row in df.iterrows():
-            if (row[year_int-2] == 0 and row[year_int-1] == year_int-1 and row[year_int] ==0):
-                list_rebond.append('-'.join([row['Nom'],row['Prénom']]))
+        if year_int-2 in df.columns:
+            for idx,row in df.iterrows():
+                if (row[year_int-2] == 0 and row[year_int-1] == year_int-1 and row[year_int] ==0):
+                    list_rebond.append('-'.join([row['Nom'],row['Prénom']]))
         return list_rebond
 
     def plot_histo(self):

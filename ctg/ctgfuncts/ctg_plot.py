@@ -19,8 +19,7 @@ import pandas as pd
 import pandas
 
 # Internal imports
-from ctg.ctgfuncts.ctg_effectif import read_effectif
-from ctg.ctgfuncts.ctg_effectif import read_effectif_corrected
+from ctg.ctgfuncts.ctg_classes import EffectifCtg
 from ctg.ctgfuncts.ctg_effectif import count_participation
 from ctg.ctgfuncts.ctg_tools import parse_date
 from ctg.ctgfuncts.ctg_tools import built_lat_long
@@ -149,7 +148,9 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
         date = currentDateTime.date()
         year = date.strftime("%Y")
 
-    df_effectif = read_effectif_corrected(ctg_path,year)
+    eff = EffectifCtg(year,ctg_path)
+    df_effectif = eff.effectif_tot
+    
     df_total = df_total[df_total['sejour']!='aucun' ] # skip the member with no event
     df_total['sejour'] = df_total['sejour'].apply(lambda s:
                                            parse_date(s,str(year)).strftime('%y-%m-%d'))

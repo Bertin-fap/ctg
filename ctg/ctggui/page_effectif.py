@@ -123,7 +123,7 @@ def create_effectif_analysis(self, master, page_name, institute, ctg_path):
     etape_underline    = -1
 
     ### Choix de l'année
-    list_years = last_available_years(ctg_path,year_number=2000)[1:]
+    list_years = last_available_years(ctg_path,year_number=2000)   #[1:]
     default_year = list_years[-1]
     variable_years = tk.StringVar(self)
     variable_years.set(default_year)

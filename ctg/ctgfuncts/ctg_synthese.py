@@ -27,7 +27,6 @@ import yaml
 # Internal imports
 from ctg.ctggui.guiglobals import ACTIVITE_LIST
 from ctg.ctgfuncts.ctg_classes import EffectifCtg
-from ctg.ctgfuncts.ctg_effectif import read_effectif_corrected
 from ctg.ctgfuncts.ctg_tools import get_sejour_info
 from ctg.ctgfuncts.ctg_tools import get_cout_total
 from ctg.ctgfuncts.ctg_tools import normalize_tag
@@ -49,8 +48,6 @@ def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
                            for file in files])
 
     df_total = pd.concat(list_df, ignore_index=True)
-
-    df_effectif = read_effectif_corrected(ctg_path)
 
     df_total['Pratique VAE'].fillna('Non',inplace=True)
 

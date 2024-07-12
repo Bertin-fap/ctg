@@ -5,8 +5,6 @@ __all__ = ['anciennete_au_club',
            'evolution_effectif',
            'inscrit_sejour',
            'plot_rebond',
-           'read_effectif',
-           'read_effectif_corrected',
            'statistique_vae',
            ]
 
@@ -29,44 +27,7 @@ import pandas as pd
 # Internal imports
 from ctg.ctgfuncts.ctg_tools import built_lat_long
 from ctg.ctgfuncts.ctg_tools import read_sortie_csv
-
-def read_effectif_corrected(ctg_path:pathlib.WindowsPath, year=None):
-
-    '''Lecture du fichier effectif et correction
-    '''
-
-
-    if year is not None:
-        file_effectif = str(year) + '.xlsx'
-    else:
-        currentDateTime = datetime.datetime.now()
-        date = currentDateTime.date()
-        year = date.strftime("%Y")
-        file_effectif = year + '.xlsx'
-
-    effectif_df = pd.read_excel(ctg_path / Path(str(year))/Path('DATA')/ Path(file_effectif))
-    effectif_df = effectif_df[['N° Licencié', 'Nom','Prénom','Sexe','Pratique VAE']]
-    path_root = ctg_path / Path(str(year))/Path('DATA')
-    correction_effectif = pd.read_excel(path_root/Path('correction_effectif.xlsx'))
-    correction_effectif.index = correction_effectif['N° Licencié']
-    root_path = ctg_path / Path(str(year))/Path('DATA')
-    membres_sympathisants_df = pd.read_excel(root_path/Path('membres_sympatisants.xlsx'))
-    membres_sympathisants_df = membres_sympathisants_df[['N° Licencié',
-                                                         'Nom',
-                                                         'Prénom',
-                                                         'Sexe',
-                                                         'Pratique VAE']]
-
-    for num_licence in correction_effectif.index:
-        idx = effectif_df[effectif_df["N° Licencié"]==num_licence].index
-        effectif_df.loc[idx,'Prénom'] = correction_effectif.loc[num_licence,'Prénom']
-        effectif_df.loc[idx,'Nom'] = correction_effectif.loc[num_licence,'Nom']
-
-    effectif_df = pd.concat([effectif_df, membres_sympathisants_df], ignore_index=True, axis=0)
-    effectif_df['Prénom1'] = effectif_df['Prénom'].str[0]
-    effectif_df['Prénom'] = effectif_df['Prénom'].str.replace(' ','-')
-
-    return effectif_df
+from ctg.ctgfuncts.ctg_classes import EffectifCtg
 
 def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,df_effectif):
 
@@ -80,40 +41,38 @@ def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,df_effectif):
     convert_to_ascii = lambda text : nfc(text). \
                                      encode('ascii', 'ignore'). \
                                      decode('utf-8').\
-                                     strip()
+                                     strip()                                 
 
     # read the csv file of the event with full path file
-    df = read_sortie_csv(file)
+    sortie_df = read_sortie_csv(file)
 
     # extract the event type (SEJOUR, SORTIES DU JEUDI,...)
     sejour = os.path.splitext(os.path.basename(file))[0]
 
     col = ['N° Licencié','Nom','Prénom','Sexe','Pratique VAE','sejour',]
-    if df is not None: # file a valid non-empty file
-        dg = df[0].str.upper()
+    if sortie_df is not None: # file a valid non-empty file
+        dg = sortie_df[0].str.upper() # keep only the first column wich contain the name surname 
         dg = dg.dropna()
         dg = dg.str.replace(' \t?','',regex=False)
         dg = dg.str.replace('.',' ',regex=False)
         dg = dg.str.replace(' - ','-',regex=False)
         dg = dg.apply(convert_to_ascii)
         dg = dg.drop_duplicates()
-        dg = dg.str.split('\s{1,10}')
-
-        dg = dg.apply(lambda row : row+[None] if len(row)==2 else row)
-
+        dg = dg.str.split('\s{1,10}') # split name surname
+        dg = dg.apply(lambda row : row+[None] if len(row)==2 else row[0:3]) #Name3 should be none for a correct spelling
         split_dg = pd.DataFrame(dg.tolist(), columns=['name1', 'name2', 'name3'])
-
+    
         dic = {}
         for idx,row in split_dg.iterrows():
             if (row.name3 is None) and ( row.name2 is not None):
-                if len(row.name1)==1:
+                if len(row.name1)==1: # The name/surname is given by its initial
                     dr = df_effectif.query('Prénom1==@row.name1[0] and Nom==@row.name2')
                     if len(dr):
                         dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
                     else:
                         print(f'no match,{row.name2},{row.name1} dans {sejour}')
                         no_match.append((file,row.name2,row.name1))
-                elif len(row.name2)==1:
+                elif len(row.name2)==1: # The surname/name is given by its initial
                     dr = df_effectif.query('Prénom1==@row.name2 and Nom==@row.name1')
                     if len(dr):
                          dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
@@ -131,14 +90,15 @@ def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,df_effectif):
                                f'nom/prénom: {row.name1}'))
                         no_match.append((file,row.name2,row.name1))
             else:
+                no_match.append((file,*row.tolist()))
                 print((f'WARNING: incorrect name {row.name1}, '
                        f'{row.name2}, {row.name3} in sejour {sejour}'))
-
-        dg = pd.DataFrame.from_dict(dic).T
-        if len(dg) !=0:
-            dg.columns = col
-        else:
-            dg = pd.DataFrame([[None,None,None,None,None,sejour,]], columns=col)
+                       
+            dg = pd.DataFrame.from_dict(dic).T
+            if len(dg) !=0:
+                dg.columns = col
+            else:
+                dg = pd.DataFrame([[None,None,None,None,None,sejour,]], columns=col)
 
     else:
         dg = pd.DataFrame([[None,None,None,None,None,sejour,]], columns=col)
@@ -165,7 +125,16 @@ def count_participation(path:pathlib.WindowsPath,
     type_sortie_default = os.path.basename(path)
     type_sortie_default = type_sortie_default.split('.', 1)[0]
 
-    df_effectif = read_effectif_corrected(ctg_path,year)
+    # reads the total effectif CTGistes + membres sympatisants
+    eff = EffectifCtg(year,ctg_path)
+    df_effectif = eff.effectif_tot
+    df_effectif['sejour'] = None
+    df_effectif = df_effectif[['N° Licencié',
+                               'Nom',
+                               'Prénom',
+                               'Sexe',
+                               'Pratique VAE',
+                               'sejour']]
 
     no_match = []
     df_list = []
@@ -251,35 +220,6 @@ def count_participation(path:pathlib.WindowsPath,
 
     return(no_match,df_total,index)
 
-
-def read_effectif(ctg_path:pathlib.WindowsPath,year:str)->pd.DataFrame:
-
-    def distance_(row)->float:
-
-        phi1, lon1 = dh.query("Ville=='GRENOBLE'")[['long','lat']].values.flatten()
-        phi1, lon1 = radians(phi1), radians(lon1)
-        phi2, lon2 = radians(row['long']), radians(row['lat'])
-        rad = 6371
-        dist = 2 * rad * asin(
-                                sqrt(
-                                    sin((phi2 - phi1) / 2) ** 2
-                                    + cos(phi1) * cos(phi2) * sin((lon2 - lon1) / 2) ** 2
-                                ))
-        return np.round(dist,1)
-
-
-    df = pd.read_excel(ctg_path / Path(str(year))/ Path('DATA')/Path(str(year)+'.xlsx'))
-
-    df['Date de naissance'] = pd.to_datetime(df['Date de naissance'], format="%d/%m/%Y")
-
-    df['Age']  = df['Date de naissance'].apply(lambda x : (pd.Timestamp(year, 9, 30)-x).days/365)
-
-    dh = built_lat_long(df)
-
-    df['distance'] = df.apply(distance_,axis=1)
-
-    return df
-
 def evolution_effectif(ctg_path:pathlib.WindowsPath):
 
     # Evolution des effectifs hommes et femme de 2016 à 2022
@@ -304,7 +244,8 @@ def evolution_effectif(ctg_path:pathlib.WindowsPath):
                 nbr_total.append(141)
                 ratio_femmes.append(str(29)+'%')
             else:
-                df_effectif = read_effectif(ctg_path,year)
+                eff = EffectifCtg(year,ctg_path)
+                df_effectif = eff.effectif
                 nh = len(df_effectif.query('Sexe =="M"'))
                 nbr_hommes.append(nh)
                 nf = len(df_effectif.query('Sexe =="F"'))

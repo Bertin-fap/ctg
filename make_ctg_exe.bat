@@ -2,6 +2,8 @@
 
 @echo off
 Title create CTG.exe
+::color 17
+
 mkdir %TEMP%\CTG_exe
 @echo ceate %TEMP%\CTG_exe successfully
 
@@ -11,7 +13,6 @@ for /F "tokens=* USEBACKQ" %%F in (`python --version`) do (set var=%%F)
 echo create a virtual environment with %var%
 cd %TEMP%\CTG_exe
 python -m venv venv
-
 
 :: activate the venv
 set VIRTUAL_ENV=%TEMP%\CTG_exe\venv

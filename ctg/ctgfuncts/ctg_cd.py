@@ -29,9 +29,9 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
     dic_col = {}
     dic_col [(255, 128, 128)]='reconduit'
     dic_col [(204, 204, 255)]= 'nouveau'
-    dic_col [(192, 192, 192)]= 'non_present'
-    dic_col [(0, 255, 0) ]= 'reelu'
-    dic_col [(255, 0, 0)]= 'demissionnaire'
+    dic_col [(192, 192, 192)]= 'non_présent'
+    dic_col [(0, 255, 0) ]= 'réélu'
+    dic_col [(255, 0, 0)]= 'démissionnaire'
     
     nrow = worksheet.nrows
     ncolumn = worksheet.ncols
@@ -49,17 +49,17 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
         for row in range(1,nrow):
             c = getBGColor(workbook, worksheet,  row,col)
     
-            if dic_col[c] in ['reconduit','nouveau','reelu']:
+            if dic_col[c] in ['reconduit','nouveau','réélu']:
                 n += 1
             if dic_col[c] == 'nouveau':
                 entrant += 1
                 cd_dict[year]['nouveau'].append(worksheet.cell_value(row,0))
-            if dic_col[c] == 'demissionnaire':
+            if dic_col[c] == 'démissionnaire':
                dem += 1
-               cd_dict[year]['demissionnaire'].append(worksheet.cell_value(row,0))
-            if dic_col[c] =='reelu':
+               cd_dict[year]['démissionnaire'].append(worksheet.cell_value(row,0))
+            if dic_col[c] =='réélu':
                reelu += 1
-               cd_dict[year]['reelu'].append(worksheet.cell_value(row,0))
+               cd_dict[year]['réélu'].append(worksheet.cell_value(row,0))
             if dic_col[c] == 'reconduit':
                 cd_dict[year]['reconduit'].append(worksheet.cell_value(row,0))
         cd[year] = [n,entrant,dem]
@@ -75,7 +75,7 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
     dg = pd.DataFrame(cdt)
     dg = dg.T
     df.columns = ["# membres","# entrants","# démissions","# sortants"]
-    dg.columns = ["# membres","# nouvaux entrants","# démissions","# reelus"]
+    dg.columns = ["# membres","# nouvaux entrants","# démissions","# réélus"]
     df["# démissions"] = -df["# démissions"]
     df["# sortants"] = -df["# sortants"]
     df["# membres année précédente"] = df["# membres"] - df["# entrants"]
