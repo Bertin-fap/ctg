@@ -96,7 +96,7 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
  
         output_path = set_outpath()       
         shutil.copyfile(input_file, output_path)
-        message = f'Le fichier {input_file} a eté copié dans: \n{output_path}'
+        
         
         # Update info_randos.xlsx
         info_randos_file = ctg_path / Path(year) / Path('DATA/info_randos.xlsx')
@@ -118,7 +118,9 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
                                              })
         info_randos_df = pd.concat([info_randos_df, add_indo_df], axis=0)
         info_randos_df.to_excel(info_randos_file,index=False)
-        tkinter.messagebox.showinfo('message','Copie dans la DB\nmise à jour du fichier infos_randos.xlsx')
+        message = f'1- Le fichier :\n {input_file} a eté copié dans: \n{output_path}\n\n'
+        message = message + f'2- Mise à jour du fichier :\n {info_randos_file}'
+        tkinter.messagebox.showinfo('message',message)
     
     def verif_nom():
     
@@ -139,12 +141,16 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
         no_match = []
         inscrit_sejour(file_path,no_match,df_effectif)
         if no_match:
+            message = "Les noms suivants n'ont pas été reconnus:\n"
+            message = message + "\n".join(['-  '+tup[1]+' '+tup[2] for tup in no_match])
+            tkinter.messagebox.showwarning("Noms non reconnus", message)
             modified_time_init = get_modified_time(file_path)
             launch_bloc_note(file_path)
             while True:
                  modified_time = get_modified_time(file_path)
                  if modified_time != modified_time_init : break
-        print("ok")
+        else:
+            tkinter.messagebox.showwarning("Noms non reconnus", "Fichier correct")
 
     variable_year = tk.StringVar(self)
     variable_year.set('')
