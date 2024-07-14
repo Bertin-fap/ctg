@@ -28,8 +28,10 @@ from ctg.ctggui.pagesynthese import create_synthese_analysis
 from ctg.ctggui.pagetendance import create_tendance_analysis
 from ctg.ctggui.pagesejour import create_sejour_analysis
 from ctg.ctggui.pagedivers import create_divers_analysis
+from ctg.ctggui.pagenewactivity import get_new_activity
 from ctg.ctggui.guitools import place_bellow
 from ctg.ctggui.guitools import show_frame
+
 
 class AppMain(tk.Tk):
     '''
@@ -76,6 +78,7 @@ class AppMain(tk.Tk):
                           PageSynthese,
                           PageEffectif,
                           PageSorties,
+                          PageEntrerSortie,
                          )
         AppMain.pages_ordered_list = [x.__name__ for x in AppMain.pages][::-1]
 
@@ -447,6 +450,22 @@ class AuthorCopyright(tk.Frame):
                             y = eff_version_y_px,
                             anchor = "sw")
 
+class PageEntrerSortie(tk.Frame):
+    '''
+    '''
+    def __init__(self, container_frame, master, container_button, institute, ctg_path):
+
+        super().__init__(container_frame)
+
+        page_name  = self.__class__.__name__
+
+        get_new_activity(self, master, page_name, institute, ctg_path)
+
+        setcontrollerbutton = SetControllerButton(master, container_button,page_name)
+
+        settitleclass = SetTitltleClass(self,page_name,institute)
+
+        quitapp = QuitApp(self, master, container_button)
 
 class PageEffectif(tk.Frame):
     '''

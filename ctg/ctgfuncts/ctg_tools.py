@@ -3,6 +3,7 @@ __all__ = ['built_lat_long',
            'get_cout_total',
            'get_info_randos2df',
            'get_sejour_info',
+           'launch_bloc_note',
            'normalize_tag',
            'parse_date',
            'read_sortie_csv',
@@ -15,6 +16,7 @@ from collections import Counter
 from collections import namedtuple
 from datetime import datetime
 from pathlib import Path
+from subprocess import *
 
 # 3rd party imports
 import pandas as pd
@@ -199,3 +201,14 @@ def normalize_tag(tag:str,year:str)->str:
         return f'{year[2:4]}-{tag[0:5]}'
     else:
         raise Exception(f'erreur in normaize_tag: unknown tag format {tag}')
+
+def launch_bloc_note(file_name):
+
+    '''
+    Launch the launch_pgm.bat batch file located in ~/.bat directory
+    '''
+   
+    path_bloc_note = Path(__file__).parent / Path(r"CTG_RefFiles/boc_note.bat")
+    p = Popen([path_bloc_note, file_name], stdout=PIPE, stderr=PIPE)
+    output, errors = p.communicate()
+    p.wait() # wait for process to terminate

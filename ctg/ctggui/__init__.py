@@ -10,3 +10,5 @@ from ctg.ctggui.pagesorties import *
 from ctg.ctggui.pagesynthese import *
 from ctg.ctggui.pagetendance import *
 from ctg.ctggui.pagedivers import *
+from ctg.ctggui.pagenewactivity import *
+
