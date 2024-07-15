@@ -53,6 +53,7 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
         type_sortie = variable_sortie.get()
         year = variable_year.get()
         prefixe = variable_prefixe.get()
+        jour_semaine = variable_jour_semaine.get()
         
         if type_sortie == 'SEJOUR':
            output_path = ctg_path / Path(year) / Path('SEJOUR/CSV') / Path(prefixe+' sejour.csv')
@@ -64,17 +65,20 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
            output_path = output_path / Path(prefixe+' vtt.csv')
         elif type_sortie == "SORTIE HIVER":
            output_path = ctg_path / Path(year) / Path('SORTIES HIVER/CSV')
-           output_path = output_path / Path(prefixe+' vtt.csv')
+           output_path = output_path / Path(year+'_'+prefixe+' hiver.csv')
         elif type_sortie == 'SORTIE CLUB' or type_sortie == 'RANDONNEE':
             if jour_semaine== 'DIMANCHE':
+                file = ' sortie du dimanche.csv' if type_sortie== 'SORTIE CLUB' else ' randonnee.csv'
                 output_path = ctg_path / Path(year) / Path('SORTIES DU DIMANCHE/CSV') 
-                output_path = output_path / Path(prefixe+' sortie du dimanche.csv')
+                output_path = output_path / Path(prefixe+file)
             elif jour_semaine== 'SAMEDI':
+                file = ' sortie du samedi.csv' if type_sortie== 'SORTIE CLUB' else ' randonnee.csv'
                 output_path = ctg_path / Path(year) / Path('SORTIES DU SAMEDI/CSV')
-                output_path = output_path / Path(prefixe+' sortie du samedi.csv')
+                output_path = output_path / Path(prefixe+file)
             else:
+                file = ' sortie du jeudi.csv' if type_sortie== 'SORTIE CLUB' else ' randonnee.csv'
                 output_path = ctg_path / Path(year) / Path('SORTIES DU JEUDI/CSV')
-                output_path = output_path / Path(prefixe+' sortie du jeudi.csv')
+                output_path = output_path / Path(prefixe+file)
         return output_path
         
     def put_file_in_db():
@@ -118,7 +122,7 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
                                              })
         info_randos_df = pd.concat([info_randos_df, add_indo_df], axis=0)
         info_randos_df.to_excel(info_randos_file,index=False)
-        message = f'1- Le fichier :\n {input_file} a eté copié dans: \n{output_path}\n\n'
+        message = f'1- Le fichier :\n {input_file}\na eté copié dans: \n{output_path}\n\n'
         message = message + f'2- Mise à jour du fichier :\n {info_randos_file}'
         tkinter.messagebox.showinfo('message',message)
     
@@ -143,6 +147,7 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
         if no_match:
             message = "Les noms suivants n'ont pas été reconnus:\n"
             message = message + "\n".join(['-  '+tup[1]+' '+tup[2] for tup in no_match])
+            message = message + "\n\n1- Un blocnote va s'ouvrir.\n2- Faites vos corrections\n3- Enregistrer le fichier et fermer blocnote"
             tkinter.messagebox.showwarning("Noms non reconnus", message)
             modified_time_init = get_modified_time(file_path)
             launch_bloc_note(file_path)

@@ -370,7 +370,6 @@ class SetLaunchButton(tk.Tk):
             master.frames = {}
             for page in AppMain.pages:
                 page_name = page.__name__
-                print('----',page_name)
                 frame = page(container_frame, master, container_button, institute, ctg_path)
                 master.frames[page_name] = frame
 
@@ -619,6 +618,7 @@ class SetControllerButton(tk.Tk):
 
         page_num   = AppMain.pages_ordered_list.index(page_name)
         label_text = gg.PAGES_LABELS.setdefault(page_name, page_name)
+        label_button = gg.BUTTON_LABELS.setdefault(page_name, page_name)
 
         # Setting font size for page label and button
         eff_label_font_size  = font_size(gg.REF_LABEL_FONT_SIZE, AppMain.width_sf_min)
@@ -627,7 +627,7 @@ class SetControllerButton(tk.Tk):
         button_font = tkFont.Font(family = gg.FONT_NAME,
                                   size   = eff_button_font_size)
         button = tk.Button(container_button,
-                           text = label_text,
+                           text = label_button,
                            font = button_font,
                            command = lambda: show_frame(master, page_name))  ####FB
         button.grid(row = 0, column = page_num)

@@ -1,6 +1,7 @@
 __all__ = ['ACTIVITE_LIST',
            'ADD_SPACE_MM',
            'BM_GUI_DISP',
+           'BUTTON_LABELS',
            'BUTT_AGE_ANALYSIS',
            'BUTT_EFFECTIF_ANALYSIS',
            'BUTT_EVOLUTION_EFFECTIF',
@@ -254,16 +255,25 @@ REF_SORTIES_BUT_POS_Y_MM   = 50      #26
 REF_CHECK_BOXES_SEP_SPACE  = 25      #25
 
 # Setting label for each gui page
-PAGES_LABELS = {'page_effectif': "Analyse des effectifs",
-                'pagesorties' : "Analyse des sorties",
-                'pagesynthese': "Synthèse des sorties et effectifs",
-                'pagetendance': "Analyse de l'évolution temporelle des pratiques ",
-                'pagetendance': "Analyse tendancielle",
-                'pagedivers'  : "Autres analyses",
+PAGES_LABELS = {'PageEffectif': "Analyse des effectifs",
+                'PageSorties' : "Analyse des sorties",
+                'PageSynthese': "Synthèse des sorties et effectifs",
+                'PageEntrerSortie': "Entrer une activité dans la BD",
+                'PageTendance': "Analyse tendancielle",
+                'PageDivers'  : "Autres analyses",
                 'PageHelp'    : "Aide",
+                'PageSejours'    : "Analyse des séjours",
                }
 
-
+BUTTON_LABELS = {'PageEffectif'   : "Effectif",
+                'PageSorties'     : "Sorties",
+                'PageSynthese'    : "Synthèse",
+                'PageEntrerSortie': "BD",
+                'PageTendance'    : "Tendance",
+                'PageDivers'      : "Divers",
+                'PageHelp'        : "Aide",
+                'PageSejours'     : "Séjours",
+               }
 ########################## Cover Page (BiblioMeter launching Page) ##########################
 
 # Titre de la page

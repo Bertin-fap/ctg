@@ -1,2 +1,2 @@
 set filename=%1
-start "%SystemRoot%\Notepad.exe" %filename%
+start "%SystemRoot%\notepad.exe" %filename%
