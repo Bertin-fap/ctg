@@ -8,3 +8,4 @@ from ctg.ctgfuncts.ctg_synthese import *
 from ctg.ctgfuncts.ctg_classes import *
 from ctg.ctgfuncts.ctg_tools import *
 from ctg.ctgfuncts.ctg_cd import *
+from ctg.excel2word import *

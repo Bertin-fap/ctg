@@ -1,5 +1,6 @@
 :: Bertin F. 26-05-2024
 
+::curl https://github.com/sindresorhus/recycle-bin/releases/download/v2.0.0/recycle-bin.exe
 @echo off
 Title create CTG.exe
 ::color 17
@@ -42,13 +43,8 @@ pyinstaller --noconfirm --onefile --console^
 set "BUILD=%TEMP%\CTG_exe\build"
 rmdir /s /q %BUILD%
 
-:: rename the directory dist to aaaa_mm_jj BiblioMeter 
-:: adapted from http://stackoverflow.com/a/10945887/1810071
-for /f "skip=1" %%x in ('wmic os get localdatetime') do if not defined MyDate set MyDate=%%x
-for /f %%x in ('wmic path win32_localtime get /format:list ^| findstr "="') do set %%x
-set fmonth=00%Month%
-set fday=00%Day%
-set dirname="%Year%-%fmonth:~-2%-%fday:~-2% CTG_Meter"
+for /f "tokens=1-3 delims=/ " %%a in ('date /T') do (set mydate=%%c-%%b-%%a)
+set dirname="%mydate% CTG_Meter"
 rename dist %dirname%
  
 set "new_file_name=%dirname%.exe"
