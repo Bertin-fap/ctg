@@ -1,4 +1,6 @@
-__all_  = ['create_word_from_template']
+__all_  = ['create_word_from_template',
+           'combine_all_docx',
+           'make_sejour_docx']
 
 from pathlib import Path
 import functools
@@ -11,6 +13,9 @@ import shutil
 import jinja2
 from docx.shared import Cm, Emu, Inches, Mm
 from docxtpl import DocxTemplate, InlineImage
+from docxcompose.composer import Composer
+from docx import Document as Document_compose
+
 from openpyxl import load_workbook
 
 import ctg.ctggui as ctgg
@@ -111,9 +116,27 @@ def get_courriel(df, nom, prenom):
     email = dg["E-mail"].tolist()[0]
 
     return email
-    
 
-def add_tel_mail(place_holder_dict):
+def add_acompte(place_holder_dict):
+    
+    
+    acompte_montant = [v for k,v in place_holder_dict.items() if 'acompte_' in k ]
+    date_encaissement = [v for k,v in place_holder_dict.items() if 'date_encaissement_' in k ]
+    frameworks = []
+    idx = 1
+    for n, p in zip(acompte_montant,date_encaissement):
+        if len(n.strip())>0:
+            frameworks.append(dict(name=f'Acompte_{idx}',
+                                   acompte_montant=n,
+                                   date_encaissement=p))
+            idx += 1
+
+    context ={'acompte': frameworks}
+    place_holder_dict = place_holder_dict | context
+    
+    return place_holder_dict    
+
+def add_tel_mail(place_holder_dict,ctg_path):
 
     """
     creates the placeholder phone number courriel from the CGT list of the
@@ -167,9 +190,43 @@ def create_word_from_template(template_path,
     place_holder_dict["placeholder_2"]= placeholder_2
     
     # adds name tel emil 
-    place_holder_dict = add_tel_mail(place_holder_dict)
+    place_holder_dict = add_tel_mail(place_holder_dict,ctg_path)
+    place_holder_dict = add_acompte(place_holder_dict)
     
     doc.render(place_holder_dict)
     doc.save(output_path)
     os.remove(images_path_list[0])
     os.remove(images_path_list[1])
+    
+def combine_all_docx(filename_master,files_list):
+    number_of_sections=len(files_list)
+    master = Document_compose(filename_master)
+    composer = Composer(master)
+    for i in range(0, number_of_sections):
+        doc_temp = Document_compose(files_list[i])
+        composer.append(doc_temp)
+    combine_file = r'c:\users\franc\CTG\CALENDRIER\combined_file.docx'
+    composer.save(combine_file)
+    
+def make_sejour_docx(template_path_docx,
+                     current_dir,
+                     ctg_list_membres,
+                     sejour_template_dir,
+                     filename_master):
+    list_docx = []
+    for sejour in sejour_template_dir.iterdir():
+        doc_name = Path(sejour).stem+'.docx'
+        output_path = current_dir / doc_name
+        file_sejour = sejour.name
+        if not file_sejour.startswith("~$"):
+            list_docx.append(output_path)
+            ctg.create_word_from_template(template_path_docx,
+                                           sejour,
+                                           current_dir,
+                                           output_path,
+                                           ctg_list_membres)
+        else:
+            print ('filter',file_sejour)
+        
+    ctg.combine_all_docx(filename_master,list_docx)
+    
