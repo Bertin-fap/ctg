@@ -52,6 +52,14 @@ ctgfuncts.ctg\_tools module
    :undoc-members:
    :show-inheritance:
 
+ctgfuncts.excel2word module
+---------------------------
+
+.. automodule:: ctgfuncts.excel2word
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

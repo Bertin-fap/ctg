@@ -9,3 +9,4 @@ from ctg.ctgfuncts.ctg_classes import *
 from ctg.ctgfuncts.ctg_tools import *
 from ctg.ctgfuncts.ctg_cd import *
 from ctg.ctgfuncts.excel2word import *
+from ctg.ctgfuncts.make_calendar import *
