@@ -96,5 +96,7 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
         addlabels(df["# membres"].tolist(),
                    df.index.tolist(),
                    [f' {round(x,1)} %' for x in df['fac renouvellement'].tolist()])
+        plt.tight_layout()
+        plt.show()
 
     return dg,cd_dict

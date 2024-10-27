@@ -236,10 +236,10 @@ class EffectifCtg():
                 self.effectif.loc[idx,'Prénom'] = correction_effectif.loc[num_licence,'Prénom']
                 self.effectif.loc[idx,'Nom'] = correction_effectif.loc[num_licence,'Nom']
             
-            self.effectif = pd.concat([self.effectif, membres_sympathisants_df], ignore_index=True, axis=0)
-            self.effectif['Prénom'] = self.effectif['Prénom'].str.replace(' ','-')
+            effectif_tot = pd.concat([self.effectif, membres_sympathisants_df], ignore_index=True, axis=0)
+            effectif_tot['Prénom'] = self.effectif['Prénom'].str.replace(' ','-')
 
-            return self.effectif
+            return effectif_tot
             
         else:
             return self.effectif
@@ -291,7 +291,7 @@ class EffectifCtg():
 
     def plot_histo(self):
 
-        fig, ax = plt.subplots(figsize=(10,10))
+        fig, ax = plt.subplots(figsize=(10,4))
         self.effectif['age group'] = pd.cut(self.effectif.Age, bins=range(0, 95, 5), right=False)
         result_hist = self.effectif.groupby('Sexe')['age group']
         result_hist = result_hist.value_counts().unstack().T

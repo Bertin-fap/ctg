@@ -28,6 +28,7 @@ from ctg.ctggui.pagesynthese import create_synthese_analysis
 from ctg.ctggui.pagetendance import create_tendance_analysis
 from ctg.ctggui.pagesejour import create_sejour_analysis
 from ctg.ctggui.pagedivers import create_divers_analysis
+from ctg.ctggui.pagecalendar import create_calendar
 from ctg.ctggui.pagenewactivity import get_new_activity
 from ctg.ctggui.guitools import place_bellow
 from ctg.ctggui.guitools import show_frame
@@ -71,14 +72,16 @@ class AppMain(tk.Tk):
         master.resizable(False, False)
 
         # Defining pages classes and pages list
-        AppMain.pages = ( PageHelp,
-                          PageDivers,
-                          PageSejours,
-                          PageTendance,
-                          PageSynthese,
-                          PageEffectif,
-                          PageSorties,
-                          PageEntrerSortie,
+        AppMain.pages = ( 
+                         PageCalendar,
+                         PageHelp,
+                         PageDivers,
+                         PageSejours,
+                         PageTendance,
+                         PageSynthese,
+                         PageEffectif,
+                         PageSorties,
+                         PageEntrerSortie,
                          )
         AppMain.pages_ordered_list = [x.__name__ for x in AppMain.pages][::-1]
 
@@ -517,9 +520,6 @@ class PageSorties(tk.Frame):
 
         quitapp = QuitApp(self, master, container_button)
 
-
-
-
 class PageSynthese(tk.Frame):
     '''
     '''
@@ -570,6 +570,24 @@ class PageDivers(tk.Frame):
         settitleclass = SetTitltleClass(self,page_name,institute)
 
         quitapp = QuitApp(self, master, container_button)
+        
+class PageCalendar(tk.Frame):
+    '''
+    '''
+    def __init__(self, container_frame, master, container_button, institute, ctg_path):
+
+        super().__init__(container_frame)
+
+        page_name  = self.__class__.__name__
+
+        create_calendar(self, master, page_name, institute, ctg_path)
+
+        setcontrollerbutton = SetControllerButton(master, container_button,page_name)
+
+        settitleclass = SetTitltleClass(self,page_name,institute)
+
+        quitapp = QuitApp(self, master, container_button)
+        
 
 class PageHelp(tk.Frame):
     '''

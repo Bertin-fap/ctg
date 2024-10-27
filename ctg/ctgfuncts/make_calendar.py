@@ -2,6 +2,9 @@ __all__ = ["make_calendar",]
 
 import calendar
 import datetime
+import os
+from pathlib import Path
+from tkinter import messagebox
 
 import pandas as pd
 
@@ -81,21 +84,23 @@ def month_idx(month):
 
     return index 
 
-def make_calendar(year):
+
+def make_calendar(year,ctg_path):
 
     """
     """
    
     month_list = ['Févier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre','Novembre']
     dic_jours_feries = {"Lundi de Pâques" :  calcul_date_lundi_pacques(year),
-                        "Fête du Travail" : (1,5, year),
-                        "Victoire 1945" : (8, 5, year),
-                        "Ascension" : calcul_date_ascension(year),
-                        "Lundi de Pentecôte" : calcul_date_lundi_pentecote(year),
-                        "Fête nationale" : (14, 7, year),
-                        "Assomption" : (15, 8, year),
-                        "Toussaint" : (1,11, year),
-                        "Armistice 1918" : (11, 11, year)}
+                      "Fête du Travail" : (1,5, year),
+                      "Victoire 1945" : (8, 5, year),
+                      "Ascension" : calcul_date_ascension(year),
+                      "Lundi de Pentecôte" : calcul_date_lundi_pentecote(year),
+                      "Fête nationale" : (14, 7, year),
+                      "Assomption" : (15, 8, year),
+                      "Toussaint" : (1,11, year),
+                      "Armistice 1918" : (11, 11, year),
+                      }
     
     dic = {}
     for index, month in enumerate(month_list):
@@ -115,6 +120,10 @@ def make_calendar(year):
         dic[month] = ["          "]*31
        
     df = pd.DataFrame.from_dict(dic)
-    file = r'c:\users\franc\Temp\calendrier_'+str(year)+'.xlsx'
+    
+    path_file = Path(ctg_path).parent.absolute() / "CALENDRIER" / str(year)
+    os.makedirs(path_file,exist_ok=True)
+    file = path_file / f"calendar_{str(year)}.xlsx"
+    
     df.to_excel(file,index=False)
-    print(f"Le fichier {file} a été crée")
+    messagebox.showinfo(title="Calendar", message=f"Le fichier {file} a été crée")

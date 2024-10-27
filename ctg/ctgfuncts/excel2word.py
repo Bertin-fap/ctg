@@ -11,6 +11,7 @@ import unicodedata
 import zipfile
 import datetime
 import shutil
+from tkinter import messagebox
 
 import jinja2
 import pandas as pd
@@ -106,7 +107,7 @@ def get_tel (df, nom, prenom):
     num_portable = dg["N° Portable"].tolist()[0]
     if num_portable==0:
         num_portable = str(int(dg["N° Tél"].tolist()[0])).zfill(10)
-
+    num_portable = ' '.join([num_portable[2*i:2*i+2] for i in range(int(len(num_portable)/2))])
     return num_portable
 
 def get_courriel(df, nom, prenom):
@@ -228,6 +229,7 @@ def combine_all_docx(ctg_path,files_list,year):
     file_name = f'CALENDRIER_{str(year)}.docx'
     combine_file = result_path / file_name
     composer.save(combine_file)
+    messagebox.showinfo(title="Calendar", message=f"Le fichier {combine_file} a été crée")
     
 def make_list_sejour(ctg_path,
                      year,
@@ -337,8 +339,8 @@ def make_sejour_docx(ctg_path,
         else:
             print ('filter',file_sejour)
 
-def make_calendrier(year):
-    ctg_path = Path.home() / 'CTG'
+def make_calendrier(year,ctg_path):
+    ctg_path = Path(ctg_path).parent 
     ctg_list_membres = ctg_path
     
     result_path = ctg_path / 'CALENDRIER' / str(year)
