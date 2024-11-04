@@ -105,19 +105,18 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath,mode: Optional[bool]
                               labels = sorties,
                               autopct = lambda pct: func(pct, data),
                               explode = explode,
-                              textprops={'fontsize': 18})
+                              textprops={'fontsize': 10})
                               
     title = f'{year} (Nombre total de participations: {sum(data)})'
-    plt.title(title, pad=50, fontsize=20)
+    plt.title(title, pad=20, fontsize=12)
 
-    _ = plt.setp(autotexts, **{'color':'k', 'weight':'bold', 'fontsize':14})
+    _ = plt.setp(autotexts, **{'color':'k', 'weight':'bold', 'fontsize':10})
 
     plt.tight_layout()
-    plt.show()
 
     fig_file = 'SORTIES_PIE.png'
     plt.savefig(ctg_path / Path(year) / Path('STATISTIQUES/IMAGE') / Path(fig_file),bbox_inches='tight')
-
+    plt.show()
 
 
 def synthese_adherent(year:str,ctg_path:pathlib.WindowsPath):

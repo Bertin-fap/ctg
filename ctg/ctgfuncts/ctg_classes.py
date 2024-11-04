@@ -237,7 +237,7 @@ class EffectifCtg():
                 self.effectif.loc[idx,'Nom'] = correction_effectif.loc[num_licence,'Nom']
             
             effectif_tot = pd.concat([self.effectif, membres_sympathisants_df], ignore_index=True, axis=0)
-            effectif_tot['Prénom'] = self.effectif['Prénom'].str.replace(' ','-')
+            effectif_tot['Prénom'] = effectif_tot['Prénom'].str.replace(' ','-')
 
             return effectif_tot
             

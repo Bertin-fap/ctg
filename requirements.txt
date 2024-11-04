@@ -6,3 +6,5 @@ matplotlib
 screeninfo
 pyyaml
 pandastable
+docx2pdf
+docx
