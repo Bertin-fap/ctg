@@ -29,6 +29,7 @@ from ctg.ctggui.pagetendance import create_tendance_analysis
 from ctg.ctggui.pagesejour import create_sejour_analysis
 from ctg.ctggui.pagedivers import create_divers_analysis
 from ctg.ctggui.pagecalendar import create_calendar
+from ctg.ctggui.pagelistes import create_listes
 from ctg.ctggui.pagenewactivity import get_new_activity
 from ctg.ctggui.guitools import place_bellow
 from ctg.ctggui.guitools import show_frame
@@ -72,7 +73,7 @@ class AppMain(tk.Tk):
         master.resizable(False, False)
 
         # Defining pages classes and pages list
-        AppMain.pages = ( 
+        AppMain.pages = ( PageListes,
                          PageCalendar,
                          PageHelp,
                          PageDivers,
@@ -587,7 +588,23 @@ class PageCalendar(tk.Frame):
         settitleclass = SetTitltleClass(self,page_name,institute)
 
         quitapp = QuitApp(self, master, container_button)
-        
+
+class PageListes(tk.Frame):
+    '''
+    '''
+    def __init__(self, container_frame, master, container_button, institute, ctg_path):
+
+        super().__init__(container_frame)
+
+        page_name  = self.__class__.__name__
+
+        create_listes(self, master, page_name, institute, ctg_path)
+
+        setcontrollerbutton = SetControllerButton(master, container_button,page_name)
+
+        settitleclass = SetTitltleClass(self,page_name,institute)
+
+        quitapp = QuitApp(self, master, container_button)       
 
 class PageHelp(tk.Frame):
     '''
