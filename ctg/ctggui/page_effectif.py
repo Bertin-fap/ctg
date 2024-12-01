@@ -46,16 +46,6 @@ def _launch_effectif_year_analysis(ctg_path,
     effectif.stat()
     effectif.plot_histo()
 
-    #info_title = "- Information -"
-    #info_text  = f"L'analyse des IFs a été effectuée pour l'année {year_select} "
-    #info_text += f"avec les valeurs {analysis_if}. "
-    #info_text += f"\n\nLes fichiers obtenus ont été créés dans le dossier :"
-    #info_text += f"\n\n''."
-    #info_text += f"\n\nLa base de donnée des indicateurs respective de l'Institut "
-    #info_text += f"et de chaque département a été mise à jour "
-    #info_text += f"avec les résultats de cette analyse et se trouve dans le dossier :"
-    #info_text += f"\n\n''."
-    #messagebox.showinfo(info_title, info_text)
 
 def _launch_effectif_analysis(ctg_path):
 
@@ -129,102 +119,101 @@ def create_effectif_analysis(self, master, page_name, institute, ctg_path):
     variable_years.set(default_year)
 
         # Création de l'option button des années
-    self.font_OptionButton_years = tkFont.Font(family = gg.FONT_NAME,
+    font_OptionButton_years = tkFont.Font(family = gg.FONT_NAME,
                                                size = eff_buttons_font_size)
-    self.OptionButton_years = tk.OptionMenu(self,
-                                            variable_years,
-                                            *list_years)
-    self.OptionButton_years.config(font = self.font_OptionButton_years)
+    OptionButton_years = tk.OptionMenu(self,
+                                    variable_years,
+                                    *list_years)
+    OptionButton_years.config(font = font_OptionButton_years)
 
         # Création du label
-    self.font_Label_years = tkFont.Font(family = gg.FONT_NAME,
-                                        size = eff_select_font_size,
-                                        weight = 'bold')
-    self.Label_years = tk.Label(self,
-                                text = gg.TEXT_YEAR_PI,
-                                font = self.font_Label_years)
-    self.Label_years.place(x = year_button_x_pos, y = year_button_y_pos)
+    font_Label_years = tkFont.Font(family = gg.FONT_NAME,
+                                size = eff_select_font_size,
+                                weight = 'bold')
+    Label_years = tk.Label(self,
+                         text = gg.TEXT_YEAR_PI,
+                         font = font_Label_years)
+    Label_years.place(x = year_button_x_pos, y = year_button_y_pos)
 
-    place_after(self.Label_years, self.OptionButton_years, dy = dy_year)
+    place_after(Label_years, OptionButton_years, dy = dy_year)
 
     ################## Analyse de l'effectif annuel
 
     ### Titre
     if_analysis_font = tkFont.Font(family = gg.FONT_NAME,
-                                   size = eff_etape_font_size,
-                                   weight = 'bold')
+                                size = eff_etape_font_size,
+                                weight = 'bold')
     if_analysis_label = tk.Label(self,
-                                 text = gg.BUTT_EFFECTIF_ANALYSIS,
-                                 justify = etape_label_format,
-                                 font = if_analysis_font,
-                                 underline = etape_underline)
+                              text = gg.BUTT_EFFECTIF_ANALYSIS,
+                              justify = etape_label_format,
+                              font = if_analysis_font,
+                              underline = etape_underline)
 
     if_analysis_label.place(x = if_analysis_x_pos_px,
-                            y = if_analysis_y_pos_px)
+                          y = if_analysis_y_pos_px)
 
     ### Explication
     help_label_font = tkFont.Font(family = gg.FONT_NAME,
-                                  size = eff_help_font_size)
+                               size = eff_help_font_size)
     help_label = tk.Label(self,
-                          text = gg.HELP_EFFECTIF,
-                          justify = "left",
-                          font = help_label_font)
-    place_bellow(if_analysis_label,
-                 help_label)
+                        text = gg.HELP_EFFECTIF,
+                        justify = "left",
+                        font = help_label_font)
+    place_bellow(if_analysis_label,help_label)
 
     ### Bouton pour lancer l'analyse de l'effecif annuel
     if_analysis_launch_font = tkFont.Font(family = gg.FONT_NAME,
-                                          size = eff_launch_font_size)
+                                       size = eff_launch_font_size)
     if_analysis_launch_button = tk.Button(self,
-                                          text = gg.BUTT_EFFECTIF_ANALYSIS,
-                                          font = if_analysis_launch_font,
-                                          command = lambda: _launch_effectif_year_analysis_try())
+                                       text = gg.BUTT_EFFECTIF_ANALYSIS,
+                                       font = if_analysis_launch_font,
+                                       command = lambda: _launch_effectif_year_analysis_try())
     place_bellow(help_label,
-                 if_analysis_launch_button,
-                 dx = launch_dx_px,
-                 dy = launch_dy_px)
+                if_analysis_launch_button,
+                dx = launch_dx_px,
+                dy = launch_dy_px)
 
     ################## Analyse de l'évolution de l'effectif
 
     ### Titre
     effectif_analysis_label_font = tkFont.Font(family = gg.FONT_NAME,
-                                        size = eff_etape_font_size,
-                                        weight = 'bold')
+                                           size = eff_etape_font_size,
+                                           weight = 'bold')
     effectif_analysis_label = tk.Label(self,
-                               text = gg.TEXT_EVOLUTION_EFFECTIF,
-                               justify = "left",
-                               font = effectif_analysis_label_font)
+                                    text = gg.TEXT_EVOLUTION_EFFECTIF,
+                                    justify = "left",
+                                    font = effectif_analysis_label_font)
     place_bellow(if_analysis_launch_button,
-                 effectif_analysis_label,
-                 dx = year_analysis_label_dx_px,
-                 dy = year_analysis_label_dy_px)
+                effectif_analysis_label,
+                dx = year_analysis_label_dx_px,
+                dy = year_analysis_label_dy_px)
 
     ### Explication de l'étape
     help_label_font = tkFont.Font(family = gg.FONT_NAME,
                                size = eff_help_font_size)
     help_label = tk.Label(self,
-                          text = gg.HELP_EVOLUTION_EFFECTIF,
-                          justify = "left",
-                          font = help_label_font)
+                        text = gg.HELP_EVOLUTION_EFFECTIF,
+                        justify = "left",
+                        font = help_label_font)
     place_bellow(effectif_analysis_label,
-                 help_label)
+                help_label)
 
     ### Bouton pour lancer l'analyse de l'effectif
     effectif_analysis_launch_font = tkFont.Font(family = gg.FONT_NAME,
-                                                size = eff_launch_font_size)
+                                            size = eff_launch_font_size)
     effectif_analysis_button = tk.Button(self,
-                                         text = gg.BUTT_EVOLUTION_EFFECTIF,
-                                         font = effectif_analysis_launch_font,
-                                         command = lambda: _launch_effectif_analysis(ctg_path))
+                                      text = gg.BUTT_EVOLUTION_EFFECTIF,
+                                      font = effectif_analysis_launch_font,
+                                      command = lambda: _launch_effectif_analysis(ctg_path))
     place_bellow(help_label,
                  effectif_analysis_button,
                  dx = launch_dx_px,
                  dy = launch_dy_px)
                  
     rebond_analysis_button = tk.Button(self,
-                                       text = gg.BUTT_REBOND,
-                                       font = effectif_analysis_launch_font,
-                                       command = lambda: _launch_rebond_analysis(ctg_path))
+                                    text = gg.BUTT_REBOND,
+                                    font = effectif_analysis_launch_font,
+                                    command = lambda: _launch_rebond_analysis(ctg_path))
     place_after( effectif_analysis_button,
                  rebond_analysis_button,
                  dx = 100,

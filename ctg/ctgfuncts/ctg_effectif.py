@@ -65,30 +65,30 @@ def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,df_effectif):
         dic = {}
         for idx,row in split_dg.iterrows():
             if (row.name3 is None) and ( row.name2 is not None):
-                if len(row.name1)==1: # The name/surname is given by its initial
-                    dr = df_effectif.query('Prénom1==@row.name1[0] and Nom==@row.name2')
-                    if len(dr):
-                        dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
-                    else:
-                        print(f'no match,{row.name2},{row.name1} dans {sejour}')
-                        no_match.append((file,row.name2,row.name1))
-                elif len(row.name2)==1: # The surname/name is given by its initial
-                    dr = df_effectif.query('Prénom1==@row.name2 and Nom==@row.name1')
-                    if len(dr):
-                         dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
-                    else:
-                        print(f'no match,{row.name2},{row.name1} dans {sejour}')
-                        no_match.append((file,row.name2,row.name1))
+                #if len(row.name1)==1: # The name/surname is given by its initial
+                #    dr = df_effectif.query('Prénom1==@row.name1[0] and Nom==@row.name2')
+                #    if len(dr):
+                #        dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
+                #    else:
+                #        print(f'no match,{row.name2},{row.name1} dans {sejour}')
+                #        no_match.append((file,row.name2,row.name1))
+                #elif len(row.name2)==1: # The surname/name is given by its initial
+                #    dr = df_effectif.query('Prénom1==@row.name2 and Nom==@row.name1')
+                #    if len(dr):
+                #         dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
+                #    else:
+                #        print(f'no match,{row.name2},{row.name1} dans {sejour}')
+                #        no_match.append((file,row.name2,row.name1))
+                #else:
+                if len((dr:=df_effectif.query('Prénom==@row.name2 and Nom==@row.name1'))):
+                     dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
+                elif len((dr:=df_effectif.query('Prénom==@row.name1 and Nom==@row.name2'))):
+                     dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
                 else:
-                    if len((dr:=df_effectif.query('Prénom==@row.name2 and Nom==@row.name1'))):
-                         dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
-                    elif len((dr:=df_effectif.query('Prénom==@row.name1 and Nom==@row.name2'))):
-                         dic[idx] =dr.iloc[0].tolist()[:-1]+[sejour]
-                    else:
-                        print((f'{sejour} : no match, '
-                               f'prénom/prénom:{row.name2}, '
-                               f'nom/prénom: {row.name1}'))
-                        no_match.append((file,row.name2,row.name1))
+                    print((f'{sejour} : no match, '
+                           f'prénom/prénom:{row.name2}, '
+                           f'nom/prénom: {row.name1}'))
+                    no_match.append((file,row.name2,row.name1))
             else:
                 no_match.append((file,*row.tolist()))
                 print((f'WARNING: incorrect name {row.name1}, '
