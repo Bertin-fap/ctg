@@ -77,17 +77,23 @@ def make_list_emargement(ctg_path,day,month,year):
     
     result_path = Path(ctg_path).parent / 'REUNION AG' /str(year) / f'_Assemblee Generale {year}' / 'organisation'
     output_file = result_path / f'liste_emargement_CTG_{year}.docx'
-    template_path_docx = Path(r"c:\users\franc\Temp")
+    template_path_docx = Path(__file__).parent.parent / 'ctgfuncts' / 'CTG_RefFiles'
     
-    frameworks = []
+    l = []
     for idx,row in df.iterrows():
-        frameworks.append(dict(id=row['Licence'],
-                             surname=row['Nom'],
-                             name=row['Prénom'],
-                             ddn=row['D de N'],
-                             s=row['S'] ))
+        l.append(dict(id=row['Licence'],
+                     surname=row['Nom'],
+                     name=row['Prénom'],
+                     ddn=row['D de N'],
+                     s=row['S'] ))
             
-    
+    long = 24
+    frameworks = []
+    for i_dep in range(0,len(l),long):
+        if i_dep+long < len(l):
+            frameworks.append([l[index] for index in range(i_dep,i_dep+long)])
+        else:
+            frameworks.append([l[index] for index in range(i_dep,len(l))])      
     context ={'year': year,
              'date_ag': date_ag,
              'quorum':quorum,
