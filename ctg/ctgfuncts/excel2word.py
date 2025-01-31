@@ -368,7 +368,8 @@ def make_calendrier(year,ctg_path):
     combine_all_docx(ctg_path,list_docx,year)
     
     for file in set(list_docx)-set(list_docx_to_keep):
-        os.remove(file)
+        #os.remove(file)
+        pass
 
 
     

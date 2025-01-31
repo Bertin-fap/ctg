@@ -1,6 +1,7 @@
 # Standard library imports
 import os
 import pathlib
+import re
 from datetime import datetime
 from pathlib import Path
 from math import asin, cos, radians, sin, sqrt
@@ -27,7 +28,13 @@ class EffectifCtg():
         # get effectif of the year year
         path_root = self.ctg_path / Path(str(year))/ Path('DATA')
         df = pd.read_excel(path_root / Path(str(year)+'.xlsx'))
-        
+        if 'Ville' not in df.columns:
+            df['Ville'] = df['Adresse'].apply(lambda row: re.split(r'\s+\d{5,6}\s+', row)[-1])
+        if 'Nom' not in df.columns:
+            df['Nom'] = df['Nom, Prénom'].apply(lambda row: re.split('\s+', row)[1])
+            df['Prénom'] = df['Nom, Prénom'].apply(lambda row: re.split('\s+', row)[2])
+            df['Sexe'] = df['Sexe'].apply(lambda row:row[0])
+            df = df.rename(columns={'N°': 'N° Licencié',})
         # add column Age compute at the 30 september of year
         df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
                                                  format="%d/%m/%Y")
@@ -38,6 +45,7 @@ class EffectifCtg():
         df['distance'] = df.apply(lambda row: self.distance_(row, dh),axis=1)
         
         self.effectif = df      # effectif year
+        self.effectif = self.correction_effectif()
 
         # get effectif of the year year-1
         year_1 = int(year)-1
@@ -151,20 +159,22 @@ class EffectifCtg():
                           f"{nbr_vae_homme} ({round(100*nbr_vae_homme/nbr_hommes)} %)")
             stat.append(long_string)
 
-        stat.append(' ')
-        da = self.effectif.groupby(['Discipline'])['Nom'].agg('count')
-        for pratique in da.index:
-            stat.append(f'{pratique} : {da[pratique]}')
-        stat.append(' ')
+            stat.append(' ')
+        if 'Discipline' in self.effectif.columns:            
+            da = self.effectif.groupby(['Discipline'])['Nom'].agg('count')
+            for pratique in da.index:
+                stat.append(f'{pratique} : {da[pratique]}')
+            stat.append(' ')
 
-        self.effectif = self.effectif.rename(columns={'\n\t\t\t\tAbonnements':'Abonnements'})
+        self.effectif = self.effectif.rename(columns={'\n\t\t\t\tAbonnements':'Abonnements',
+                                                  'Revue':'Abonnements'})
         nbr_abonnements = len(self.effectif.query('Abonnements == "Oui"'))
         long_string = (f"Nombre d'abonnés à la revue FFCT : {nbr_abonnements} "
                        f"({round(100*nbr_abonnements/nbr_membres)} %)")
         stat.append(long_string)
-        stat.append(f"\ncotisation licence ffct : {self.cotisation_licence} €")
-        stat.append(f"cotisation totale : {self.cotisation_totale} €")
-        stat.append(f"cotisation CTG : {self.cotisation_ctg} €")
+        #stat.append(f"\ncotisation licence ffct : {self.cotisation_licence} €")
+        #stat.append(f"cotisation totale : {self.cotisation_totale} €")
+        #stat.append(f"cotisation CTG : {self.cotisation_ctg} €")
         
         path_root = self.ctg_path / Path(str(self.year)) / Path('STATISTIQUES') / Path('TEXT')
         path_root = path_root / Path(f'info_effectif_{self.year}.txt')
@@ -214,27 +224,29 @@ class EffectifCtg():
             membres_sympathisants = 'inconnu'
 
         return membres_sympathisants, nbr_membres_sympathisants
+        
+    def correction_effectif(self):
+        path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
+        correction_effectif = pd.read_excel(path_root/Path('correction_effectif.xlsx'))
+        correction_effectif.index = correction_effectif['N° Licencié']
+        for num_licence in correction_effectif.index:
+            idx = self.effectif[self.effectif["N° Licencié"]==num_licence].index
+            self.effectif.loc[idx,'Prénom'] = correction_effectif.loc[num_licence,'Prénom']
+            self.effectif.loc[idx,'Nom'] = correction_effectif.loc[num_licence,'Nom']
+        return self.effectif
 
     def add_membres_sympathisants(self):
         path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
         file_path = path_root / Path('membres_sympatisants.xlsx')
         
         if os.path.isfile(file_path):
-            path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
-            correction_effectif = pd.read_excel(path_root/Path('correction_effectif.xlsx'))
-            correction_effectif.index = correction_effectif['N° Licencié']
-            
             membres_sympathisants_df = pd.read_excel(file_path)
             membres_sympathisants_df = membres_sympathisants_df[['N° Licencié',
                                                                  'Nom',
                                                                  'Prénom',
                                                                  'Sexe',
-                                                                 'Pratique VAE']]
-
-            for num_licence in correction_effectif.index:
-                idx = self.effectif[self.effectif["N° Licencié"]==num_licence].index
-                self.effectif.loc[idx,'Prénom'] = correction_effectif.loc[num_licence,'Prénom']
-                self.effectif.loc[idx,'Nom'] = correction_effectif.loc[num_licence,'Nom']
+                                                                 'Pratique VAE',
+                                                                 'E-mail']]
             
             effectif_tot = pd.concat([self.effectif, membres_sympathisants_df], ignore_index=True, axis=0)
             effectif_tot['Prénom'] = effectif_tot['Prénom'].str.replace(' ','-')
