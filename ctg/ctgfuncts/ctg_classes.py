@@ -30,11 +30,14 @@ class EffectifCtg():
         df = pd.read_excel(path_root / Path(str(year)+'.xlsx'))
         if 'Ville' not in df.columns:
             df['Ville'] = df['Adresse'].apply(lambda row: re.split(r'\s+\d{5,6}\s+', row)[-1])
-        if 'Nom' not in df.columns:
+        if 'Nom, Prénom'  in df.columns:
             df['Nom'] = df['Nom, Prénom'].apply(lambda row: re.split('\s+', row)[1])
             df['Prénom'] = df['Nom, Prénom'].apply(lambda row: re.split('\s+', row)[2])
             df['Sexe'] = df['Sexe'].apply(lambda row:row[0])
             df = df.rename(columns={'N°': 'N° Licencié',})
+            vae_df = pd.read_excel(path_root / "VAE.xlsx")
+            vae_dic = dict(zip(vae_df["N° Licencié"], (vae_df["Pratique VAE"])))
+            df["Pratique VAE"] = df["N° Licencié"].map(vae_dic)
         # add column Age compute at the 30 september of year
         df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
                                                  format="%d/%m/%Y")

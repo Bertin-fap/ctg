@@ -9,18 +9,23 @@ import pandas as pd
 from docxtpl import DocxTemplate
 from docx2pdf import convert
 
+from ctg.ctgfuncts.ctg_classes import EffectifCtg
+import ctg.ctgfuncts as ctg
+
+year = 2025
+
 def make_list_adherents(ctg_path):
 
     current_year = datetime.now().year
-    effectif_file = ctg_path / Path(str(current_year)) / 'DATA' /Path(str(current_year)+'.xlsx')
-    df = pd.read_excel(effectif_file,usecols= ['N° Licencié','Nom','Prénom','Date de naissance','Sexe'])
+    eff = ctg.EffectifCtg(current_year,ctg_path)
+    df = eff.effectif
     df = df.sort_values(by=['Nom','Prénom'])
     df.rename(columns={'N° Licencié': 'Licence',
                        'Nom': 'Nom',
                        'Prénom':'Prénom',
                        'Date de naissance':'D de N',
                        'Sexe':'S',}, inplace=True)
-    
+    df['D de N'] =  df['D de N'].astype(str)
     result_path = Path(ctg_path) / str(current_year) / 'DATA'
     output_file = result_path / f'liste_adherents_CTG_{current_year}.docx'
     template_path_docx = Path(r"c:\users\franc\Temp")
