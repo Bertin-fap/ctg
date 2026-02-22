@@ -231,7 +231,6 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
     info_df=info_df.query('type==@type_sejour_m')
     info_dic = dict(zip(info_df['date'],info_df['name_activite']))
     info_duree = dict(zip(info_df['date'],info_df['nbr_jours']))    
-    
     tag_list = [normalize_tag(x,year) for x in dg.index]
     labelx = [f'{k[3:8]} {info_dic[k].strip()}' for k in tag_list]
     duree_sejour = [info_duree[k] for k in tag_list]
@@ -321,7 +320,7 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
 
     def add_memory(stat_dic,years):
         
-        '''Add years from 2014 to 2021to the dic `stat_year`. These statistics are stored
+        '''Add years from 2014 to 2021 to the dic `stat_year`. These statistics are stored
         in the package and can only be modified by the package owner by pulling a request at
         https://github.com/Bertin-fap/ctgutils.
         '''
@@ -396,9 +395,17 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
     years_new = [str(year) for year in range(2022,today.year+1)]
     
     for year in years_new:
-        stat_dic[year] = fill_stat_year(year)
+        tup = fill_stat_year(year)
+        stat_dic[year] = tup
 
     years = years + years_new
+    
+    for year in years:
+        tup = stat_dic[year]
+        tot_club = tup.sortie_dimanche_club+tup.sortie_jeudi_club+tup.sortie_samedi_club
+        tot = tup.nbr_jours_participation_sejours+tot_club+tup.randonnee
+        if tot != 0:
+            print(year, 100*tot_club/tot )
 
 
     if type == 'nbr_jours_participation_sejours':
@@ -543,6 +550,7 @@ def plot_synthese_sortie(stat_dic:dict):
                   'RANDONNEES',         
                   'Nombre_sejours',     
                   'Nombre_jours_sejour']
+    df.to_excel(r'c:\users\franc\Temp\spy_activite.xlsx')
     df = df.drop(['SORTIES_HIVER','Nombre_sejours',],axis=1)
     df['total'] = (df['RANDONNEES']+
                    df['Nombre_sorties_sejour']+ 
@@ -556,8 +564,8 @@ def plot_synthese_sortie(stat_dic:dict):
     
     ax2.plot(df.index[0:6],df['RANDONNEES'][0:6], '-*b',label = 'RANDONNEES')
     ax2.plot(df.index[8:12],df['RANDONNEES'][8:],'-*b')
-    ax2.plot(df.index[0:6],df['PARTICIPATION_SEJOURS'][0:6],'r-',label='PARTICIPATION_SEJOURS',linewidth=3)
-    ax2.plot(df.index[8:12],df['PARTICIPATION_SEJOURS'][8:],'r-',linewidth=3)
+    #ax2.plot(df.index[0:6],df['PARTICIPATION_SEJOURS'][0:6],'r-',label='PARTICIPATION_SEJOURS',linewidth=3)
+    #ax2.plot(df.index[8:12],df['PARTICIPATION_SEJOURS'][8:],'r-',linewidth=3)
     ax1.plot(df.index[0:6],df['Nombre_sorties_sejour'][0:6],'r-',label='Nombre_sorties_sejour',linewidth=3)
     ax1.plot(df.index[8:12],df['Nombre_sorties_sejour'][8:],'r-',linewidth=3)    
     ax2.plot(df.index[0:6],df['SORTIES_CLUB_DIMANCHE'][0:6],'*-.k',label='SORTIES_CLUB_DIMANCHE')

@@ -5,6 +5,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 from math import asin, cos, radians, sin, sqrt
+from math import nan, isnan
 from tkinter import messagebox
 
 # Third party imports
@@ -19,15 +20,17 @@ from ctg.ctgfuncts.ctg_cd import plot_cd_evolution
 class EffectifCtg():
 
 
-    def __init__(self,year:str,ctg_path:pathlib.WindowsPath):
+    def __init__(self,year:str,ctg_path:pathlib.WindowsPath,rebond=True):
 
-        
         self.year = year
-        self.ctg_path = ctg_path
+        self.ctg_path = Path(ctg_path)
         
         # get effectif of the year year
-        path_root = self.ctg_path / Path(str(year))/ Path('DATA')
-        df = pd.read_excel(path_root / Path(str(year)+'.xlsx'))
+        path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+        path_root = path_effectif  / Path(str(self.year)) 
+        df = pd.read_excel(path_root / Path(str(self.year)+'.xlsx'))
+        if 'N° Licencié' not in df.columns:
+            df = df.rename(columns={'N°': 'N° Licencié'})
         if 'Ville' not in df.columns:
             df['Ville'] = df['Adresse'].apply(lambda row: re.split(r'\s+\d{5,6}\s+', row)[-1])
         if 'Nom, Prénom'  in df.columns:
@@ -52,10 +55,19 @@ class EffectifCtg():
 
         # get effectif of the year year-1
         year_1 = int(year)-1
-        path_root = self.ctg_path / Path(str(year_1))/ Path('DATA')
+        path_root = path_effectif / Path(str(year_1))
         path_file = path_root /Path(str(year_1)+'.xlsx')
         if path_file.is_file():
             df_1 = pd.read_excel(path_file)
+            
+            if 'Nom, Prénom'  in df_1.columns:
+                df_1['Nom'] = df_1['Nom, Prénom'].apply(lambda row: re.split('\s+', row)[1])
+                df_1['Prénom'] = df_1['Nom, Prénom'].apply(lambda row: re.split('\s+', row)[2])
+                df_1['Sexe'] = df_1['Sexe'].apply(lambda row:row[0])
+                df_1 = df_1.rename(columns={'N°': 'N° Licencié',})
+                vae_df = pd.read_excel(path_root / "VAE.xlsx")
+                vae_dic = dict(zip(vae_df["N° Licencié"], (vae_df["Pratique VAE"])))
+                df_1["Pratique VAE"] = df_1["N° Licencié"].map(vae_dic)
             
             
             df_1['Date de naissance'] = pd.to_datetime(df_1['Date de naissance'],
@@ -74,7 +86,7 @@ class EffectifCtg():
         self.nbr_nouveaux_membres,
         self.nouveaux_membres_noms) = self.nouveaux_entrants()
         self.moy_age_sortants, self.nbr_sortants, self.sortants_noms = self.sortants()
-        self.rebond = self.get_rebond()
+        if rebond : self.rebond = self.get_rebond()
 
         self.cotisation_licence,self.cotisation_totale, self.cotisation_ctg = self.cotisation()
 
@@ -146,6 +158,27 @@ class EffectifCtg():
         for typ in dict_cd_year.keys():
             stat.append(f'{typ} : {" ; ".join(dict_cd_year[typ])}')
         stat.append(' ')
+        
+        mask = self.effectif['Formation Educateur'].str.contains("Animateur Club") 
+        mask = [False  if isnan(x) else x for x in mask]
+        dg = self.effectif[mask]
+        stat.append('Animateur Club')
+        stat.append(', '.join(dg['Nom, Prénom'].tolist()))
+        stat.append(' ')
+
+        mask = self.effectif['Formation Educateur'].str.contains("Initiateur fédéral") 
+        mask = [False  if isnan(x) else x for x in mask]
+        dg = self.effectif[mask]
+        stat.append('Initiateur fédéral')
+        stat.append(', '.join(dg['Nom, Prénom'].tolist()))
+        stat.append(' ')
+
+        mask = self.effectif['Formation Educateur'].str.contains("Moniteur Fédéral") 
+        mask = [False  if isnan(x) else x for x in mask]
+        dg = self.effectif[mask]
+        stat.append('Moniteur Fédéral')
+        stat.append(', '.join(dg['Nom, Prénom'].tolist()))
+        stat.append(' ')
 
         if 'Pratique VAE' in self.effectif.columns:
             da = self.effectif.groupby(['Sexe','Pratique VAE'])['Nom'].agg(['count'])
@@ -171,7 +204,7 @@ class EffectifCtg():
 
         self.effectif = self.effectif.rename(columns={'\n\t\t\t\tAbonnements':'Abonnements',
                                                   'Revue':'Abonnements'})
-        nbr_abonnements = len(self.effectif.query('Abonnements == "Oui"'))
+        nbr_abonnements = self.effectif.Abonnements.str.contains(r'Revue').sum()
         long_string = (f"Nombre d'abonnés à la revue FFCT : {nbr_abonnements} "
                        f"({round(100*nbr_abonnements/nbr_membres)} %)")
         stat.append(long_string)
@@ -179,7 +212,8 @@ class EffectifCtg():
         #stat.append(f"cotisation totale : {self.cotisation_totale} €")
         #stat.append(f"cotisation CTG : {self.cotisation_ctg} €")
         
-        path_root = self.ctg_path / Path(str(self.year)) / Path('STATISTIQUES') / Path('TEXT')
+        path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+        path_root = path_effectif  / Path(str(self.year)) 
         path_root = path_root / Path(f'info_effectif_{self.year}.txt')
         with open(path_root,'w') as f:
             f.write('\n'.join(stat))
@@ -213,7 +247,8 @@ class EffectifCtg():
             return None, None, None
 
     def membres_sympathisants(self):
-        path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
+        path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+        path_root = path_effectif  / Path(str(self.year)) 
         file_path = path_root / Path('membres_sympatisants.xlsx')
         if os.path.isfile(file_path):
             membres_sympathisants_df = pd.read_excel(file_path)
@@ -229,7 +264,8 @@ class EffectifCtg():
         return membres_sympathisants, nbr_membres_sympathisants
         
     def correction_effectif(self):
-        path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
+        path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+        path_root = path_effectif  / Path(str(self.year)) 
         correction_effectif = pd.read_excel(path_root/Path('correction_effectif.xlsx'))
         correction_effectif.index = correction_effectif['N° Licencié']
         for num_licence in correction_effectif.index:
@@ -239,7 +275,8 @@ class EffectifCtg():
         return self.effectif
 
     def add_membres_sympathisants(self):
-        path_root = self.ctg_path / Path(str(self.year))/Path('DATA')
+        path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+        path_root = path_effectif  / Path(str(self.year)) 
         file_path = path_root / Path('membres_sympatisants.xlsx')
         
         if os.path.isfile(file_path):
@@ -291,8 +328,9 @@ class EffectifCtg():
 
     def get_rebond(self):
         current_year = datetime.now().year
-        path_history = self.ctg_path / Path(str(current_year))
-        path_history = path_history / Path('STATISTIQUES/EXCEL/effectif_history.xlsx')
+        path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+        path_history = path_effectif / Path(str(current_year))
+        path_history = path_history / Path('effectif_history.xlsx')
         df = pd.read_excel(path_history)
         df = df.fillna(0)
 

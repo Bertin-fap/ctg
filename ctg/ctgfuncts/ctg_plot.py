@@ -30,11 +30,10 @@ def plot_ctg(ctg_path,year:str):
     column ville of the DataFrame df
     '''
 
-    trace_radius = True
-    file = ctg_path / Path(f'{str(year)}/DATA/{str(year)}.xlsx')
-    df = pd.read_excel(file)
+    trace_radius = False
+    eff = EffectifCtg(year,ctg_path)
+    df = eff.effectif_tot
     
-    trace_radius = True
     dh = built_lat_long(df)
 
     villes_set = set(dh['Ville'])
@@ -46,12 +45,15 @@ def plot_ctg(ctg_path,year:str):
     group_adjacent = lambda a, k: list(zip(*([iter(a)] * k)))
 
     dict_cyclo = {}
+    dict_cyclo_l = {}
     for ville,y in df.groupby(['Ville'])['Nom']:
         chunk = []
         for i in range(0,len(y),3):
             chunk.append(','.join(y[i:i+3] ))
 
         dict_cyclo[ville] = '\n'.join(chunk)
+        dict_cyclo_l[ville[0]] = len(y)
+    print(dict_cyclo_l)
     dict_cyclo = {k[0]:v for k,v in dict_cyclo.items()}
     kol = folium.Map(location=[45.2,5.7], tiles='openstreetmap', zoom_start=12)
 
@@ -86,14 +88,20 @@ def plot_ctg(ctg_path,year:str):
                 color=color,
                 fill=True,
             ).add_to(kol)
-    dict_cyclo_l = {k:len(v.split(',')) for k,v in dict_cyclo.items()}
+    
     list_villes = sorted(dict_cyclo_l.items(), key=operator.itemgetter(1),reverse=True)
     list_villes = '\n\n'.join([f'{t[0]} ({str(t[1])}) : {dict_cyclo[t[0]]}' for t in list_villes])
+    list_villes_sorted = sorted(dict_cyclo_l.keys(),reverse=False)
+    list_villes_sorted = [x.capitalize() for x in list_villes_sorted]
+    print(list_villes_sorted)
 
     file = ctg_path / Path(f'{str(year)}/STATISTIQUES/TEXT/info_effectif_{str(year)}.txt')
     with open(file,'a',encoding='utf-8') as f:
         f.write(f'\n\nNombre de villes : {len(dict_cyclo)}\n')
         f.write(list_villes)
+        f.write('\n\n')
+        f.write(', '.join(list_villes_sorted))
+        
         
     return kol
 
@@ -165,7 +173,7 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
     dg = df_total.groupby(['Sexe','Pratique VAE'])['sejour'].value_counts().unstack().T
 
     fig, ax = plt.subplots(figsize=(15, 5))
-
+    df_total.to_excel(r"c:\users\franc\Temp\spy.xlsx")
     dg[['Femme','Homme']].plot(kind='bar',
                        ax=ax,
                        width=0.5,

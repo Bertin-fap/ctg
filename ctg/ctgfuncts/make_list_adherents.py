@@ -26,9 +26,9 @@ def make_list_adherents(ctg_path):
                        'Date de naissance':'D de N',
                        'Sexe':'S',}, inplace=True)
     df['D de N'] =  df['D de N'].astype(str)
-    result_path = Path(ctg_path) / str(current_year) / 'DATA'
+    result_path = Path(ctg_path).parent.parent / Path(r'1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG') / Path(str(current_year))
     output_file = result_path / f'liste_adherents_CTG_{current_year}.docx'
-    template_path_docx = Path(r"c:\users\franc\Temp")
+    template_path_docx = Path(__file__).parent.parent / 'ctgfuncts' / 'CTG_RefFiles'
     
     frameworks = []
     for idx,row in df.iterrows():
@@ -59,28 +59,26 @@ def make_list_emargement(ctg_path,day,month,year):
     """
 
     date_ag = f"{day}-{month}-{year}"
-    effectif_file = ctg_path / Path(str(year)) / 'DATA' /Path(str(year)+'.xlsx')
-    df = pd.read_excel(effectif_file,usecols= ['N° Licencié','Nom','Prénom','Date de naissance','Sexe','Date validation licence'])
+    eff = ctg.EffectifCtg(year,ctg_path)
+    df = eff.effectif
+    df = df[['N° Licencié','Nom','Prénom','Date de naissance','Sexe']]
     # add column Age compute at the 30 september of year
     df['D de N'] = df['Date de naissance']
     df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
-                                                 format="%d/%m/%Y")
-    df['Date validation licence'] = pd.to_datetime(df['Date validation licence'],
                                                  format="%d/%m/%Y")
     
     df = df.sort_values(by=['Nom','Prénom'])
     df.rename(columns={'N° Licencié': 'Licence',
                      'Nom': 'Nom',
                      'Prénom':'Prénom',
-                     'Sexe':'S',
-                     'Date validation licence':'dvl'}, inplace=True)
+                     'Sexe':'S'}, inplace=True)
     
     df['Age']  = df['Date de naissance'].apply(lambda x :
                                                   (pd.Timestamp(int(year), 12, 7)-x).days/365)
     df = df.query('Age>16')
     quorum = int(len(df)/3)
-    
-    result_path = Path(ctg_path).parent / 'REUNION AG' /str(year) / f'_Assemblee Generale {year}' / 'organisation'
+    df['D de N'] =  df['D de N'].astype(str)
+    result_path = Path(ctg_path).parent.parent / Path(r'1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG') / Path(str(year))
     output_file = result_path / f'liste_emargement_CTG_{year}.docx'
     template_path_docx = Path(__file__).parent.parent / 'ctgfuncts' / 'CTG_RefFiles'
     
@@ -90,9 +88,9 @@ def make_list_emargement(ctg_path,day,month,year):
                      surname=row['Nom'],
                      name=row['Prénom'],
                      ddn=row['D de N'],
-                     s=row['S'] ))
+                     s="M." if row['S']=="M" else "Me."))
             
-    long = 24
+    long = 22
     frameworks = []
     for i_dep in range(0,len(l),long):
         if i_dep+long < len(l):
@@ -105,7 +103,6 @@ def make_list_emargement(ctg_path,day,month,year):
              'n_adherents':len(df),
              'frameworks': frameworks}
 
-    Path(ctg_path).parent
     template_docx = template_path_docx / 'template_Liste_emargement_CTG.docx'
     doc = DocxTemplate(template_docx) 
     doc.render(context)

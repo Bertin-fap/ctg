@@ -32,6 +32,7 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
     dic_col [(192, 192, 192)]= 'non_présent'
     dic_col [(0, 255, 0) ]= 'réélu'
     dic_col [(255, 0, 0)]= 'démissionnaire'
+    dic_col [(128,128,128)]= 'sortant'
     
     nrow = worksheet.nrows
     ncolumn = worksheet.ncols
@@ -46,6 +47,8 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
         entrant = 0
         dem = 0
         reelu = 0
+        non_renouvelle = 0
+        sortant = 0
         for row in range(1,nrow):
             c = getBGColor(workbook, worksheet,  row,col)
     
@@ -62,6 +65,8 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
                cd_dict[year]['réélu'].append(worksheet.cell_value(row,0))
             if dic_col[c] == 'reconduit':
                 cd_dict[year]['reconduit'].append(worksheet.cell_value(row,0))
+            if dic_col[c] == 'sortant':
+                cd_dict[year]['sortant'].append(worksheet.cell_value(row,0))
         cd[year] = [n,entrant,dem]
         cdt[year] = [n,entrant,dem,reelu]
     for year, val in cd.items():

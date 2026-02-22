@@ -135,7 +135,7 @@ def count_participation(path:pathlib.WindowsPath,
                                'Sexe',
                                'Pratique VAE',
                                'sejour']]
-
+    
     no_match = []
     df_list = []
     info_sejours = []
@@ -325,7 +325,9 @@ def builds_excel_presence_au_club(ctg_path):
     list_df = []
 
     for date in list_date:
-        df = pd.read_excel(ctg_path /Path(str(date)) / Path('DATA') / Path(str(date)+'.xlsx'))
+        #file_name = ctg_path /Path(str(date)) / Path('DATA') / Path(str(date)+'.xlsx'))
+        effectif = EffectifCtg(date,ctg_path,False)
+        df = effectif.effectif
         df['date'] = date
         list_df.append(df[['N° Licencié','Nom','Prénom','date']])
 
@@ -355,8 +357,10 @@ def builds_excel_presence_au_club(ctg_path):
 
     df = pd.concat([df, split_df], axis=1)
     df = df.drop('date',axis=1)
-    out_path = ctg_path / Path(str(list_date[-1]))
-    out_path = out_path / Path('STATISTIQUES') / Path('EXCEL') / Path('effectif_history.xlsx')
+    path_effectif = Path(ctg_path).parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+    out_path = path_effectif / Path(str(list_date[-1]))
+    print(out_path)
+    out_path = out_path / Path('effectif_history.xlsx')
     df.to_excel(out_path)
     return out_path
 
@@ -375,7 +379,9 @@ def statistique_vae(ctg_path):
     nb_vae_f = []
     nb_vae_tot = []
     for year in range(last_year,current_year+1):
-        df_N1 = pd.read_excel(ctg_path / Path(str(year)) / Path('DATA') /Path(str(year)+'.xlsx'))
+        #file = ctg_path / Path(str(year)) / Path('DATA') /Path(str(year)+'.xlsx')
+        effectif = EffectifCtg(year,ctg_path)
+        df_N1 = effectif.effectif
         years.append(year)
         nb_vae_m.append(sum((df_N1['Pratique VAE'] == 'Oui') & (df_N1['Sexe'] == 'M')))
         nb_vae_f.append(sum((df_N1['Pratique VAE'] == 'Oui') & (df_N1['Sexe'] == 'F')))
