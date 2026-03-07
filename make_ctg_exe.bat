@@ -21,9 +21,11 @@ call %VIRTUAL_ENV%\Scripts\activate.bat
 
 :: install packages
 ::pip install git+https://github.com/Bertin-fap/ctg.git#egg=ctg
+pip install --user --upgrade pip setuptools wheel
 pip install %userprofile%\pyvenv\ctg
 ::pip install ctg
-pip install auto-py-to-exe
+pip install greenlet==3.0.0rc3
+pip install pyinstaller
 
 :: set the default directories
 :: ICON contains the icon file with the format.ico
@@ -37,6 +39,7 @@ set "PGM=%TEMP%/CTG_exe/venv/Lib/site-packages/ctg/ctgfuncts/CTG_RefFiles/CTG_ME
 pyinstaller --noconfirm --onefile --console^
  --icon "%ICON%"^
  --add-data "%DATA%"^
+ --collect-data "docxcompose"^
  "%PGM%"
  
 :: remove the directories build

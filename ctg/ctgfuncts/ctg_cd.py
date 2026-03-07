@@ -22,8 +22,7 @@ def plot_cd_evolution(ctg_path:pathlib.WindowsPath,plot=True)->pd.DataFrame:
     def addlabels(x,y,z):
             for i in range(len(y)):
                 plt.text(x[i],i,z[i],size=15)
-    
-    file = ctg_path / Path(r'DATA\COMMITE DIRECTEUR\Membre_CD_2014-2024.xls')
+    file = Path(ctg_path).parent.parent / Path(r'1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG\COMMITE DIRECTEUR\Membre_CD_2014-2024.xls')
     workbook = xlrd.open_workbook(file, formatting_info=True)
     worksheet = workbook.sheet_by_name('CD')
     dic_col = {}

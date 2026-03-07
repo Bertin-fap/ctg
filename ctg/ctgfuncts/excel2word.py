@@ -13,6 +13,7 @@ import re
 import unicodedata
 from pathlib import Path
 from collections import defaultdict
+from tkinter import messagebox
 import pathlib
 from textwrap import wrap
 
@@ -25,11 +26,7 @@ from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Cm, Emu, Inches, Mm
 import qrcode
 
-year = 2026
-Path.home()
-path_effectif = Path.home() / Path(r"Nextcloud2\BASE_DOCUMENTS_CTG\1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
-PATH_TEMPLATES = Path.home() / Path(r"Nextcloud2\BASE_DOCUMENTS_CTG\2_ACTIVITES_CTG\2-3_ELABORATION_CALENDRIER\PRIVE")
-PATH_TEMPLATES = PATH_TEMPLATES / Path(f"Template_{str(year)}")
+
 
 class EffectifCtg():
 
@@ -92,7 +89,7 @@ convert_to_ascii = lambda text : nfc(text). \
                                      encode('ascii', 'ignore'). \
                                      decode('utf-8').\
                                      strip()
-def reads_json():
+def reads_json(PATH_TEMPLATES):
 
     path_json = PATH_TEMPLATES / Path("data.json")
     with open(path_json, 'r') as file:
@@ -141,7 +138,7 @@ def day_of_the_date(day:int,month:int,year:int)->str:
     month_dict = {3: 1, 4: 2, 5: 3, 6: 4, 7: 5,
                   8: 6, 9: 7, 10: 8, 11: 9, 12:
                   10, 1: 11, 2: 12} # [1] p. 125
-
+    year = int(year)
     y = year % 100
     c = int(year/100)
     m = month_dict[month]
@@ -153,7 +150,7 @@ def day_of_the_date(day:int,month:int,year:int)->str:
 
     return day_of_the_week
     
-def gets_day_of_the_week(x):
+def gets_day_of_the_week(x,year):
     month = int(x.split('/')[1])
     day = int(x.split('/')[0])
     d = day_of_the_date(day,month,year).capitalize()
@@ -245,7 +242,7 @@ def computes_jour_fin(row):
     jour = day_of_the_date(int(y_m_d[2]),int(y_m_d[1]),int('20'+y_m_d[0]))
     return jour
 
-def reads_sejour(year):
+def reads_sejour(year,PATH_DATA,txt_remplacement):
 
     def sets_date_debut(row):
         if row['mois début'] != row['mois fin']:
@@ -339,7 +336,7 @@ def crlf(x):
         return x.replace('\n', '\r\n')
     return x
     
-def makes_calendrier_developpe(we_flag, jeudi_flag, sejour_flag, vtt_flag, year, save_flag):
+def makes_calendrier_developpe(we_flag, jeudi_flag, sejour_flag, vtt_flag, year, save_flag, PATH_DATA):
 
     list_df = []
     if jeudi_flag:
@@ -400,7 +397,7 @@ def makes_calendrier_developpe(we_flag, jeudi_flag, sejour_flag, vtt_flag, year,
     
     return result
     
-def builds_responsable_list(sejour_df, effectif_df, year):
+def builds_responsable_list(sejour_df, effectif_df, year, txt_remplacement):
     
     responsable_list = []
     for responsable1, responsable2, responsable3 in zip(sejour_df['Responsable_1'],
@@ -431,7 +428,7 @@ def builds_responsable_list(sejour_df, effectif_df, year):
         responsable_list.append(internal_list)
     return responsable_list
 
-def builds_list_sejour_qrc(sejour_df,doc,i_dep,i_fin):
+def builds_list_sejour_qrc(sejour_df,doc,i_dep,i_fin,txt_remplacement,PATH_IMAGES):
     num_img = 1
     qrc_sejour = []
     qrc_flag =[]
@@ -451,10 +448,10 @@ def builds_list_sejour_qrc(sejour_df,doc,i_dep,i_fin):
                 
     
 
-def builds_sejour_docx(list_docx,effectif_df,year):
+def builds_sejour_docx(list_docx,effectif_df,year,PATH_DATA,txt_remplacement,PATH_OUTPUT,PATH_TEMPLATES,PATH_IMAGES):
     
-    sejour_df = reads_sejour(year)
-    responsable_list = builds_responsable_list(sejour_df,effectif_df,year)
+    sejour_df = reads_sejour(year, PATH_DATA, txt_remplacement)
+    responsable_list = builds_responsable_list(sejour_df,effectif_df,year,txt_remplacement)
     long = 2
     
     file_list = []
@@ -464,7 +461,7 @@ def builds_sejour_docx(list_docx,effectif_df,year):
             i_fin = i_dep+long
             template_path_docx = PATH_TEMPLATES / "5-Template_sejour2.docx"
             doc = DocxTemplate(template_path_docx)
-            qrc_sejour, qrc_flag = builds_list_sejour_qrc(sejour_df,doc,i_dep,i_fin)
+            qrc_sejour, qrc_flag = builds_list_sejour_qrc(sejour_df,doc,i_dep,i_fin,txt_remplacement,PATH_IMAGES)
             
             f ={
                 'titre': sejour_df['titre'].tolist()[i_dep:i_fin],
@@ -481,7 +478,7 @@ def builds_sejour_docx(list_docx,effectif_df,year):
             i_fin = len(sejour_df)
             template_path_docx = PATH_TEMPLATES / "6-Template_sejour1.docx"
             doc = DocxTemplate(template_path_docx)
-            qrc_sejour, qrc_flag = builds_list_sejour_qrc(sejour_df,doc,i_dep,i_fin)
+            qrc_sejour, qrc_flag = builds_list_sejour_qrc(sejour_df,doc,i_dep,i_fin,txt_remplacement,PATH_IMAGES)
             
             f ={
                 'titre': sejour_df['titre'].tolist()[i_dep:i_fin],
@@ -502,9 +499,9 @@ def builds_sejour_docx(list_docx,effectif_df,year):
     
         idx += 1
         
-def make_list_sejour(year,list_docx,qrc_dic,output_file):
+def make_list_sejour(year,list_docx,qrc_dic,output_file,PATH_DATA):
 
-    sejour_df = reads_sejour(year)
+    sejour_df = reads_sejour(year, PATH_DATA)
     template_path_docx = PATH_TEMPLATES / "4-Template_liste_sejours.docx"
     frameworks = []
     for row in sejour_df.iterrows():
@@ -524,7 +521,7 @@ def make_list_sejour(year,list_docx,qrc_dic,output_file):
     doc.save(output_file)
     list_docx.append(output_file)
 
-def combine_all_docx(list_docx,year):
+def combine_all_docx(list_docx,year,PATH_DATA):
 
     """
     Merges all the docx file contained in `list_docxt` with
@@ -542,7 +539,7 @@ def combine_all_docx(list_docx,year):
     combine_file = PATH_DATA / Path(str(year)) / file_name
     composer.save(combine_file)
 
-def make_debut_calendrier(year,sorties_dic,sortie_vtt,sortie_route,effectif_df,qrc_dic,list_docx,file_output):
+def make_debut_calendrier(year,sorties_dic,sortie_vtt,sortie_route,effectif_df,qrc_dic,list_docx,file_output,PATH_DATA,PATH_TEMPLATES,txt_remplacement,org,PATH_OUTPUT):
 
     mois_dict = {"janvier":"01",
                  "février":"02",
@@ -557,7 +554,7 @@ def make_debut_calendrier(year,sorties_dic,sortie_vtt,sortie_route,effectif_df,q
                  "novembre":"11",
                  "décembre":"12"}
 
-    sejour_df = reads_sejour(year)
+    sejour_df = reads_sejour(year, PATH_DATA,txt_remplacement)
     sejour_df['Date début old'] = sejour_df.apply(lambda row: row['Date début old'].split('/')[1] + 
                                             "-" + row['Date début old'].split('/')[0],axis=1)
     org_dic = defaultdict(list)
@@ -603,7 +600,7 @@ def make_debut_calendrier(year,sorties_dic,sortie_vtt,sortie_route,effectif_df,q
     doc.save(output_file)
     list_docx.append(output_file)
 
-def gets_circuit_makers_dict(effectif_df, year):
+def gets_circuit_makers_dict(effectif_df, year, PATH_TEMPLATES):
     circuit_makers_path = PATH_TEMPLATES / "traceurs_circuits.xlsx"
     circuit_makers_df = pd.read_excel(circuit_makers_path, sheet_name=str(year))
     circuit_makers_list = []
@@ -618,7 +615,7 @@ def gets_circuit_makers_dict(effectif_df, year):
                                initiales=f'({prenom[0]}{nom[0]})'))
     return circuit_makers_list
 
-def make_middle_calendrier(year, list_docx, file_output, effectif_df):
+def make_middle_calendrier(year, list_docx, file_output, effectif_df,PATH_TEMPLATES,color_dic,PATH_DATA):
 
     def chooses_color(row):
         if row['Nom'].startswith("Rando"):
@@ -638,8 +635,8 @@ def make_middle_calendrier(year, list_docx, file_output, effectif_df):
     vtt_flag = True
     save_flag = True
     
-    result = makes_calendrier_developpe(we_flag, jeudi_flag, sejour_flag, vtt_flag, year, save_flag)
-    circuit_makers_list = gets_circuit_makers_dict(effectif_df, year)
+    result = makes_calendrier_developpe(we_flag, jeudi_flag, sejour_flag, vtt_flag, year, save_flag,PATH_DATA)
+    circuit_makers_list = gets_circuit_makers_dict(effectif_df, year,PATH_TEMPLATES)
 
     mois_selections = [['02','03'],['04'],['05'],['06'],['07'],['08','09'],['10','11']]
     mois_dict = {1:"janvier",
@@ -661,7 +658,7 @@ def make_middle_calendrier(year, list_docx, file_output, effectif_df):
     
     #result['Jour'] = result.apply(lambda row: row['Jour'].capitalize(),axis=1)
     
-    result['Jour'] = result['Date'].apply(gets_day_of_the_week)
+    result['Jour'] = result['Date'].apply(gets_day_of_the_week,year=year)
     result['Type'] = result.apply(lambda row: 1 if row['Nom'].startswith("Rando") else 0 ,axis=1)
     
     result['color'] = result.apply(chooses_color ,axis=1)
@@ -684,7 +681,7 @@ def make_middle_calendrier(year, list_docx, file_output, effectif_df):
     doc.save(file_output)
     list_docx.append(file_output)
 
-def make_fin_calendrier(year,date_ag,list_docx,effectif_df,qrc_dic, file_output):
+def make_fin_calendrier(year,date_ag,list_docx,effectif_df,qrc_dic, file_output,PATH_TEMPLATES,PATH_OUTPUT):
 
     template_path_docx = PATH_TEMPLATES / "10-Template_fin.docx"
     cd_path = PATH_TEMPLATES / "CD.xlsx"
@@ -711,7 +708,7 @@ def make_fin_calendrier(year,date_ag,list_docx,effectif_df,qrc_dic, file_output)
     doc.save(output_file)
     list_docx.append(output_file)
 
-def makes_liste_sorties_cool(list_docx, year, file_output):
+def makes_liste_sorties_cool(list_docx, year, file_output,PATH_DATA):
 
     template_path_docx = PATH_TEMPLATES / "8-Template_randos_cool.docx"
     we_flag = True
@@ -720,7 +717,7 @@ def makes_liste_sorties_cool(list_docx, year, file_output):
     vtt_flag = False
     save_flag = False
     
-    result = makes_calendrier_developpe(we_flag, jeudi_flag, sejour_flag, vtt_flag, year, save_flag)
+    result = makes_calendrier_developpe(we_flag, jeudi_flag, sejour_flag, vtt_flag, year, save_flag, PATH_DATA)
     sieve_list = []
     dist_max = 60
     dev_max = 800
@@ -761,7 +758,7 @@ def makes_liste_sorties_cool(list_docx, year, file_output):
     return
 
 
-def make_liste_randonnées(list_docx,year, file_output):
+def make_liste_randonnées(list_docx,year, file_output, PATH_DATA,PATH_TEMPLATES):
     
     template_path_docx = PATH_TEMPLATES / "9-Template_liste_randonnées.docx"
     file = PATH_DATA / Path(str(year)) / Path("randonnées_subventionnees_"+str(year)+".xlsx")
@@ -799,7 +796,7 @@ def make_liste_randonnées(list_docx,year, file_output):
     doc.save(file_output)
     list_docx.append(file_output)
 
-def make_liste_vtt(list_docx,year, file_output):
+def make_liste_vtt(list_docx,year, file_output, PATH_DATA,PATH_TEMPLATES):
     
     template_path_docx = PATH_TEMPLATES / "9b-Template_liste_VTT.docx"
     file = PATH_DATA / Path(str(year)) / Path("calendrier_"+str(year)+"_developpe.xlsx")
@@ -842,7 +839,14 @@ def make_liste_vtt(list_docx,year, file_output):
     doc.save(file_output)
     list_docx.append(file_output)
 
-def make_calendar(year):
+def make_calendrier(year):
+    
+    Path.home()
+    path_effectif = Path.home() / Path(r"Nextcloud2\BASE_DOCUMENTS_CTG\1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+    PATH_TEMPLATES = Path.home() / Path(r"Nextcloud2\BASE_DOCUMENTS_CTG\2_ACTIVITES_CTG\2-3_ELABORATION_CALENDRIER\PRIVE")
+    PATH_TEMPLATES = PATH_TEMPLATES / Path(f"Template_{str(year)}")
+    (PATH_DATA, PATH_IMAGES, PATH_OUTPUT, sorties_dic,
+                sortie_vtt, sortie_route, url_dic, date_ag,color_dic,org,txt_remplacement) = reads_json(PATH_TEMPLATES)
 
     flag_make_debut = True
     flag_make_list_sejour = False
@@ -871,7 +875,13 @@ def make_calendar(year):
                               effectif_df,
                               qrc_dic,
                               list_docx,
-                              file_output)
+                              file_output,
+                              PATH_DATA,
+                              PATH_TEMPLATES,
+                              txt_remplacement,
+                              org,
+                              PATH_OUTPUT)
+                              
     else:
         list_docx.append(file_output)
     
@@ -880,7 +890,8 @@ def make_calendar(year):
         make_list_sejour(year,
                          list_docx,
                          qrc_dic,
-                         file_output)
+                         file_output,
+                         PATH_DATA)
     else:
         #list_docx.append(file_output)
         pass
@@ -889,13 +900,18 @@ def make_calendar(year):
     if flag_builds_sejour_docx:
         builds_sejour_docx(list_docx,
                            effectif_df,
-                           year)
+                           year,
+                           PATH_DATA,
+                           txt_remplacement,
+                           PATH_OUTPUT,
+                           PATH_TEMPLATES,
+                           PATH_IMAGES)
     else:
         pass
          
     file_output = PATH_OUTPUT / "6-middle.docx"
     if flag_make_middle_calendrier:
-        make_middle_calendrier(year,list_docx,file_output,effectif_df)
+        make_middle_calendrier(year,list_docx,file_output,effectif_df,PATH_TEMPLATES,color_dic,PATH_DATA)
     else:
         list_docx.append(file_output)
 
@@ -908,13 +924,13 @@ def make_calendar(year):
     
     file_output = PATH_OUTPUT / "8-liste_randonnées.docx"
     if flag_make_liste_randonnées:
-        make_liste_randonnées(list_docx,year, file_output)
+        make_liste_randonnées(list_docx,year, file_output,PATH_DATA,PATH_TEMPLATES)
     else:
         list_docx.append(file_output)
 
     file_output = PATH_OUTPUT / "8a-liste_randonnées.docx"
     if flag_make_liste_vtt:
-        make_liste_vtt(list_docx,year, file_output)
+        make_liste_vtt(list_docx,year, file_output, PATH_DATA,PATH_TEMPLATES)
     else:
         list_docx.append(file_output)
 
@@ -925,22 +941,21 @@ def make_calendar(year):
                             list_docx,
                             effectif_df,
                             qrc_dic,
-                            file_output)
+                            file_output,
+                            PATH_TEMPLATES,
+                            PATH_OUTPUT)
     else:
         list_docx.append(file_output)
         
     list_docx.append(PATH_TEMPLATES / "11-Template_couverture couleur intérieure dernière.docx")
     list_docx.append(PATH_TEMPLATES / "12-Template_couverture couleur extérieure dernière.docx")
-    combine_all_docx(list_docx,year)
+    combine_all_docx(list_docx,year,PATH_DATA)
 
     file_name = f'CALENDRIER_{str(year)}.docx'
     combine_file = PATH_DATA  / Path(str(year)) / file_name
-    print(f"votre fichier est prêt sous le nom : {combine_file}")
+    messagebox.showinfo("CTG_METER", f"votre fichier est prêt sous le nom : {combine_file}")
     
 
-(PATH_DATA, PATH_IMAGES, PATH_OUTPUT, sorties_dic,
-                sortie_vtt, sortie_route, url_dic, date_ag,color_dic,org,txt_remplacement) = reads_json()
-make_calendar(year)
-print( "Le calendrier a été créé")
+
 
     

@@ -1,0 +1,81 @@
+memory:
+  2014:
+    RANDONNEES: 568
+    PARTICIPATION_SEJOURS: 299
+    SORTIES_CLUB_DIMANCHE: 274
+    SORTIES_CLUB_JEUDI: 0
+    SORTIES_CLUB_SAMEDI: 119
+    SORTIES_HIVER: 0
+    Nombre_sejours: 9
+    Nombre_jours_sejour: 41
+    Nombre_sorties_sejour: 1277
+  2015:
+    RANDONNEES: 518
+    PARTICIPATION_SEJOURS: 283
+    SORTIES_CLUB_DIMANCHE: 144
+    SORTIES_CLUB_JEUDI: 418
+    SORTIES_CLUB_SAMEDI: 202
+    SORTIES_HIVER: 0
+    Nombre_sejours: 10
+    Nombre_jours_sejour: 44
+    Nombre_sorties_sejour: 1432
+  2016:
+    RANDONNEES: 469
+    PARTICIPATION_SEJOURS: 395
+    SORTIES_CLUB_DIMANCHE: 187
+    SORTIES_CLUB_JEUDI: 289
+    SORTIES_CLUB_SAMEDI: 176
+    SORTIES_HIVER: 0
+    Nombre_sejours: 14
+    Nombre_jours_sejour: 60
+    Nombre_sorties_sejour: 1531
+  2017:
+    RANDONNEES: 503
+    PARTICIPATION_SEJOURS: 344
+    SORTIES_CLUB_DIMANCHE: 258
+    SORTIES_CLUB_JEUDI: 244
+    SORTIES_CLUB_SAMEDI: 166
+    SORTIES_HIVER: 0
+    Nombre_sejours: 12
+    Nombre_jours_sejour: 56
+    Nombre_sorties_sejour: 1601
+  2018:
+    RANDONNEES: 456
+    PARTICIPATION_SEJOURS: 373
+    SORTIES_CLUB_DIMANCHE: 260
+    SORTIES_CLUB_JEUDI: 220
+    SORTIES_CLUB_SAMEDI: 146
+    SORTIES_HIVER: 0
+    Nombre_sejours: 12
+    Nombre_jours_sejour: 46
+    Nombre_sorties_sejour: 1621
+  2019:
+    RANDONNEES: 453
+    PARTICIPATION_SEJOURS: 382
+    SORTIES_CLUB_DIMANCHE: 228
+    SORTIES_CLUB_JEUDI: 223
+    SORTIES_CLUB_SAMEDI: 228
+    SORTIES_HIVER: 0
+    Nombre_sejours: 13
+    Nombre_jours_sejour: 43
+    Nombre_sorties_sejour: 1431
+  2020:
+    RANDONNEES: 0
+    PARTICIPATION_SEJOURS: 0
+    SORTIES_CLUB_DIMANCHE: 0
+    SORTIES_CLUB_JEUDI: 0
+    SORTIES_CLUB_SAMEDI: 0
+    SORTIES_HIVER: 0
+    Nombre_sejours: 0
+    Nombre_jours_sejour: 0
+    Nombre_sorties_sejour: 0
+  2021:
+    RANDONNEES: 0
+    PARTICIPATION_SEJOURS: 0
+    SORTIES_CLUB_DIMANCHE: 0
+    SORTIES_CLUB_JEUDI: 0
+    SORTIES_CLUB_SAMEDI: 0
+    SORTIES_HIVER: 0
+    Nombre_sejours: 0
+    Nombre_jours_sejour: 0
+    Nombre_sorties_sejour: 0

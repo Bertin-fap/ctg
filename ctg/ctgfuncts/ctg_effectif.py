@@ -359,7 +359,6 @@ def builds_excel_presence_au_club(ctg_path):
     df = df.drop('date',axis=1)
     path_effectif = Path(ctg_path).parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
     out_path = path_effectif / Path(str(list_date[-1]))
-    print(out_path)
     out_path = out_path / Path('effectif_history.xlsx')
     df.to_excel(out_path)
     return out_path

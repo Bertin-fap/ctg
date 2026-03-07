@@ -1,0 +1,7 @@
+Auteurs : F. Bertin 
+Collaborateurs : A. Chabli et L. Desmeuse pour l'interface graphique.
+		
+Licence : MIT
+
+PyPi : pip install CTG_Utils
+GitHub : https://github.com/Bertin-fap/CTG_Utils

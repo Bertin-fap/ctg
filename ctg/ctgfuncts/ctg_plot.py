@@ -93,9 +93,10 @@ def plot_ctg(ctg_path,year:str):
     list_villes = '\n\n'.join([f'{t[0]} ({str(t[1])}) : {dict_cyclo[t[0]]}' for t in list_villes])
     list_villes_sorted = sorted(dict_cyclo_l.keys(),reverse=False)
     list_villes_sorted = [x.capitalize() for x in list_villes_sorted]
-    print(list_villes_sorted)
+   
 
-    file = ctg_path / Path(f'{str(year)}/STATISTIQUES/TEXT/info_effectif_{str(year)}.txt')
+    file = ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG")
+    file = file / Path(f'{str(year)}/info_effectif_{str(year)}.txt')
     with open(file,'a',encoding='utf-8') as f:
         f.write(f'\n\nNombre de villes : {len(dict_cyclo)}\n')
         f.write(list_villes)

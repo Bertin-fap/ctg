@@ -1,0 +1,14 @@
+openpyxl
+pandas
+plotly
+folium
+matplotlib
+screeninfo
+pyyaml
+pandastable
+docx2pdf
+docx
+docxtpl
+docxcompose
+qrcode
+tkcalendar

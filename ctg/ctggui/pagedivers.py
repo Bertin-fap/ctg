@@ -50,16 +50,16 @@ def create_divers_analysis(self, master, page_name, institute, ctg_path):
         year_select =  variable_years.get()
         kol = plot_ctg(ctg_path,year_select)
 
-        path_html = ctg_path / Path(str(year_select)) / Path('STATISTIQUES') / Path('HTML') 
-        path_html = path_html / Path("ctg.html")
-        kol.save(path_html)
+        path_html = ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG") / Path(str(year_select))
+        file_html = path_html / Path(f"ctg_{year_select}.html")
+        kol.save(file_html)
 
         info_title = "- Information -"
         info_text  = ("L'analyse de la localisation géographique des membres a été effectuée"
                       f"pour l'année {year_select} "
-                      f"\n\nLe fichier .html obtenu : 'ctg.html' "
+                      f"\n\nLe fichier obtenu : 'ctg_{year_select}.html "
                       "a été créé dans le dossier :"
-                      f"\n\n{ctg_path}\{str(year_select)}\STATISTIQUES\HTML.")
+                      f"\n\n{path_html}")
 
         messagebox.showinfo(info_title, info_text)
 

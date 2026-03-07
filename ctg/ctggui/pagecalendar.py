@@ -54,7 +54,7 @@ def create_calendar(self, master, page_name, institute, ctg_path):
 
     def _excel2word_button(ctg_path):
         year =  variable_year.get()
-        make_calendrier(year,ctg_path)
+        make_calendrier(year)
 
     from ctg.ctggui.pageclasses import AppMain
 
