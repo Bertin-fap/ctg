@@ -287,7 +287,8 @@ def evolution_age_median(ctg_path:pathlib.WindowsPath):
     age_mean = []
     age_naturel = []
     for idx,year in enumerate(years):
-        file = ctg_path / Path(str(year)) / Path('DATA') / Path(str(year)+'.xlsx')
+        data_path = ctg_path.parent.parent / Path('1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG') /Path(str(year))
+        file = data_path / Path(str(year)+'.xlsx')
         df_effectif = pd.read_excel(file)
         df_effectif['Date de naissance'] = pd.to_datetime(df_effectif['Date de naissance'],
                                                                       format="%d/%m/%Y")
