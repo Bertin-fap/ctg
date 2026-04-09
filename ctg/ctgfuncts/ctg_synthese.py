@@ -54,8 +54,12 @@ def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
     # nombre moyen de participant par activité
     for x in df_total.groupby(['Type']):
         print(x[0],len(x[1]),len(set(x[1]['sejour'])),len(x[1])/len(set(x[1]['sejour'])))
+    
+    output_path = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL')  
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
 
-    file = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
+    file = output_path / Path('synthese.xlsx')
     df_total.to_excel(file)
 
 def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath,mode: Optional[bool] = False)->None:
@@ -115,7 +119,11 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath,mode: Optional[bool]
     plt.tight_layout()
 
     fig_file = 'SORTIES_PIE.png'
-    plt.savefig(ctg_path / Path(year) / Path('STATISTIQUES/IMAGE') / Path(fig_file),bbox_inches='tight')
+    output_path = ctg_path / Path(year) / Path('STATISTIQUES/IMAGE') 
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    
+    plt.savefig(output_path / Path(fig_file),bbox_inches='tight')
     plt.show()
 
 
@@ -200,8 +208,11 @@ def synthese_adherent(year:str,ctg_path:pathlib.WindowsPath):
 
     dg = pd.concat([dg, df_orphan], axis=0)
 
-    file_out = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL')
-    file_out = file_out / Path('synthese_adherent.xlsx')
+    output_path = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL')
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    
+    file_out = output_path / Path('synthese_adherent.xlsx')
     dg.to_excel(file_out)
 
 def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
@@ -303,7 +314,10 @@ def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
     plt.show()
 
     fig_file = 'SEJOURS_STAT_PARTICIPATION.png'
-    plt.savefig(ctg_path / Path(year) / Path('STATISTIQUES/IMAGE') / Path(fig_file),bbox_inches='tight')
+    output_path = ctg_path / Path(year) / Path('STATISTIQUES/IMAGE')
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    plt.savefig(output_path / Path(fig_file),bbox_inches='tight')
 
 def _read_memory_sorties()->dict:
 

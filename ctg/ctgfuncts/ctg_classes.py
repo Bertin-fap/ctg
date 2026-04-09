@@ -27,8 +27,14 @@ class EffectifCtg():
         
         # get effectif of the year year
         path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
-        path_root = path_effectif  / Path(str(self.year)) 
-        df = pd.read_excel(path_root / Path(str(self.year)+'.xlsx'))
+        path_root = path_effectif  / Path(str(self.year))
+        file = path_root / Path(f'effectif_ffct_{str(self.year)}.xlsx')
+        message = f"Le fichier {str(self.year)+'.xlsx'} n'a pas été trouvé\n"
+        message = message + f"Veuillez télécharger ce fichier à partir\n du site stucture de FFVelo et de le placer dans le répertoire:\n{path_root}"
+        if not os.path.isfile(file):
+            messagebox.showwarning("Action requise", message)
+            return
+        df = pd.read_excel(file)
         if 'N° Licencié' not in df.columns:
             df = df.rename(columns={'N°': 'N° Licencié'})
         if 'Ville' not in df.columns:
@@ -40,7 +46,12 @@ class EffectifCtg():
             df = df.rename(columns={'N°': 'N° Licencié',})
             vae_df = pd.read_excel(path_root / "VAE.xlsx")
             vae_dic = dict(zip(vae_df["N° Licencié"], (vae_df["Pratique VAE"])))
-            df["Pratique VAE"] = df["N° Licencié"].map(vae_dic)
+            df["Pratique VAE"] = df['N° Licencié'].map(vae_dic)
+            vae_inconnu ="\n ".join([str(x) for x in df[df["Pratique VAE"].isna()]["N° Licencié"].tolist()])
+            if vae_inconnu != '':
+                messagebox.showinfo(f'Statistique {self.year}',f"Les numéros de licence :\n{vae_inconnu} \nsont à rajouter dans le fichier:\n {path_root / 'VAE.xlsx'}")
+                
+            df["Pratique VAE"] = df["Pratique VAE"].fillna('Non')
         # add column Age compute at the 30 september of year
         df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
                                                  format="%d/%m/%Y")
@@ -214,13 +225,15 @@ class EffectifCtg():
         stat.append(long_string)
         
         path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
-        path_root = path_effectif  / Path(str(self.year)) 
-        path_root = path_root / Path(f'info_effectif_{self.year}.md')
-        with open(path_root,'w') as f:
+        path_root = path_effectif  / Path(str(self.year)) / Path('STATISTIQUES')
+        if not os.path.isdir(path_root):
+            os.mkdir(path_root)
+        output_file = path_root / Path(f'info_effectif_{self.year}.md')
+        with open(output_file,'w') as f:
             f.write('\n'.join(stat))
 
         stat.append(("\n Ces informations sont disponibles dans le fichier : "
-                    f"\n{path_root}"))
+                    f"\n{output_file}"))
         stat ='\n'.join(stat)
         messagebox.showinfo(f'Statistique {self.year}',stat)
 

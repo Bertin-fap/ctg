@@ -101,7 +101,8 @@ __all__ = ['ACTIVITE_LIST',
            'TEXT_UPDATE_STATUS',
            'TEXT_VERSION',
            'TEXT_YEAR_PC',
-           'TEXT_YEAR_PI',]
+           'TEXT_YEAR_PI',
+           'nextcloud']
            
 # Standard HELP_SEJOURlibrary imports
 import math           
@@ -119,6 +120,8 @@ FIRST_YEAR = 2021
 
 # Setting the title of the application main window (internal)
 APPLICATION_WINDOW_TITLE = f"CTG_Meter - Analyse des statistiques des effectifs et des sorties"
+
+nextcloud = "Nextcloud2"
 
 ######################## Definition of display globals ###########################
 

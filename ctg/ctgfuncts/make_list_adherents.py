@@ -1,5 +1,6 @@
 _all_ = ["make_list_adherents"]
 
+import os
 from pathlib import Path
 from datetime import datetime
 import tkinter as tk
@@ -27,7 +28,11 @@ def make_list_adherents(ctg_path):
                        'Sexe':'S',}, inplace=True)
     df['D de N'] =  df['D de N'].astype(str)
     result_path = Path(ctg_path).parent.parent / Path(r'1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG') / Path(str(current_year))
-    output_file = result_path / f'liste_adherents_CTG_{current_year}.docx'
+    result_path = result_path / Path('LISTES EMARGEMENT')
+    if not os.path.isdir(result_path):
+        os.mkdir(result_path)
+
+    output_file = result_path / f'liste_elargement_rando_{current_year}.docx'
     template_path_docx = Path(__file__).parent.parent / 'ctgfuncts' / 'CTG_RefFiles'
     
     frameworks = []
@@ -79,7 +84,11 @@ def make_list_emargement(ctg_path,day,month,year):
     quorum = int(len(df)/3)
     df['D de N'] =  df['D de N'].astype(str)
     result_path = Path(ctg_path).parent.parent / Path(r'1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG') / Path(str(year))
-    output_file = result_path / f'liste_emargement_CTG_{year}.docx'
+    result_path = result_path / Path('LISTES EMARGEMENT')
+    if not os.path.isdir(result_path):
+        os.mkdir(result_path)
+    output_file = result_path / f'liste_emargement_AG_{year}.docx'
+    
     template_path_docx = Path(__file__).parent.parent / 'ctgfuncts' / 'CTG_RefFiles'
     
     l = []

@@ -30,6 +30,7 @@ from ctg.ctggui.pagesejour import create_sejour_analysis
 from ctg.ctggui.pagedivers import create_divers_analysis
 from ctg.ctggui.pagecalendar import create_calendar
 from ctg.ctggui.pagelistes import create_listes
+from ctg.ctggui.pagecompta import create_compta
 from ctg.ctggui.pagenewactivity import get_new_activity
 from ctg.ctggui.guitools import place_bellow
 from ctg.ctggui.guitools import show_frame
@@ -43,8 +44,10 @@ class AppMain(tk.Tk):
     def __init__(master):
 
         #ctg_path_default = Path.home() /Path('CTG/SORTIES')
-        ctg_path_default = Path(r'C:/Users/franc/Nextcloud2/BASE_DOCUMENTS_CTG/2_ACTIVITES_CTG/2-2_STATS_DES_SORTIES_ANNEES')
-
+        
+        #ctg_path_default = Path(r'C:/Users/franc/Nextcloud2/BASE_DOCUMENTS_CTG/2_ACTIVITES_CTG/2-2_STATS_DES_SORTIES_ANNEES')
+        ctg_path_default =Path.home() / Path(gg.nextcloud) 
+        ctg_path_default = ctg_path_default / Path('BASE_DOCUMENTS_CTG/2_ACTIVITES_CTG/2-2_STATS_DES_SORTIES_ANNEES')
         # Setting the link with "tk.Tk"
         tk.Tk.__init__(master)
 
@@ -76,7 +79,7 @@ class AppMain(tk.Tk):
         # Defining pages classes and pages list
         AppMain.pages = ( PageListes,
                          PageCalendar,
-                         PageHelp,
+                         PageFinance,
                          PageDivers,
                          PageSejours,
                          PageTendance,
@@ -607,47 +610,23 @@ class PageListes(tk.Frame):
 
         quitapp = QuitApp(self, master, container_button)       
 
-class PageHelp(tk.Frame):
+class PageFinance(tk.Frame):
     '''
     '''
     def __init__(self, container_frame, master, container_button, institute, ctg_path):
 
-        if_analysis_x_pos_px     = mm_to_px(10 * AppMain.width_sf_mm,  gg.PPI)
-        if_analysis_y_pos_px     = mm_to_px(10 * AppMain.height_sf_mm, gg.PPI)
-
         super().__init__(container_frame)
-
+        
         page_name  = self.__class__.__name__
 
-        # Text box and y slide definition
-        help_box = tk.Text(self,
-                           width=90,
-                           height=30,
-                           highlightthickness=1,
-                           foreground="black",
-                           insertbackground="black",
-                           font=("Helvetica", 8))
-
-        help_box.place(x = if_analysis_x_pos_px, y = if_analysis_y_pos_px)
-
-        tex_scroll_y = tk.Scrollbar(self,orient=tk.VERTICAL,)
-        tex_scroll_y.config(command=help_box.yview, )
-        help_box["yscrollcommand"] = tex_scroll_y.set
-        place_after(help_box, tex_scroll_y, dx = 5, dy = 0)
-
-        # Write into the Text box
-        #version_gui = ctg.ctggui.__version__
-        #help_box.insert(tk.END,f'Version : {version_gui} \n\n')
-        path_help = Path(__file__).parent.parent / Path('ctgfuncts') 
-        path_help = path_help / Path('CTG_RefFiles') / Path( 'help.txt')
-        with open(path_help,'r',encoding="utf-8")as file_text:
-            help_content =  file_text.read()
-        help_box.insert(tk.END,help_content)
+        create_compta(self, master, page_name, institute, ctg_path)
 
         setcontrollerbutton = SetControllerButton(master, container_button,page_name)
 
-        quitapp = QuitApp(self, master, container_button)
+        settitleclass = SetTitltleClass(self,page_name,institute)
 
+        quitapp = QuitApp(self, master, container_button) 
+        
 class SetControllerButton(tk.Tk):
 
     def __init__(self, master, container_button,page_name):

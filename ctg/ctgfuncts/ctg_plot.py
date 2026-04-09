@@ -53,7 +53,6 @@ def plot_ctg(ctg_path,year:str):
 
         dict_cyclo[ville] = '\n'.join(chunk)
         dict_cyclo_l[ville[0]] = len(y)
-    print(dict_cyclo_l)
     dict_cyclo = {k[0]:v for k,v in dict_cyclo.items()}
     kol = folium.Map(location=[45.2,5.7], tiles='openstreetmap', zoom_start=12)
 
@@ -95,16 +94,29 @@ def plot_ctg(ctg_path,year:str):
     list_villes_sorted = [x.capitalize() for x in list_villes_sorted]
    
 
-    file = ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG")
-    file = file / Path(f'{str(year)}/info_effectif_{str(year)}.txt')
+    output_path = ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG")
+    output_path = output_path / Path(f'{str(year)}/STATISTIQUES')
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    file = output_path / Path(f'info_effectif_{str(year)}.md') 
     with open(file,'a',encoding='utf-8') as f:
         f.write(f'\n\nNombre de villes : {len(dict_cyclo)}\n')
         f.write(list_villes)
         f.write('\n\n')
         f.write(', '.join(list_villes_sorted))
         
-        
-    return kol
+    file_html = output_path / Path(f"ctg_{year}.html")
+    kol.save(file_html)
+
+    info_title = "- Information -"
+    info_text  = ("L'analyse de la localisation géographique des membres a été effectuée"
+                  f"pour l'année {year} "
+                  f"\n\nLe fichier obtenu : 'ctg_{year}.html "
+                  "a été créé dans le dossier :"
+                  f"\n\n{output_path}")
+
+    messagebox.showinfo(info_title, info_text)   
+    return
 
 def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,year = None):
 
@@ -205,7 +217,10 @@ def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,ye
     plt.legend(bbox_to_anchor =(0.75, 1.15), ncol = 2)
     plt.tight_layout()
     fig_file = os.path.split(path_sorties_club)[-1].replace(' ','_')+'.png'
-    file = ctg_path / Path(str(year)) / Path('STATISTIQUES/IMAGE') / Path(fig_file)
+    output_path = ctg_path / Path(str(year)) / Path('STATISTIQUES/IMAGE')
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    file = output_path / fig_file
     plt.savefig(file ,bbox_inches='tight')
     plt.show()
 

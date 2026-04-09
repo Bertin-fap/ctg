@@ -26,6 +26,9 @@ from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Cm, Emu, Inches, Mm
 import qrcode
 
+import ctg.ctggui.guiglobals as gg
+
+
 
 
 class EffectifCtg():
@@ -40,7 +43,7 @@ class EffectifCtg():
         # get effectif of the year year
         path_root = self.path_effectif / Path(str(year))
         print (path_root)
-        df = pd.read_excel(path_root / Path(str(year)+'.xlsx'))
+        df = pd.read_excel(path_root / Path('effectif_ffct_'+str(year)+'.xlsx'))
         if 'Ville' not in df.columns:
             df['Ville'] = df['Adresse'].apply(lambda row: re.split(r'\s+\d{5,6}\s+', row)[-1])
         if 'Nom' not in df.columns:
@@ -94,10 +97,11 @@ def reads_json(PATH_TEMPLATES):
     path_json = PATH_TEMPLATES / Path("data.json")
     with open(path_json, 'r') as file:
         data = json.load(file)
-    
-    PATH_DATA = Path(data["PATH_DATA"])
-    PATH_IMAGES = Path(data["PATH_IMAGES"])
-    PATH_OUTPUT = Path(data["PATH_OUTPUT"])
+
+    home_dir = Path.home()
+    PATH_DATA = home_dir / Path(data["PATH_DATA"])
+    PATH_IMAGES = home_dir / Path(data["PATH_IMAGES"])
+    PATH_OUTPUT = home_dir / Path(data["PATH_OUTPUT"])
     sorties_dic = data["sorties_dic"]
     sortie_vtt = data["sortie_vtt"]
     sortie_route = data["sortie_route"]
@@ -157,6 +161,7 @@ def gets_day_of_the_week(x,year):
     return d
 
 def gets_day_of_the_week2(x):
+
     year = int('20'+str(x.split('-')[0]))
     month = int(x.split('-')[1])
     day = int(x.split('-')[2])
@@ -842,8 +847,8 @@ def make_liste_vtt(list_docx,year, file_output, PATH_DATA,PATH_TEMPLATES):
 def make_calendrier(year):
     
     Path.home()
-    path_effectif = Path.home() / Path(r"Nextcloud2\BASE_DOCUMENTS_CTG\1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
-    PATH_TEMPLATES = Path.home() / Path(r"Nextcloud2\BASE_DOCUMENTS_CTG\2_ACTIVITES_CTG\2-3_ELABORATION_CALENDRIER\PRIVE")
+    path_effectif = Path.home() / Path(gg.nextcloud) / Path(r"BASE_DOCUMENTS_CTG\1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+    PATH_TEMPLATES = Path.home() / Path(gg.nextcloud) / Path(r"BASE_DOCUMENTS_CTG\2_ACTIVITES_CTG\2-3_ELABORATION_CALENDRIER\PRIVE")
     PATH_TEMPLATES = PATH_TEMPLATES / Path(f"Template_{str(year)}")
     (PATH_DATA, PATH_IMAGES, PATH_OUTPUT, sorties_dic,
                 sortie_vtt, sortie_route, url_dic, date_ag,color_dic,org,txt_remplacement) = reads_json(PATH_TEMPLATES)
