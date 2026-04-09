@@ -7,10 +7,12 @@ import math
 import glob
 import os
 import re
+import shutil
 
 import pandas as pd
 import numpy as np
 
+import ctg.ctggui.guiglobals as gg
 
 def sg2xlsx():
     global n,last_solde
@@ -78,7 +80,7 @@ def sg2xlsx():
         return n,last_date, last_solde
 
     def read_file_sg():
-        root_sg = root / Path(r"SOCIETE-GENERALE")
+        root_sg = root / Path(r"4_SOCIETE-GENERALE")
         list_of_files = glob.glob(f'{str(root_sg)}/*.csv')
         if len(list_of_files) == 0:
             messagebox.showinfo("showinfo", 'Pas de fichiers SG détectés')
@@ -89,10 +91,7 @@ def sg2xlsx():
             
         file_sg = max(list_of_files, key=os.path.getctime)
         file_path = root / Path(file_sg)
-        df = pd.read_csv(file_path,
-                        skiprows=6,
-                        delimiter=';',
-                        decimal =',')
+        df = pd.read_csv(file_path,skiprows=6,delimiter=';',decimal =',')
         df = df.fillna('')
 
         with open(file_path, 'r') as file:
@@ -107,25 +106,35 @@ def sg2xlsx():
         solde_sg = float(solde[0].replace(' ','').replace(',','.'))
         return df,date_solde_sg,solde_sg
         
+    def move_file_sg(year,root_finance):
+        path_telechargement = Path.home() / Path('Downloads')
+
+        files = [x for x in os.listdir(path_telechargement) if re.search('\d{6}-\d{16}\.csv',x)]
+        root = root_finance / Path(str(year))  / Path(r"COMPTABILITE-COURANTE\4_SOCIETE-GENERALE")
+
+        for file in files:
+           shutil.move(path_telechargement / Path(file), root / Path(file))
+        
     global n,last_solde
     now = datetime.now()
     year = now.year
-    root_finance = Path.home() / Path(r"Nextcloud2\BASE_FINANCES_CTG")
+    month = now.month
+    if month == 11 or month == 12:
+        year = year + 1
+    root_finance = Path.home() / Path(gg.nextcloud) / Path(r"BASE_FINANCES_CTG")
     root = root_finance / Path(str(year))  / Path(r"COMPTABILITE-COURANTE")
+    
+    move_file_sg(year,root_finance)
 
     solde_initial = get_solde_initial(year)
     n,last_date, last_solde = read_file_finance_ctg(year,solde_initial)
     df,date_solde_sg,solde_sg = read_file_sg()
-    
-    if df is None:
-        return
-    
     date_sg_max = max([datetime.strptime(x,'%d/%m/%Y') for x in df["Date"].tolist() if x != '' ])
     df['Date_']= df['Date'].apply(lambda x: datetime.strptime(x,'%d/%m/%Y') if x != '' else date_sg_max)
     
     df = df.query('Date_>@last_date')
-    if len(df) == 0:
-        messagebox.showinfo("showinfo", 'Pas de nouvelles opérations détectectées')
+    if len(df)==0:
+        messagebox.showinfo("showinfo", 'pas de nouveaux mouvements bancaires détectés')
         return
     df['Code CTG']=[""]*len(df)
     df['Code CTG affiné']=[""]*len(df)

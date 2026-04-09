@@ -196,8 +196,10 @@ def count_participation(path:pathlib.WindowsPath,
     info_sejours = '\n'.join(info_sejours)
     info_sejours_path = ctg_path / Path(str(year))
     info_sejours_path = info_sejours_path / Path('STATISTIQUES') / Path('TEXT')
-    info_sejours_path = info_sejours_path / Path(type_sortie_default+'.txt')
-    with open(info_sejours_path,'w') as f:
+    if not os.path.isdir(info_sejours_path):
+        os.mkdir(info_sejours_path)
+    info_sejours_file = info_sejours_path / Path(type_sortie_default+'.txt')
+    with open(info_sejours_file,'w') as f:
         f.write(info_sejours)
 
     nbr_evenement = counter-1
@@ -254,7 +256,8 @@ def evolution_effectif(ctg_path:pathlib.WindowsPath):
                 ratio_femmes.append(str(int(100*nf/(nh+nf)))+'%')
         return nbr_hommes, nbr_femmes,nbr_total,ratio_femmes
 
-    years = [2006] + [int(x) for x in os.listdir(ctg_path) if re.findall('^\d{4}$',x)]
+    data_path = ctg_path.parent.parent / Path('1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG')
+    years = [2006] + [int(x) for x in os.listdir(data_path) if re.findall('^\d{4}$',x)]
     nbr_hommes, nbr_femmes,nbr_total,ratio_femmes = _evolution_effectif(years)
 
     title='Evolution du nombre de membres CTG'
@@ -280,15 +283,15 @@ def evolution_age_median(ctg_path:pathlib.WindowsPath):
                 plt.text(x[i]-0.2,y[i]+0.1,z[i],size=10,rotation='vertical')
 
     xt = range(55,90)
-    years = [int(x) for x in os.listdir(ctg_path) if re.findall('^\d{4}$',x)]
+    data_path = ctg_path.parent.parent / Path('1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG')
+    years = [int(x) for x in os.listdir(data_path) if re.findall('^\d{4}$',x)]
     nbr_femmes = []
     ratio_femmes = []
     nbr_total = []
     age_mean = []
     age_naturel = []
     for idx,year in enumerate(years):
-        data_path = ctg_path.parent.parent / Path('1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG') /Path(str(year))
-        file = data_path / Path('effectif_ffct_'+str(year)+'.xlsx')
+        file = data_path  / Path(str(year)) / Path('effectif_ffct_'+str(year)+'.xlsx')
         df_effectif = pd.read_excel(file)
         df_effectif['Date de naissance'] = pd.to_datetime(df_effectif['Date de naissance'],
                                                                       format="%d/%m/%Y")
@@ -322,7 +325,8 @@ def evolution_age_median(ctg_path:pathlib.WindowsPath):
 
 def builds_excel_presence_au_club(ctg_path):
 
-    list_date = [int(x) for x in os.listdir(ctg_path) if re.findall('^\d{4}$',x)]
+    path_effectif = Path(ctg_path).parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+    list_date = [int(x) for x in os.listdir(path_effectif) if re.findall('^\d{4}$',x)]
     list_df = []
 
     for date in list_date:
@@ -359,7 +363,7 @@ def builds_excel_presence_au_club(ctg_path):
     df = pd.concat([df, split_df], axis=1)
     df = df.drop('date',axis=1)
     path_effectif = Path(ctg_path).parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
-    out_path = path_effectif / Path(str(list_date[-1]))
+    out_path = path_effectif / Path(str(list_date[-1])) / Path('STATISTIQUES')
     out_path = out_path / Path('effectif_history.xlsx')
     df.to_excel(out_path)
     return out_path
@@ -446,14 +450,14 @@ def plot_rebond(ctg_path:pathlib.WindowsPath):
 
 
     current_year = int(datetime.datetime.now().year)
-    file_path = ctg_path / Path(str(current_year)) / Path('STATISTIQUES') / Path('EXCEL')
+    file_path = ctg_path.parent.parent / Path('1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG')
+    file_path = file_path / Path(str(current_year)) / Path('STATISTIQUES')
     file_path = file_path / Path('effectif_history.xlsx')
     if not os.path.isfile(file_path):
         builds_excel_presence_au_club(ctg_path)
-
-    years_list = [int(x) for x in os.listdir(ctg_path) if re.findall('^\d{4}$',x)]
+    data_path = ctg_path.parent.parent / Path('1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG')
+    years_list = [int(x) for x in os.listdir(data_path) if re.findall('^\d{4}$',x)]
     year_dep = min(years_list)+2
-        
     df = pd.read_excel(file_path)
     df = df.fillna(0)
     dic = {}

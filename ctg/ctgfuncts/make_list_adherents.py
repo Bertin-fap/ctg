@@ -13,7 +13,6 @@ from docx2pdf import convert
 from ctg.ctgfuncts.ctg_classes import EffectifCtg
 import ctg.ctgfuncts as ctg
 
-year = 2025
 
 def make_list_adherents(ctg_path):
 

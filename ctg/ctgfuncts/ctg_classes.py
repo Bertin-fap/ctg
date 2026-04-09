@@ -347,7 +347,7 @@ class EffectifCtg():
     def get_rebond(self):
         current_year = datetime.now().year
         path_effectif = self.ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
-        path_history = path_effectif / Path(str(current_year))
+        path_history = path_effectif / Path(str(current_year)) / Path('STATISTIQUES')
         path_history = path_history / Path('effectif_history.xlsx')
         df = pd.read_excel(path_history)
         df = df.fillna(0)
