@@ -1,6 +1,10 @@
+_all_ = ["finance_ffct"]
+
 from pathlib import Path
 import re
 import os
+import datetime
+from tkinter import messagebox
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,13 +12,7 @@ import numpy as np
 
 import ctg.ctggui.guiglobals as gg
 
-year = 2025
-nbr_sympathisants = 5
-#C:\Users\franc\Nextcloud2\BASE_FINANCES_CTG\2026\COMPTABILITE-COURANTE\3_COMPTABILITE PRISE DE LICENCE
-root = Path.home() / Path(gg.nextcloud) /Path(r'BASE_FINANCES_CTG')/ Path(str(year)) / Path('COMPTABILITE-COURANTE')
-root = root / Path('3_COMPTABILITE PRISE DE LICENCE')
-
-def verif():
+def verif(root):
     from math import isnan, nan
     import pandas as pd
     
@@ -27,7 +25,6 @@ def verif():
         dh = x[1]
         dh = dh.fillna(0)
         montant_cheque = sum((dh['MONTANT_CHEQUE']).tolist())
-        #print(dh['MONTANT_CHEQUE'].tolist(),sum(dh['MONTANT_CHEQUE'].tolist()))
         total = sum((dh['TOTAL']).tolist())
         entree_club = sum(dh['COTISATION_CLUB '].tolist())
         revue = sum((dh['revue_ffct']).tolist())
@@ -41,9 +38,9 @@ def verif():
                   entree_club,
                   revue,
                   ecart)
-    print('Erreur totale :',s)
+    messagebox.showinfo("showinfo", f'Erreur totale : {s} €')
 
-def plot_pie_synthese(year,finance_dic,n_adherants):
+def plot_pie_synthese(year,finance_dic,n_adherants,root):
 
     '''Plot from the EXCEL file `synthese.xlsx` the pie plot of 
     the number of participation to the evenments'''
@@ -67,9 +64,6 @@ def plot_pie_synthese(year,finance_dic,n_adherants):
 
     explode = [explode_dic[typ] for typ in sorties]
 
-
-    # Creating plot
-    #fig = plt.figure(figsize =(10, 7))
     _, _, autotexts = plt.pie(data,
                               labels = sorties,
                               autopct = lambda pct: func(pct, data),
@@ -85,7 +79,7 @@ def plot_pie_synthese(year,finance_dic,n_adherants):
 
     fig_file = 'BUDGET_INSCRIPTION.png'
     plt.savefig(root / Path(fig_file),bbox_inches='tight')
-   # plt.show()
+    plt.show()
 
 def borderau(row):
     
@@ -94,7 +88,7 @@ def borderau(row):
         return nom.split()[0] + " - " + row['Banque']
     return ''
 
-def read_ffct_file():
+def read_ffct_file(root):
     file = 'finances_ffct.xlsx'
     
     df = pd.read_excel(root / Path(file))
@@ -132,7 +126,7 @@ def erreur_cheque(df):
     print('erreur entre le montant des chèques le montant des options (licence, assurance, revue, cotistion club) :',erreur)
     return
 
-def rapprochement(ffct_df):
+def rapprochement(ffct_df,root):
     dic = {}
     for x in ffct_df.groupby(['Nom']):
         
@@ -184,7 +178,6 @@ def rapprochement(ffct_df):
     finance_dic['Assurance'] = df['assurance_x'].sum()
     finance_dic['Revue'] = df['revue_x'].sum()
     finance_dic['Cotisation CTG'] = df['COTISATION_CLUB '].sum()
-    #finance_dic['Chèques'] = [df['MONTANT_CHEQUE'].sum()]
    
     df['erreur'] = df['TOTAL'] - df['assurance_y'] - df['revue_y'] - df['licence']
     print('erreur entre le montant FFCT le montant option (licence, assurance, revue,) : ',df['erreur'].sum())
@@ -196,9 +189,16 @@ def rapprochement(ffct_df):
                         inplace=True)
     df.to_excel(root / Path('budget_adhesion_vs_ffct.xlsx'),index=None)
     return finance_dic,dh
-
-ffct_df = read_ffct_file()
-finance_dic, dh = rapprochement(ffct_df)
-verif()
-print(finance_dic)
-plot_pie_synthese(year,finance_dic,len(dh))
+    
+def finance_ffct():
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+    if month == 11 or month == 12:
+        year = year + 1
+    root = Path.home() / Path(gg.nextcloud) / Path('BASE_FINANCES_CTG')/ Path(str(year)) / Path('COMPTABILITE-COURANTE')
+    root = root / Path('3_COMPTABILITE PRISE DE LICENCE')
+    ffct_df = read_ffct_file(root)
+    finance_dic, dh = rapprochement(ffct_df,root)
+    verif(root)
+    plot_pie_synthese(year,finance_dic,len(dh),root)

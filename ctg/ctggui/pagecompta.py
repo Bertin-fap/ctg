@@ -13,6 +13,7 @@ import pandas as pd
 from ctg.ctgfuncts.make_list_adherents import make_list_emargement
 from ctg.ctgfuncts.make_list_adherents import make_list_adherents
 from ctg.ctgfuncts.ctg_sg2xlsx import sg2xlsx
+from ctg.ctgfuncts.ctg_ffvelo_adhesion import finance_ffct
 
 from ctg.ctgfuncts.ctg_classes import EffectifCtg
 from ctg.ctggui.guitools import place_after
@@ -36,9 +37,9 @@ def create_compta(self,master, page_name, institute, ctg_path):
     def _create_sg2xlsx():
         sg2xlsx()
         
-        
-    
-           
+    def _ffct_finance():
+        finance_ffct()    
+         
     variable_year = tk.StringVar(self)
     variable_year.set('')
     variable_jour = tk.StringVar(self)
@@ -72,3 +73,10 @@ def create_compta(self,master, page_name, institute, ctg_path):
                                   command = _create_sg2xlsx)
 
     place_bellow(liste_emargement_button,liste_sg2excel_button,dx=0,dy=10)
+    
+    
+    ffct_finance_button = tk.Button(self,
+                                text = "FFCT Finance",
+                                command = _ffct_finance)
+
+    place_bellow(liste_sg2excel_button ,ffct_finance_button,dx=0,dy=10)

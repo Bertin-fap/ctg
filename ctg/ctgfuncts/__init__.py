@@ -12,4 +12,4 @@ from ctg.ctgfuncts.excel2word import *
 from ctg.ctgfuncts.make_calendar import *
 from ctg.ctgfuncts.make_list_adherents import *
 from ctg.ctgfuncts.ctg_sg2xlsx import *
-
+from ctg.ctgfuncts.ctg_ffvelo_adhesion import *
