@@ -14,6 +14,7 @@ from ctg.ctgfuncts.make_list_adherents import make_list_emargement
 from ctg.ctgfuncts.make_list_adherents import make_list_adherents
 from ctg.ctgfuncts.ctg_sg2xlsx import sg2xlsx
 from ctg.ctgfuncts.ctg_ffvelo_adhesion import finance_ffct
+from ctg.ctgfuncts.ctg_operation import create_justificatif
 
 from ctg.ctgfuncts.ctg_classes import EffectifCtg
 from ctg.ctggui.guitools import place_after
@@ -31,11 +32,28 @@ def create_compta(self,master, page_name, institute, ctg_path):
         variable_jour.set(day)
         variable_year.set(year)
 
-    def _create_liste_emargement():
-        make_list_emargement(ctg_path,variable_jour.get(),variable_month.get(),variable_year.get())
+    def _input_new_operation():
+        
+        if somme_value.get() == '':
+            tkinter.messagebox.showwarning("WARNING", "Vous devez saisir la somme")
+            return
+            
+        if nom_operation.get() == '':
+            tkinter.messagebox.showwarning("WARNING", "Vous devez le libellé de l'opération")
+            return
+            
+        if variable_year.get() == '':
+            tkinter.messagebox.showwarning("WARNING", "Vous devez la date de l'opération")
+            return
+            
+        ymd= f'{variable_year.get()}{str(variable_month.get()).zfill(2)}{str(variable_jour.get()).zfill(2)}'
+        somme = somme_value.get()  
+        somme = str("%.2f" % (float( somme.replace(',','.')))).replace('.',',')
+        create_justificatif(ymd,variable_year.get(),nom_operation.get(),somme)
+        
     
     def _create_sg2xlsx():
-        sg2xlsx()
+        pass
         
     def _ffct_finance():
         finance_ffct()    
@@ -59,12 +77,27 @@ def create_compta(self,master, page_name, institute, ctg_path):
     date_button = tk.Button(self,
                             text = "Saisissez la date de l'opération",
                             command = grad_date)
-
     place_after(cal,date_button,dx=0,dy=250)
+                            
+    ## Nature de l'opération
+    operation = tk.Label(self,text="Nature de l'opération :")
+    place_bellow(cal,operation,dx=350)
+    nom_operation = tk.StringVar()
+    textbox1 = tk.Entry(self, textvariable=nom_operation)
+    place_after(operation, textbox1,dy =0) 
+
+    ## Somme
+    somme = tk.Label(self,text='Somme (€) :')
+    place_bellow(cal,somme,dx=350,dy=200)
+    somme_value = tk.StringVar()
+    textbox2 = tk.Entry(self, textvariable=somme_value)
+    place_after(somme, textbox2,dy =0)
+
     
+    ## Saisir une opération
     liste_emargement_button = tk.Button(self,
-                            text = "Création de la liste d'émargement",
-                            command = _create_liste_emargement)
+                            text = "Entrer une opération",
+                            command = _input_new_operation)
 
     place_bellow(date_button,liste_emargement_button,dx=30,dy=10)
     
