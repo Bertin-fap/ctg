@@ -12,7 +12,7 @@ import numpy as np
 
 import ctg.ctggui.guiglobals as gg
 
-def verif(root):
+def verif(root,erreur_txt):
     from math import isnan, nan
     import pandas as pd
     
@@ -38,7 +38,8 @@ def verif(root):
                   entree_club,
                   revue,
                   ecart)
-    messagebox.showinfo("showinfo", f'Erreur totale : {s} €')
+    erreur_txt = erreur_txt + f'Erreur totale : {s} €'
+    messagebox.showinfo("showinfo", erreur_txt)
 
 def plot_pie_synthese(year,finance_dic,n_adherants,root):
 
@@ -46,10 +47,10 @@ def plot_pie_synthese(year,finance_dic,n_adherants,root):
     the number of participation to the evenments'''
 
     def func(pct, allvalues):
-        absolute = round(pct / 100.*np.sum(allvalues),0)
-        #return "{:.1f}%\n({:d})".format(pct, absolute)
-        label = f"{int(round(absolute,1))} €\n{round(pct,1)} %"
-        return label
+        absolute = pct / 100.*np.sum(allvalues)
+        return "{:.1f}%\n({:.0f}€)".format(pct, absolute)
+        #label = f"{absolute} €\n{round(pct,1)} %"
+        #return label
 
 
 
@@ -91,6 +92,10 @@ def borderau(row):
 def read_ffct_file(root):
     file = 'finances_ffct.xlsx'
     
+    if not os.path.isfile(root / Path(file)):
+        messagebox.showinfo("showinfo", f"le fichier:\n{root / Path(file)}\est inexistant!")
+        return None
+    
     df = pd.read_excel(root / Path(file))
     
     df.rename(columns={"Libellé de l'écriture": "ecriture", }, inplace=True)
@@ -123,8 +128,8 @@ def erreur_cheque(df):
     erreur = df['COTISATION_CLUB '].sum() + df['licence FFCT'].sum()
     erreur = erreur+df['assurance_x'].sum()+df['revue_x'].sum()
     erreur = erreur-df['MONTANT_CHEQUE'].sum()
-    print('erreur entre le montant des chèques le montant des options (licence, assurance, revue, cotistion club) :',erreur)
-    return
+    erreur_cheque_txt = f"erreur entre le montant des chèques le montant des options : {erreur}€\n\n"
+    return erreur_cheque_txt
 
 def rapprochement(ffct_df,root):
     dic = {}
@@ -171,7 +176,7 @@ def rapprochement(ffct_df,root):
            'licence', 'assurance_y', 'revue_y', 'total']]
     
     
-    erreur_cheque(df)
+    erreur_cheque_txt = erreur_cheque(df)
 
     finance_dic = {}
     finance_dic['Licence FFCT'] = df['licence FFCT'].sum()
@@ -180,7 +185,8 @@ def rapprochement(ffct_df,root):
     finance_dic['Cotisation CTG'] = df['COTISATION_CLUB '].sum()
    
     df['erreur'] = df['TOTAL'] - df['assurance_y'] - df['revue_y'] - df['licence']
-    print('erreur entre le montant FFCT le montant option (licence, assurance, revue,) : ',df['erreur'].sum())
+    erreur_cheque_ffct = f"erreur entre le montant FFCT le montant option : {df['erreur'].sum()}€\n\n"
+    erreur_txt = erreur_cheque_txt + erreur_cheque_ffct
     df.rename(columns={'revue_x': 'revue_ctg',
                        'assurance_x': 'assurance_ctg',
                        'licence FFCT' : 'licence_ffct',
@@ -188,7 +194,7 @@ def rapprochement(ffct_df,root):
                         'revue_y' : 'revue_ffct'},
                         inplace=True)
     df.to_excel(root / Path('budget_adhesion_vs_ffct.xlsx'),index=None)
-    return finance_dic,dh
+    return finance_dic, dh, erreur_txt
     
 def finance_ffct():
     now = datetime.datetime.now()
@@ -199,6 +205,8 @@ def finance_ffct():
     root = Path.home() / Path(gg.nextcloud) / Path('BASE_FINANCES_CTG')/ Path(str(year)) / Path('COMPTABILITE-COURANTE')
     root = root / Path('3_COMPTABILITE PRISE DE LICENCE')
     ffct_df = read_ffct_file(root)
-    finance_dic, dh = rapprochement(ffct_df,root)
-    verif(root)
+    if ffct_df is None:
+        return
+    finance_dic, dh, erreur_txt = rapprochement(ffct_df,root)
+    verif(root, erreur_txt)
     plot_pie_synthese(year,finance_dic,len(dh),root)

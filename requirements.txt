@@ -12,3 +12,4 @@ docxtpl
 docxcompose
 qrcode
 tkcalendar
+PyPDF2
