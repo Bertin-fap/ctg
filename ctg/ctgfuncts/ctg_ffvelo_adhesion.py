@@ -1,4 +1,4 @@
-_all_ = ["finance_ffct"]
+_all_ = ["finance_ffct","mouvement_comptable_ffvelo"]
 
 from pathlib import Path
 import re
@@ -210,3 +210,51 @@ def finance_ffct():
     finance_dic, dh, erreur_txt = rapprochement(ffct_df,root)
     verif(root, erreur_txt)
     plot_pie_synthese(year,finance_dic,len(dh),root)
+    
+
+def mouvement_comptable_ffvelo():
+    ctg_path_finance =Path.home() / Path(gg.nextcloud) 
+    ctg_path_finance = ctg_path_finance / Path('BASE_FINANCES_CTG') / Path(str(year)) / Path('COMPTABILITE-COURANTE')
+    ctg_path_finance = ctg_path_finance / Path('3_COMPTABILITE PRISE DE LICENCE') 
+    file = ctg_path_finance / Path("MouvementComptable.xlsx")
+    df = pd.read_excel(file,skiprows=3,skipfooter=3)
+    solde_initial = float((df.iloc[0]["Solde"]).replace(" E",''))
+    df = df.drop([0])
+    df = df[df.columns[1:]]
+    df["Débit"] = df["Débit"].apply(lambda x: float(x.replace(" E",'')))
+    df["Crédit"] = df["Crédit"].apply(lambda x: float(x.replace(" E",'')))
+    df["Solde"] = df["Solde"].apply(lambda x: float(x.replace(" E",'')))
+    dg = df.groupby(["Libellé"]).sum()
+    dh = dg["Nombre"]
+    ffct_dic = {}
+    
+    ffct_dic["Prise de Licence"] = [dg["Nombre"]["Prise de Licence"]-dg["Nombre"]["Annulation de Licence"],
+                                    dg["Débit"]["Prise de Licence"]-dg["Crédit"]["Annulation de Licence"]]
+    ffct_dic["Souscription Assurance"] = [dg["Nombre"]["Souscription Assurance"]-dg["Nombre"]["Annulation assurance"],
+                                          dg["Débit"]["Souscription Assurance"]-dg["Crédit"]["Annulation assurance"]]
+    ffct_dic["Souscription Revue fédérale"] = [dg["Nombre"]["Souscription Revue fédérale"]-dg["Nombre"]["Annulation revue federale"],
+                                          dg["Débit"]["Souscription Revue fédérale"]-dg["Crédit"]["Annulation revue federale"]]
+    ffct_dic["Débit Divers"] = [dg["Nombre"]["Débit Divers"],
+                                dg["Débit"]["Débit Divers"]]
+    ffct_dic["Réaffiliation Club"] = [dg["Nombre"]["Réaffiliation Club"],
+                                dg["Débit"]["Réaffiliation Club"]]
+    ffct_dic["Souscription d'Assurance Option A"] = [dg["Nombre"]["Souscription d'Assurance Option A"],
+                                dg["Débit"]["Souscription d'Assurance Option A"]]
+    ffct_dic["Souscription d'Assurance Option B"] = [dg["Nombre"]["Souscription d'Assurance Option B"],
+                                dg["Débit"]["Souscription d'Assurance Option B"]]
+    ffct_dic["Prélèvement"] = [dg["Nombre"]["Prélèvement"],
+                                dg["Crédit"]["Prélèvement"]]
+    ffct_dic["Solde initial"] = ['',
+                                solde_initial]
+    l = sum([x[1] for x in list(ffct_dic.values())[:-2]])
+    print(l)
+    print(ffct_dic["Prélèvement"][1])
+    print(solde_initial)
+
+    print(solde_initial - (l-ffct_dic["Prélèvement"][1]))
+   
+    ffct_dic["Solde final"] = ['',
+                                solde_initial - (l-ffct_dic["Prélèvement"][1])]
+    ffct_df = pd.DataFrame.from_dict(ffct_dic).T
+    ffct_df.columns = ["Nombre","Somme (€)"]
+    ffct_df.to_excel(ctg_path_finance / Path("MouvementComptable_resume.xlsx"))   

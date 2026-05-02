@@ -14,8 +14,8 @@ from ctg.ctgfuncts.make_list_adherents import make_list_emargement
 from ctg.ctgfuncts.make_list_adherents import make_list_adherents
 from ctg.ctgfuncts.ctg_sg2xlsx import sg2xlsx
 from ctg.ctgfuncts.ctg_ffvelo_adhesion import finance_ffct
+from ctg.ctgfuncts.ctg_sg2xlsx import sg2xlsx
 from ctg.ctgfuncts.ctg_operation import create_justificatif
-
 from ctg.ctgfuncts.ctg_classes import EffectifCtg
 from ctg.ctggui.guitools import place_after
 from ctg.ctggui.guitools import place_bellow
@@ -53,7 +53,7 @@ def create_compta(self,master, page_name, institute, ctg_path):
         
     
     def _create_sg2xlsx():
-        pass
+        sg2xlsx()
         
     def _ffct_finance():
         finance_ffct()    
