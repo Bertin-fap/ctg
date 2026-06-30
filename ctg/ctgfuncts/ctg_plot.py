@@ -1,0 +1,232 @@
+__all_ = ["built_lat_long",
+          "plot_ctg",
+          "stat_sorties_club",]
+
+# Standard library import
+import datetime
+import operator
+import os
+from collections import Counter
+from math import asin, cos, radians, sin, sqrt
+from pathlib import Path
+from tkinter import messagebox
+
+# 3rd party imports
+import folium
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import pandas
+
+# Internal imports
+from ctg.ctgfuncts.ctg_classes import EffectifCtg
+from ctg.ctgfuncts.ctg_effectif import count_participation
+from ctg.ctgfuncts.ctg_tools import parse_date
+from ctg.ctgfuncts.ctg_tools import built_lat_long
+
+def plot_ctg(ctg_path,year:str):
+
+    '''generates an html file of the membrers geographical location using the
+    column ville of the DataFrame df
+    '''
+
+    trace_radius = False
+    eff = EffectifCtg(year,ctg_path)
+    df = eff.effectif_tot
+    
+    dh = built_lat_long(df)
+
+    villes_set = set(dh['Ville'])
+    dh = dh.dropna()
+    villes1_set = set(dh['Ville'])
+    if len(villes_set-villes1_set) !=0:
+        messagebox.showwarning('Villes non reconnues',';'.join(list(villes_set-villes1_set)))
+
+    group_adjacent = lambda a, k: list(zip(*([iter(a)] * k)))
+
+    dict_cyclo = {}
+    dict_cyclo_l = {}
+    for ville,y in df.groupby(['Ville'])['Nom']:
+        chunk = []
+        for i in range(0,len(y),3):
+            chunk.append(','.join(y[i:i+3] ))
+
+        dict_cyclo[ville] = '\n'.join(chunk)
+        dict_cyclo_l[ville[0]] = len(y)
+    dict_cyclo = {k[0]:v for k,v in dict_cyclo.items()}
+    kol = folium.Map(location=[45.2,5.7], tiles='openstreetmap', zoom_start=12)
+
+    long_genoble, lat_grenoble = dh.query("Ville=='GRENOBLE'")[['long','lat']].values.flatten()
+    if trace_radius:
+        folium.Circle(
+                      location=[lat_grenoble, long_genoble],
+                      radius=8466,
+                      popup='50 km ',
+                      color="black",
+                      fill=False,
+                      ).add_to(kol)
+                      
+    for latitude,longitude,size, ville in zip(dh['lat'],dh['long'],dh['number'],dh['Ville']):
+
+        long_ville, lat_ville =dh.query("Ville==@ville")[['long','lat']].values.flatten()
+        dist_grenoble_ville = _distance(lat_grenoble, long_genoble,lat_ville, long_ville )
+        color='red' if dist_grenoble_ville>19.35 else 'blue'
+        if ville == "grenoble":
+            folium.Circle(
+                location=[latitude, longitude],
+                radius=size*50,
+                popup=f'{ville} ({size}): {dict_cyclo[ville]} ',
+                color="yellow",
+                fill=True,
+            ).add_to(kol)
+        else:
+                folium.Circle(
+                location=[latitude, longitude],
+                radius=size*100,
+                popup=f'{ville} ({size}): {dict_cyclo[ville]}',
+                color=color,
+                fill=True,
+            ).add_to(kol)
+    
+    list_villes = sorted(dict_cyclo_l.items(), key=operator.itemgetter(1),reverse=True)
+    list_villes = '\n\n'.join([f'{t[0]} ({str(t[1])}) : {dict_cyclo[t[0]]}' for t in list_villes])
+    list_villes_sorted = sorted(dict_cyclo_l.keys(),reverse=False)
+    list_villes_sorted = [x.capitalize() for x in list_villes_sorted]
+   
+
+    output_path = ctg_path.parent.parent / Path(r"1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG")
+    output_path = output_path / Path(f'{str(year)}/STATISTIQUES')
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    file = output_path / Path(f'info_effectif_{str(year)}.md') 
+    with open(file,'a',encoding='utf-8') as f:
+        f.write(f'\n\nNombre de villes : {len(dict_cyclo)}\n')
+        f.write(list_villes)
+        f.write('\n\n')
+        f.write(', '.join(list_villes_sorted))
+        
+    file_html = output_path / Path(f"ctg_{year}.html")
+    kol.save(file_html)
+
+    info_title = "- Information -"
+    info_text  = ("L'analyse de la localisation géographique des membres a été effectuée"
+                  f"pour l'année {year} "
+                  f"\n\nLe fichier obtenu : 'ctg_{year}.html "
+                  "a été créé dans le dossier :"
+                  f"\n\n{output_path}")
+
+    messagebox.showinfo(info_title, info_text)   
+    return
+
+def stat_sorties_club(path_sorties_club, ctg_path, ylim=None, file_label=None,year = None):
+
+    ''' to do
+    '''
+
+    def addlabels(lab):
+
+        for i in range(len(lab)):
+
+            plt.text(i-0.2,lab[i][2]+1,
+                     lab[i][3]+f'({lab[i][2]})',
+                     size=10,
+                     rotation=90,
+                     color= 'k' if lab[i][1]=='RANDONNEE' else 'g'
+                     )
+
+
+    no_match,df_total,_ = count_participation(path_sorties_club,ctg_path,year)
+    if no_match is None:
+        messagebox.showinfo('WARNING',"Aucun participant n'a participé à ce type de sortie" )
+    else:
+        text_message = ''
+        for tup in no_match:
+              text_message += (f'Le nom {tup[1]} '
+                             f'est inconnu dans le fichier : {os.path.split(tup[0])[-1]}')
+              text_message += '\n'
+
+        if len(text_message) : messagebox.showinfo('WARNING',text_message )
+
+    if year is None:
+        currentDateTime = datetime.datetime.now()
+        date = currentDateTime.date()
+        year = date.strftime("%Y")
+
+    
+    df_total = df_total[df_total['sejour']!='aucun' ] # skip the member with no event
+    
+    df_total['sejour'] = df_total['sejour'].apply(lambda s:
+                                           parse_date(s,str(year)).strftime('%y-%m-%d'))
+    df_total.sort_values(by='sejour', ascending=True, inplace=True)
+    df_total = df_total.fillna(0)
+    lab =[(k,v['Type'].tolist()[0],len([x for x in v['Nom'] if x !=0]),v['nom_parcours'].tolist()[0]) for  k,v in df_total .groupby('sejour')]
+    lab = sorted(lab, key=lambda tup: tup[0])
+    nombre_total_participations = sum([x[2] for x in lab])
+    
+    nombre_sorties_effectuees = len([x[2] for x in lab if x[2] != 0])
+
+    dic_sexe = dict(M="Homme",F="Femme")
+    dic_vae = dict(Oui="VAE",Non="Musculaire")
+    df_total = df_total.replace({"Sexe": dic_sexe})
+    df_total = df_total.replace({"Pratique VAE": dic_vae})
+    if df_total['Nom'].isna().all():
+        return None
+    dg = df_total.groupby(['Sexe','Pratique VAE'])['sejour'].value_counts().unstack().T
+
+    fig, ax = plt.subplots(figsize=(15, 5))
+    dg[['Femme','Homme']].plot(kind='bar',
+                       ax=ax,
+                       width=0.5,
+                       stacked=True,
+                       color = {('Femme', 'Musculaire'): '#1f77b4',
+                                ('Femme', 'VAE'): '#ff7f0e',
+                                ('Homme', 'Musculaire'): '#2ca02c',
+                                ('Homme', 'VAE'): '#d62728',} )
+
+    addlabels(lab)
+
+    plt.xlabel('')
+    plt.tick_params(axis='x', rotation=90,labelsize=15)
+    ax.set_xticklabels([x[3:] for x in list(dg.index)])
+    plt.ylabel('Nombre de licenciers',size=15)
+    plt.xlabel('')
+    plt.tick_params(axis='x', rotation=90,labelsize=15)
+    plt.tick_params(axis='y',labelsize=15)
+    type_sortie = f'{os.path.split(path_sorties_club)[-1]}  ({str(year)})\n'
+    type_sortie = type_sortie  + f'Nombre total de participations : {nombre_total_participations}, nombre_sorties_effectuees : {nombre_sorties_effectuees}'
+    plt.title(type_sortie,fontsize=15,pad=50)
+
+    if ylim is not None:
+        plt.ylim(ylim)
+    else:
+        ylim = (0,1.5*max(Counter(df_total['sejour']).values()))
+        plt.ylim(ylim)
+
+
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol = 1)
+    plt.tight_layout()
+    fig_file = os.path.split(path_sorties_club)[-1].replace(' ','_')+'.png'
+    output_path = ctg_path / Path(str(year)) / Path('STATISTIQUES/IMAGE')
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+    file = output_path / fig_file
+    plt.savefig(file ,bbox_inches='tight')
+    plt.show()
+
+    return df_total
+
+def _distance(ϕ1:float, λ1:float,ϕ2:float, λ2:float)->float:
+
+    '''Computes the distance in kilometers between to points referenced
+    by there longitudes (in decimal degrees) and there latitudes (in decimal degrees)
+    '''
+
+    ϕ1, λ1 = radians(ϕ1), radians(λ1)
+    ϕ2, λ2 = radians(ϕ2), radians(λ2)
+    rad = 6371 # Earth radius [km]
+    dist = 2 * rad * asin(
+                          sqrt(
+                               sin((ϕ2 - ϕ1) / 2) ** 2
+                             + cos(ϕ1) * cos(ϕ2) * sin((λ2 - λ1) / 2) ** 2
+                            ))
+    return dist

@@ -1,2 +1,1 @@
-# ctg
-ctg statistiques
+# ctgutils

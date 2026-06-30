@@ -1,0 +1,2 @@
+include ctg/ctgfuncts/CTG_RefFiles/*.*
+include make_ctg_exe.bat
