@@ -105,7 +105,8 @@ __all__ = ['ACTIVITE_LIST',
            'nextcloud']
            
 # Standard HELP_SEJOURlibrary imports
-import math           
+import math 
+from pathlib import Path          
 
 # 3rd party imports
 from screeninfo import get_monitors
@@ -121,7 +122,9 @@ FIRST_YEAR = 2021
 # Setting the title of the application main window (internal)
 APPLICATION_WINDOW_TITLE = f"CTG_Meter - Analyse des statistiques des effectifs et des sorties"
 
-nextcloud = "Nextcloud2"
+nextcloud = "Nextcloud"
+if str(Path.home()) == r"C:\Users\franc":
+    nextcloud = "Nextcloud2"
 
 ######################## Definition of display globals ###########################
 

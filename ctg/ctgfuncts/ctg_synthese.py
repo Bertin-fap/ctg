@@ -233,20 +233,14 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
     file_in = file_in / Path('EXCEL') / Path('synthese.xlsx')
     df_total = pd.read_excel(file_in)
     df_total = df_total.dropna(subset=['Nom'])
+    df_total.sort_values('sejour',inplace=True)
     df_total = df_total.query('Type==@type_sejour')
+    labelx = df_total['nom_parcours'].unique()
+    duree_sejour = [int(y['nbr_jours'].tolist()[0]) for x,y in df_total.groupby('sejour')]
+    cout_list = [y['cout_sejour'].tolist()[0] for x,y in df_total.groupby('sejour')]
     dg = df_total.groupby('sejour').agg('count')['N° Licencié']
-    
-    file_info = Path(ctg_path) / Path(year) / Path('DATA') / Path('info_randos.xlsx')
-    info_df = pd.read_excel(file_info)
-    type_sejour_m = type_sejour.lower()
-    info_df=info_df.query('type==@type_sejour_m')
-    info_dic = dict(zip(info_df['date'],info_df['name_activite']))
-    info_duree = dict(zip(info_df['date'],info_df['nbr_jours']))    
-    tag_list = [normalize_tag(x,year) for x in dg.index]
-    labelx = [f'{k[3:8]} {info_dic[k].strip()}' for k in tag_list]
-    duree_sejour = [info_duree[k] for k in tag_list]
-
-    cout_total_rando = get_cout_total(year,type_sejour.lower(),dg,ctg_path)
+    nombre_participant_list = dg.tolist()
+    cout_total_rando = sum([x[0]*x[1] for x in zip(cout_list,nombre_participant_list)])
 
     fig = plt.figure()
     plt.bar(range(len(dg)),dg.tolist())
@@ -261,6 +255,7 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
                        f'# participants : '
                        f'{sum(dg)}, Coût : {cout_total_rando} €')
         _ = plt.title(long_string)
+        file_out = ctg_path / Path(year) / Path('STATISTIQUES') / Path('IMAGE') / Path('synthese_randonnee.png')
     else:
         y = [1] *  len(duree_sejour)
         addlabels(list(range(len(dg))),y,1,duree_sejour)
@@ -270,8 +265,11 @@ def synthese_randonnee(year:str,ctg_path:pathlib.WindowsPath,type_sejour:str):
                        f'# participants : {sum(dg)}'
                        f', Coût : {cout_total_rando} €')
         _ = plt.title(long_string)
+        file_out = ctg_path / Path(year) / Path('STATISTIQUES') / Path('IMAGE') / Path('synthese_sejour.png')
     plt.tight_layout()
+    plt.savefig(file_out)
     plt.show()
+
 
 def nbr_sejours_adherent(year:str, ctg_path:pathlib.WindowsPath):
 
