@@ -77,7 +77,7 @@ def get_info_randos2df(ctg_path:pathlib.WindowsPath,year:str):
 
     '''Reads the Excel file info_randos of the year  `year`'''
 
-    info_path = ctg_path / Path(str(year)) / Path('DATA') / Path('info_randos.xlsx')
+    info_path = ctg_path / Path(str(year)) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
     df = pd.read_excel(info_path)
 
     return df
@@ -90,7 +90,9 @@ def get_sejour_info(ctg_path:pathlib.WindowsPath,year:str)->tuple:
 
     sejour_info = namedtuple('sejour_info', 'nbr_jours nbr_sejours histo')
     df =  get_info_randos2df(ctg_path,year)
-    info_sejour = df.query('type=="sejour"')['nbr_jours'].tolist()
+    #info_sejour = df.query('type=="sejour"')['nbr_jours'].tolist()
+    df =df.query('Type=="SEJOUR"')
+    info_sejour =[y.iloc[0]['nbr_jours'] for x,y in df.groupby('sejour')]
 
     c = Counter()
     c = Counter(info_sejour)
