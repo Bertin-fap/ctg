@@ -103,8 +103,13 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
         if year == '':
             tkinter.messagebox.showwarning("WARNING", "Vous devez saisir la date de la sortie")
             return
-
- 
+        
+        today = datetime.datetime.today()
+        current_year = today.year
+        if int(year) > int(current_year):
+            tkinter.messagebox.showwarning("WARNING", f"Vous ne pouvez saisir une année postèrieure à {current_year}")
+            return
+            
         output_path,type = set_outpath()   
             
         shutil.copyfile(input_file, output_path)
