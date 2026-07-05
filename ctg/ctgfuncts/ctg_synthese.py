@@ -30,6 +30,7 @@ from ctg.ctgfuncts.ctg_classes import EffectifCtg
 from ctg.ctgfuncts.ctg_tools import get_sejour_info
 from ctg.ctgfuncts.ctg_tools import get_cout_total
 from ctg.ctgfuncts.ctg_tools import normalize_tag
+from ctg.ctgfuncts.ctg_tools import get_sejour_info
 
 def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
 
@@ -52,8 +53,8 @@ def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
     df_total['Pratique VAE'].fillna('Non',inplace=True)
 
     # nombre moyen de participant par activité
-    for x in df_total.groupby(['Type']):
-        print(x[0],len(x[1]),len(set(x[1]['sejour'])),len(x[1])/len(set(x[1]['sejour'])))
+    #for x in df_total.groupby(['Type']):
+        #print(x[0],len(x[1]),len(set(x[1]['sejour'])),len(x[1])/len(set(x[1]['sejour'])))
     
     output_path = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL')  
     if not os.path.isdir(output_path):
@@ -416,8 +417,8 @@ def evolution_sorties(type:str,ctg_path:pathlib.WindowsPath):
         tup = stat_dic[year]
         tot_club = tup.sortie_dimanche_club+tup.sortie_jeudi_club+tup.sortie_samedi_club
         tot = tup.nbr_jours_participation_sejours+tot_club+tup.randonnee
-        if tot != 0:
-            print(year, 100*tot_club/tot )
+        #if tot != 0:
+            #print(year, 100*tot_club/tot )
 
 
     if type == 'nbr_jours_participation_sejours':
@@ -517,16 +518,16 @@ def stat_cout_sejour(year:str,ctg_path:pathlib.WindowsPath)->None:
 
     df = pd.read_excel(file)
 
-    file = ctg_path / Path(year) / Path('DATA') / Path('info_randos.xlsx')
-    info_df = pd.read_excel(file)
-    nbr_sejours = info_df.query('type=="sejour"')['date'].count()
-    nbr_jours = sum([x for x in info_df["nbr_jours"] if x>1])
+    info_sejour = get_sejour_info(ctg_path,year)
+    # 'nbr_jours nbr_sejours histo cout cout_total'
+    nbr_sejours = info_sejour.nbr_sejours
+    nbr_jours = info_sejour.nbr_jours
 
     comment = f'Année : {year}\n'
     comment += f'Nombre de séjours : {nbr_sejours}\n'
     comment += 'Analyse du coût des séjours :\n'
     comment_cout = plot_histo('COUT_SEJOUR',0,0, 'Coût séjour €','# membres','€',[0,50,600,1200,1800,2400,3000])
-    comment += f'     Cout annuel des séjours : {sum(info_df["Cout"].fillna(0))} €\n'
+    comment += f'     Cout annuel des séjours : {info_sejour.cout_total} €\n'
     comment += comment_cout
     comment += 'Analyse de la durée des séjours :\n'
     comment += f'     Durée totale des séjours : {nbr_jours} jours\n'

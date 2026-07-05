@@ -88,17 +88,19 @@ def get_sejour_info(ctg_path:pathlib.WindowsPath,year:str)->tuple:
     of the year
     '''
 
-    sejour_info = namedtuple('sejour_info', 'nbr_jours nbr_sejours histo')
+    sejour_info = namedtuple('sejour_info', 'nbr_jours nbr_sejours histo cout cout_total')
     df =  get_info_randos2df(ctg_path,year)
     #info_sejour = df.query('type=="sejour"')['nbr_jours'].tolist()
     df =df.query('Type=="SEJOUR"')
-    info_sejour =[y.iloc[0]['nbr_jours'] for x,y in df.groupby('sejour')]
+    info_sejour = [y.iloc[0]['nbr_jours'] for x,y in df.groupby('sejour')]
+    cout = [y.iloc[0]['cout_sejour'] for x,y in df.groupby('sejour')]
+    cout_total = sum(cout)
 
     c = Counter()
     c = Counter(info_sejour)
 
 
-    sejour_info_tup = sejour_info( sum(info_sejour),len(info_sejour),c)
+    sejour_info_tup = sejour_info( sum(info_sejour),len(info_sejour),c, cout, cout_total)
 
     return sejour_info_tup
 
