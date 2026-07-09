@@ -56,7 +56,8 @@ class EffectifCtg():
         df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
                                                  format="%d/%m/%Y")
         df['Age']  = df['Date de naissance'].apply(lambda x :
-                                                  (pd.Timestamp(int(year), 9, 30)-x).days/365)
+                                                  (pd.Timestamp(int(year), 9, 30)-x).days)/365
+        df['Age'] = df['Age'].astype(float).apply(lambda x : round(x,2))
         # add column distance from Grenoble
         dh = built_lat_long(df)
         df['distance'] = df.apply(lambda row: self.distance_(row, dh),axis=1)

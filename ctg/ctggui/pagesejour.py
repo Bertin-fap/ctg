@@ -21,6 +21,7 @@ from ctg.ctggui.guitools import place_after
 from ctg.ctggui.guitools import place_bellow
 from ctg.ctggui.guitools import last_available_years
 from ctg.ctgfuncts.ctg_synthese import stat_cout_sejour
+from ctg.ctgfuncts.ctg_synthese import nbr_sejours_adherent
 
 def _launch_sejour_year_analysis(ctg_path,
                         year_select):
@@ -44,6 +45,13 @@ def create_sejour_analysis(self, master, page_name, institute, ctg_path):
         _launch_sejour_year_analysis(ctg_path,
                             year_select)
         return
+        
+    def _launch_participation_sejour(ctg_path):
+
+        # Getting year selection
+        year_select =  variable_years.get()
+
+        nbr_sejours_adherent(year_select,ctg_path)
 
     from ctg.ctggui.pageclasses import AppMain
 
@@ -129,5 +137,40 @@ def create_sejour_analysis(self, master, page_name, institute, ctg_path):
                                           command = lambda: _launch_sejour_year_analysis_try())
     place_bellow(help_label,
                  if_analysis_launch_button,
+                 dx = launch_dx_px,
+                 dy = launch_dy_px)
+                 
+   ### Titre
+    member_analysis_label_font = tkFont.Font(family = gg.FONT_NAME,
+                                             size = eff_etape_font_size,
+                                             weight = 'bold')
+    member_analysis_label = tk.Label(self,
+                                     text = gg.TEXT_NBR_SEJOURS,
+                                     justify = "left",
+                                     font = member_analysis_label_font)
+    place_bellow(if_analysis_launch_button,
+                 member_analysis_label,
+                 dx = year_analysis_label_dx_px,
+                 dy = year_analysis_label_dy_px)
+
+    ### Explication de l'étape
+    help_label_font = tkFont.Font(family = gg.FONT_NAME,
+                                  size = eff_help_font_size)
+    help_label = tk.Label(self,
+                          text = gg.HELP_NBR_SEJOURS,
+                          justify = "left",
+                          font = help_label_font)
+    place_bellow(member_analysis_label,
+                 help_label)
+
+    ### Bouton pour lancer l'analyse des mots clefs
+    member_analysis_launch_font = tkFont.Font(family = gg.FONT_NAME,
+                                                size = eff_launch_font_size)
+    member_analysis_button = tk.Button(self,
+                                         text = gg.BUTT_NBR_SEJOURS,
+                                         font = member_analysis_launch_font,
+                                         command = lambda: _launch_participation_sejour(ctg_path))
+    place_bellow(help_label,
+                 member_analysis_button,
                  dx = launch_dx_px,
                  dy = launch_dy_px)

@@ -24,6 +24,8 @@ from ctg.ctggui.guitools import last_available_years
 from ctg.ctgfuncts.ctg_plot import plot_ctg
 from ctg.ctgfuncts.ctg_synthese import nbr_sejours_adherent
 from ctg.ctgfuncts.ctg_cd import plot_cd_evolution
+from ctg.ctgfuncts.ctg_count_participation import search_adherent
+
 
 def create_divers_analysis(self, master, page_name, institute, ctg_path):
 
@@ -52,12 +54,11 @@ def create_divers_analysis(self, master, page_name, institute, ctg_path):
 
         
 
-    def _launch_participation_sejour(ctg_path):
+    def _member_analysis(ctg_path):
 
-        # Getting year selection
-        year_select =  variable_years.get()
-
-        nbr_sejours_adherent(year_select,ctg_path)
+        year_select = variable_years.get()
+        nom_select = nom.get()
+        search_adherent(year_select, nom_select, ctg_path)
         
     def _launch_cd_analysis(ctg_path):
 
@@ -159,7 +160,7 @@ def create_divers_analysis(self, master, page_name, institute, ctg_path):
                                              size = eff_etape_font_size,
                                              weight = 'bold')
     member_analysis_label = tk.Label(self,
-                                     text = gg.TEXT_NBR_SEJOURS,
+                                     text = 'information sur un adhérent',
                                      justify = "left",
                                      font = member_analysis_label_font)
     place_bellow(synthese_analysis_launch_button,
@@ -171,20 +172,26 @@ def create_divers_analysis(self, master, page_name, institute, ctg_path):
     help_label_font = tkFont.Font(family = gg.FONT_NAME,
                                   size = eff_help_font_size)
     help_label = tk.Label(self,
-                          text = gg.HELP_NBR_SEJOURS,
+                          text = 'Les informations sont extraites du fichier FFVélo',
                           justify = "left",
                           font = help_label_font)
     place_bellow(member_analysis_label,
                  help_label)
+                 
+    saisie_nom = tk.Label(self,text="Enter le nom prénom :")
+    place_bellow(help_label,saisie_nom)
+    nom = tk.StringVar()
+    textbox1 = tk.Entry(self, textvariable=nom)
+    place_after(saisie_nom, textbox1,dy =0) 
 
     ### Bouton pour lancer l'analyse des mots clefs
     member_analysis_launch_font = tkFont.Font(family = gg.FONT_NAME,
                                                 size = eff_launch_font_size)
     member_analysis_button = tk.Button(self,
-                                         text = gg.BUTT_NBR_SEJOURS,
+                                         text = 'rechercher les informations',
                                          font = member_analysis_launch_font,
-                                         command = lambda: _launch_participation_sejour(ctg_path))
-    place_bellow(help_label,
+                                         command = lambda: _member_analysis(ctg_path))
+    place_bellow(saisie_nom,
                  member_analysis_button,
                  dx = launch_dx_px,
                  dy = launch_dy_px)

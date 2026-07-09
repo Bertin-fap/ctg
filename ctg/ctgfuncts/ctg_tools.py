@@ -7,7 +7,7 @@ __all__ = ['built_lat_long',
            'normalize_tag',
            'parse_date',
            'read_sortie_csv',
-           ]
+           'normalize_num_tel']
 
 # Standard library imports
 import pathlib
@@ -17,6 +17,7 @@ from collections import namedtuple
 from datetime import datetime
 from pathlib import Path
 from subprocess import *
+from textwrap import wrap
 
 # 3rd party imports
 import pandas as pd
@@ -216,3 +217,13 @@ def launch_bloc_note(file_name):
     p = Popen([path_bloc_note, file_name], stdout=PIPE, stderr=PIPE)
     output, errors = p.communicate()
     p.wait() # wait for process to terminate
+    
+def normalize_num_tel(s):
+    if isinstance(s,float) : s = int(s)
+    s = str(s)
+    if len(s)>0:
+        digits = ''.join(char for char in s if char.isdigit())
+        digits = digits.zfill(10)
+        return " ".join(wrap(digits, width=2))
+    else:
+        return ''

@@ -1,4 +1,4 @@
-__all__ = ['inscrit_sejour',]     
+__all__ = ['inscrit_sejour','search_adherent']     
 
 from pathlib import Path
 import pathlib
@@ -6,6 +6,7 @@ import difflib
 import functools
 import os
 import unicodedata
+from tkinter import messagebox
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -17,6 +18,8 @@ import ctg.ctgfuncts
 from pathlib import Path
 
 from ctg.ctgfuncts.ctg_tools import read_sortie_csv
+from ctg.ctgfuncts.ctg_classes import EffectifCtg
+from ctg.ctgfuncts.ctg_tools import normalize_num_tel
 
 # used to supress no ascii characters suh as accent cedilla,...
 nfc = functools.partial(unicodedata.normalize,'NFD')
@@ -106,3 +109,29 @@ def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,deffectif,nbr_jours=No
     if cout_sejour is not None : dg['cout_sejour'] = cout_sejour
     if nom_parcours is not None : dg['nom_parcours'] = nom_parcours
     return dg
+    
+def search_adherent(year,nom, ctg_path):
+    
+    #ctg_path  = r"C:\Users\franc\Nextcloud2\BASE_DOCUMENTS_CTG\2_ACTIVITES_CTG\2-2_STATS_DES_SORTIES_ANNEES"
+    effectif = ctg.ctgfuncts.EffectifCtg(year,Path(ctg_path))
+    
+    effectif = effectif.effectif
+    deffectif = effectif[['N° Licencié','Nom','Prénom','Sexe','Pratique VAE','Tel fixe', 'Tel portable','Age','Adresse','Adresse email']]
+    
+    nom_list1 = (deffectif['Nom']+' '+deffectif['Prénom']).tolist()
+    nom_list2 = deffectif['Prénom']+' '+deffectif['Nom']
+    
+    nomc = search_name(nom_list1,nom_list2, correct_name(nom))
+   
+    if nomc != ' ':
+        nom_= nomc.split()[0]
+        prenom = nomc.split()[1]
+        dh = deffectif.query('Nom==@nom_ and Prénom==@prenom')
+        dh = dh.fillna('')
+        dh['Tel fixe']= dh['Tel fixe'].apply(normalize_num_tel)
+        dh['Tel portable']= dh['Tel portable'].apply(normalize_num_tel)
+        
+        txt = '\n'.join([f'{k} : {dh.iloc[0][k]}  ' for k in dh.columns])
+        messagebox.showinfo('INFO',txt)
+    else:
+        messagebox.showinfo('INFO',f'Le nom {nom} est inconnu')
