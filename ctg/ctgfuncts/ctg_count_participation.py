@@ -132,6 +132,18 @@ def search_adherent(year,nom, ctg_path):
         dh['Tel portable']= dh['Tel portable'].apply(normalize_num_tel)
         
         txt = '\n'.join([f'{k} : {dh.iloc[0][k]}  ' for k in dh.columns])
+        
+        file = Path(ctg_path) / Path(str(year)) / Path('STATISTIQUES/EXCEL/synthese_adherent.xlsx')
+        if os.path.isfile(file):
+            df = pd.read_excel(file)
+            df.rename(columns={"Unnamed: 0": "ID",}, inplace=True) 
+            id = dh.iloc[0]['N° Licencié']
+            
+            dh = df.query('ID == @id')[['SORTIE DU DIMANCHE CLUB',
+                   'SORTIE DU SAMEDI CLUB', 'SORTIE DU JEUDI CLUB', 'RANDONNEE',
+                   'Nbr_SEJOURS']]
+            
+            txt = txt+'\n'+'\n'.join([f'{k} : {dh.iloc[0][k]}  ' for k in dh.columns])
         messagebox.showinfo('INFO',txt)
     else:
         messagebox.showinfo('INFO',f'Le nom {nom} est inconnu')
