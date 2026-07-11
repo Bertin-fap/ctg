@@ -100,7 +100,7 @@ def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,deffectif,nbr_jours=No
         dg = pd.concat(df_list)
     else:
         dg = pd.DataFrame([[None,None,None,None,None,None,sejour,]], columns=col+['sejour'])
-        return dg
+        list_nom_brut.append('')
     
     dg['Nom_brut'] = list_nom_brut
     dg['sejour'] = sejour

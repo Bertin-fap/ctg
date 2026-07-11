@@ -50,7 +50,7 @@ def synthese(year:str,ctg_path:pathlib.WindowsPath)->None:
 
     df_total = pd.concat(list_df, ignore_index=True)
 
-    df_total['Pratique VAE'].fillna('Non',inplace=True)
+    df_total['Pratique VAE'] = df_total['Pratique VAE'].fillna('Non')
 
     # nombre moyen de participant par activité
     #for x in df_total.groupby(['Type']):
@@ -71,7 +71,8 @@ def plot_pie_synthese(year:str,ctg_path:pathlib.WindowsPath,mode: Optional[bool]
     def func(pct, allvalues):
         absolute = round(pct / 100.*np.sum(allvalues),0)
         #return "{:.1f}%\n({:d})".format(pct, absolute)
-        label = f"{int(round(absolute,1))}\n{round(pct,1)} %"
+        pct_round = int(pct*10)/10
+        label = f"{int(round(absolute,1))}\n{pct_round} %"
         return label
     
     file_in = ctg_path / Path(year) / Path('STATISTIQUES') / Path('EXCEL') / Path('synthese.xlsx')
