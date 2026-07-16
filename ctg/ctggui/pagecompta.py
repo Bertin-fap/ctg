@@ -13,6 +13,7 @@ import pandas as pd
 from ctg.ctgfuncts.ctg_ffvelo_adhesion import finance_ffct
 from ctg.ctgfuncts.ctg_ffvelo_adhesion import mouvement_comptable_ffvelo
 from ctg.ctgfuncts.ctg_sg2xlsx import sg2xlsx
+from ctg.ctgfuncts.ctg_sg2xlsx import synthese_finance
 from ctg.ctgfuncts.ctg_operation import create_justificatif
 from ctg.ctgfuncts.ctg_classes import EffectifCtg
 from ctg.ctggui.guitools import place_after
@@ -56,6 +57,13 @@ def create_compta(self,master, page_name, institute, ctg_path):
     def _ffct_finance():
         finance_ffct()
         mouvement_comptable_ffvelo()
+   
+    def _synthese():
+        if variable_year.get() == '':
+            tkinter.messagebox.showwarning("WARNING", "Vous devez la date de l'action")
+            return
+        year = variable_year.get()
+        synthese_finance(year)
         
          
     variable_year = tk.StringVar(self)
@@ -113,3 +121,11 @@ def create_compta(self,master, page_name, institute, ctg_path):
                                 command = _ffct_finance)
 
     place_bellow(liste_sg2excel_button ,ffct_finance_button,dx=0,dy=10)
+    
+    ## Synthese
+    
+    synthese_button = tk.Button(self,
+                                  text = "Création d'un fichier xlsx de synthese",
+                                  command = _synthese)
+
+    place_bellow(ffct_finance_button,synthese_button,dx=0,dy=10)

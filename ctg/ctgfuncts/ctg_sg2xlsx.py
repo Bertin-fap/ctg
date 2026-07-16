@@ -1,4 +1,5 @@
-_all_ = ["sg2xlsx"]
+_all_ = ["sg2xlsx",
+        "synthese_finance"]
 
 from pathlib import Path
 from datetime import datetime
@@ -181,4 +182,41 @@ def sg2xlsx():
     txt = f"votre fichier est disponible sous : {str(file)}\n"
     txt = txt + f"l'erreur sur lesolde est de : {erreur_solde} €"
     messagebox.showinfo("showinfo", txt)
+ 
+def synthese_finance(year) :
     
+    def normalize_number(x):
+        if isinstance(x,str): 
+            return float(x.replace(',','.'))
+        return float(x)
+        
+    def filter_next_search(data, target):
+        result = next(filter(lambda tup: target in tup, data), None)
+        return result
+        
+    root_finance = Path.home() / Path(gg.nextcloud) / Path(r"BASE_FINANCES_CTG")
+    root_finance = root_finance / Path(str(year))  / Path(r"COMPTABILITE-COURANTE")
+    file = root_finance / Path(f'CTG-Compta-{str(year)}.xlsx')
+    
+    print(file)
+    df = pd.read_excel(file,sheet_name=f"Ecritures{str(year)}")
+    df = df[df['Numéro'].notna()]
+    df = df[['Code CTG', 'Code CTG affiné','Credit', 'Debit']] 
+    df = df.fillna(0)
+    df.Debit = df.Debit.apply(normalize_number )
+    df.Credit = df.Credit.apply(normalize_number)                      
+    dg = df.pivot_table(index=['Code CTG','Code CTG affiné'],aggfunc="sum",margins= True)
+    dg["Somme"] = dg['Credit'] + dg['Debit']
+    
+    dg['Total']=''
+    l = dg.index.tolist()
+
+    for k,v in dg.groupby('Code CTG')['Somme'].sum().to_dict().items():
+    
+        result = filter_next_search(l, k)
+        dg.loc[result,'Total']=v
+    
+    file = root_finance / Path(f'Synthese-Compta-{str(year)}.xlsx')
+    dg.to_excel(file)
+    txt = f"votre fichier est disponible sous : {str(file)}\n"
+    messagebox.showinfo("showinfo", txt)
