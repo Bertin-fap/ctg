@@ -176,7 +176,14 @@ def sg2xlsx():
             'Objet',
             'm']]
     file = root / Path("SG.xlsx")
-    df.to_excel(file,index=None)
+    try:
+        df.to_excel(file,index=None)
+    except PermissionError:
+        txt = "Le fichier SG.xlsx ouvert, fermer ce fichier et recommancer"
+        messagebox.showinfo("showinfo", txt)
+        return
+        
+        
     erreur_solde = round(solde_sg - [x for x in df['Solde'].tolist() if x != ''][-1],2)
     
     txt = f"votre fichier est disponible sous : {str(file)}\n"
@@ -187,7 +194,7 @@ def synthese_finance(year) :
     
     def normalize_number(x):
         if isinstance(x,str): 
-            return float(x.replace(',','.'))
+            return float(x.replace(',','.').replace(' ',''))
         return float(x)
         
     def filter_next_search(data, target):
@@ -217,6 +224,12 @@ def synthese_finance(year) :
         dg.loc[result,'Total']=v
     
     file = root_finance / Path(f'Synthese-Compta-{str(year)}.xlsx')
-    dg.to_excel(file)
+    try:
+        dg.to_excel(file)
+    except PermissionError:
+        txt = "Le fichier Synthese-Compta-{str(year)}.xlsx ouvert, fermer ce fichier et recommancer"
+        messagebox.showinfo("showinfo", txt)
+        return
+    
     txt = f"votre fichier est disponible sous : {str(file)}\n"
     messagebox.showinfo("showinfo", txt)
