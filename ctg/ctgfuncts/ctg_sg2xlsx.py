@@ -80,9 +80,9 @@ def sg2xlsx():
 
         return n,last_date, last_solde
 
-    def read_file_sg():
-        root_sg = root / Path(r"4_SOCIETE-GENERALE")
-        list_of_files = glob.glob(f'{str(root_sg)}/*.csv')
+    def read_file_sg(list_of_files):
+        #root_sg = root / Path(r"4_SOCIETE-GENERALE")
+        #list_of_files = glob.glob(f'{str(root_sg)}/*.csv')
         if len(list_of_files) == 0:
             messagebox.showinfo("showinfo", 'Pas de fichiers SG détectés')
             df = None
@@ -110,11 +110,12 @@ def sg2xlsx():
     def move_file_sg(year,root_finance):
         path_telechargement = Path.home() / Path('Downloads')
 
-        files = [x for x in os.listdir(path_telechargement) if re.search('\d{6}-\d{16}\.csv',x)]
-        root = root_finance / Path(str(year))  / Path(r"COMPTABILITE-COURANTE\4_SOCIETE-GENERALE")
+        files = [path_telechargement / Path(x) for x in os.listdir(path_telechargement) if re.search('\d{6}-\d{16}\.csv',x)]
+        #root = root_finance / Path(str(year))  / Path(r"COMPTABILITE-COURANTE\4_SOCIETE-GENERALE")
 
-        for file in files:
-           shutil.move(path_telechargement / Path(file), root / Path(file))
+        #for file in files:
+           #shutil.move(path_telechargement / Path(file), root / Path(file))
+        return files
         
     global n,last_solde
     now = datetime.now()
@@ -125,11 +126,11 @@ def sg2xlsx():
     root_finance = Path.home() / Path(gg.nextcloud) / Path(r"BASE_FINANCES_CTG")
     root = root_finance / Path(str(year))  / Path(r"COMPTABILITE-COURANTE")
     
-    move_file_sg(year,root_finance)
+    list_of_files = move_file_sg(year,root_finance)
 
     solde_initial = get_solde_initial(year)
     n,last_date, last_solde = read_file_finance_ctg(year,solde_initial)
-    df,date_solde_sg,solde_sg = read_file_sg()
+    df,date_solde_sg,solde_sg = read_file_sg(list_of_files)
     if len(df["Date"]) == 0:
         messagebox.showinfo("showinfo", 'pas de  mouvements bancaires détectés')
         return
