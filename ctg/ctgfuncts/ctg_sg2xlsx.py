@@ -2,7 +2,7 @@ _all_ = ["sg2xlsx",
         "synthese_finance"]
 
 from pathlib import Path
-from datetime import datetime
+import datetime
 from tkinter import messagebox
 import math
 import glob
@@ -64,7 +64,9 @@ def sg2xlsx():
             df = df.fillna('')
             
             n = max([x for x in df["Numéro"] if x != ''])
-            date_list = [datetime.strptime(x,'%d/%m/%Y') for x in df["Date SG"].tolist() if x != '']
+            df["Date SG"] = df["Date SG"].apply(lambda x: x.strftime("%d/%m/%Y") if isinstance(x, datetime.date) else x)
+            
+            date_list = [datetime.datetime.strptime(x,'%d/%m/%Y') for x in df["Date SG"].tolist() if x != '']
             last_date = date_list[-1]
     
             credit_list = [x.replace(',','.').replace(' ','') if isinstance(x,str) else x for x in df["Credit"].tolist()]
@@ -76,7 +78,7 @@ def sg2xlsx():
         else:
             last_solde = solde_initial
             n = 0
-            last_date = datetime(int(year)-1,1,1)
+            last_date = datetime.datetime(int(year)-1,1,1)
 
         return n,last_date, last_solde
 
@@ -100,7 +102,7 @@ def sg2xlsx():
 
         pattern = r'\d{2}/\d{2}/\d{4}'
         date_solde = re.findall(pattern, lines[3])
-        date_solde_sg = datetime.strptime(date_solde[0],'%d/%m/%Y') 
+        date_solde_sg = datetime.datetime.strptime(date_solde[0],'%d/%m/%Y') 
         
         pattern = r'[\d\s,]{2,14}'
         solde = re.findall(pattern, lines[4])
@@ -118,7 +120,7 @@ def sg2xlsx():
         return files
         
     global n,last_solde
-    now = datetime.now()
+    now = datetime.datetime.now()
     year = now.year
     month = now.month
     if month == 11 or month == 12:
@@ -135,8 +137,8 @@ def sg2xlsx():
         messagebox.showinfo("showinfo", 'pas de  mouvements bancaires détectés')
         return
         
-    date_sg_max = max([datetime.strptime(x,'%d/%m/%Y') for x in df["Date"].tolist() if x != '' ])
-    df['Date_']= df['Date'].apply(lambda x: datetime.strptime(x,'%d/%m/%Y') if x != '' else date_sg_max)
+    date_sg_max = max([datetime.datetime.strptime(x,'%d/%m/%Y') for x in df["Date"].tolist() if x != '' ])
+    df['Date_']= df['Date'].apply(lambda x: datetime.datetime.strptime(x,'%d/%m/%Y') if x != '' else date_sg_max)
     
     df = df.query('Date_>@last_date')
     if len(df)==0:
@@ -206,7 +208,6 @@ def synthese_finance(year) :
     root_finance = root_finance / Path(str(year))  / Path(r"COMPTABILITE-COURANTE")
     file = root_finance / Path(f'CTG-Compta-{str(year)}.xlsx')
     
-    print(file)
     df = pd.read_excel(file,sheet_name=f"Ecritures{str(year)}")
     df = df[df['Numéro'].notna()]
     df = df[['Code CTG', 'Code CTG affiné','Credit', 'Debit']] 

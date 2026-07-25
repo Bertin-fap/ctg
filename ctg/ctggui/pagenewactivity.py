@@ -137,8 +137,21 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
         nom_inconnu_list = '; '.join([inconnu[1] for inconnu in no_match])
             
         output_path = Path(str(output_path).replace(r'\CSV',r'\EXCEL')).with_suffix('.xlsx')
+        
+        if os.path.isfile(output_path):
 
-        dg.to_excel(output_path,index=None)
+            result = tkinter.messagebox.askyesno(
+                title ='Base de Données',
+                message = f'Votre activité {output_path} est déjà présente dans la base donnée voulez-vous la remplacer ?',
+                detail = ''
+            )
+            
+            if  result:
+                dg.to_excel(output_path,index=None)
+            else:
+                return
+        else:
+            dg.to_excel(output_path,index=None)
         
         
         # Update info_randos.xlsx
