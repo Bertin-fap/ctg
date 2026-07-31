@@ -347,12 +347,12 @@ HELP_EFFECTIF    += " EXCEL ffcyclo.org."
 BUTT_EFFECTIF_ANALYSIS = "Lancer l'analyse des effectifs"
 TEXT_EVOLUTION_EFFECTIF     = "Analyse de l'évolution temporelle de l'effectif"
 HELP_EVOLUTION_EFFECTIF     = (" L'analyse de l'évolution de l'effectif est issue"
-                               " des archives disponnibles à partir de 2012.")
+                               " des archives disponnibles à partir de 1999.")
 BUTT_EVOLUTION_EFFECTIF = "Lancer l'analyse de l'évolution des effectifs"
 BUTT_REBOND = "Lancer l'analyse de l'évolution du rebond"
 TEXT_AGE_ANALYSIS     = "Analyse de l'évolution de l'âge médian"
 HELP_AGE_ANALYSIS     = " L'analyse de l'évolution de l'âge médian"
-HELP_AGE_ANALYSIS    += " des archives disponnibles à partir de 2012."
+HELP_AGE_ANALYSIS    += " des archives disponnibles à partir de 1999."
 BUTT_AGE_ANALYSIS = "Lancer l'analyse de l'évolution de l'âge médian"
 
 ### - sorties
@@ -372,7 +372,7 @@ HELP_SYNTHESE_SORTIES    += " d'émargement aux sorties, randonnées et séjours
 BUTT_SYNTHESE_SORTIES = "Lancer la synthèse"
 TEXT_EVOLUTION_EFFECTIF     = "Analyse de l'évolution temporelle de l'effectif"
 HELP_EVOLUTION_EFFECTIF     = " L'analyse de l'évolution de l'effectif est issue"
-HELP_EVOLUTION_EFFECTIF    += " des archives disponnibles à partir de 2012."
+HELP_EVOLUTION_EFFECTIF    += " des archives disponnibles à partir de 1999."
 BUTT_EVOLUTION_EFFECTIF = "Lancer l'analyse de l'évolution des effectifs"
 TEXT_MEMBER_ANALYSIS    = "Analyse des sorties par adhérent"
 HELP_MEMBER_ANALYSIS    = " Analyse de la participation aux sorties, randonnées et séjour "
@@ -388,7 +388,7 @@ HELP_TENDANCE_SORTIES     = (" La synthèse est effectuée à partir des fichier
 BUTT_TENDANCE_SORTIES     = "Lancer l'analyse"
 TEXT_PRESENCE_EFFECTIF    = "Analyse de la présence an club"
 HELP_PRESENCE_EFFECTIF    = (" L'analyse de l'évolution de l'effectif est issue"
-                             " des archives disponnibles à partir de 2012.")
+                             " des archives disponnibles à partir de 1999.")
 BUTT_PRESENCE_EFFECTIF    = "Lancer l'analyse de l'évolution des effectifs"
 TEXT_VAE_ANALYSIS         = "Analyse tendancielle depuis 2019 de la population de VAE"
 HELP_VAE_ANALYSIS         = (" L'analyse de l'évolution de l'effectif est issue"

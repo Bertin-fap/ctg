@@ -35,6 +35,8 @@ class EffectifCtg():
             messagebox.showwarning("Action requise", message)
             return
         df = pd.read_excel(file)
+        if 'E-mail' not in df.columns:
+            df = df.rename(columns={'Adresse email': 'E-mail'})
         if 'N° Licencié' not in df.columns:
             df = df.rename(columns={'N°': 'N° Licencié'})
         if 'Ville' not in df.columns:
@@ -44,14 +46,18 @@ class EffectifCtg():
             df['Prénom'] = df['Nom, Prénom'].apply(lambda row: re.split('\s+', row)[2])
             df['Sexe'] = df['Sexe'].apply(lambda row:row[0])
             df = df.rename(columns={'N°': 'N° Licencié',})
-            vae_df = pd.read_excel(path_root / "VAE.xlsx")
-            vae_dic = dict(zip(vae_df["N° Licencié"], (vae_df["Pratique VAE"])))
-            df["Pratique VAE"] = df['N° Licencié'].map(vae_dic)
-            vae_inconnu ="\n ".join([str(x) for x in df[df["Pratique VAE"].isna()]["N° Licencié"].tolist()])
-            if vae_inconnu != '':
-                messagebox.showinfo(f'Statistique {self.year}',f"Les numéros de licence :\n{vae_inconnu} \nsont à rajouter dans le fichier:\n {path_root / 'VAE.xlsx'}")
-                
-            df["Pratique VAE"] = df["Pratique VAE"].fillna('Non')
+            file_vae = path_root / "VAE.xlsx"
+            if os.path.isfile(file_vae):
+                vae_df = pd.read_excel(file_vae)
+                vae_dic = dict(zip(vae_df["N° Licencié"], (vae_df["Pratique VAE"])))
+                df["Pratique VAE"] = df['N° Licencié'].map(vae_dic)
+                vae_inconnu ="\n ".join([str(x) for x in df[df["Pratique VAE"].isna()]["N° Licencié"].tolist()])
+                if vae_inconnu != '':
+                    messagebox.showinfo(f'Statistique {self.year}',f"Les numéros de licence :\n{vae_inconnu} \nsont à rajouter dans le fichier:\n {path_root / 'VAE.xlsx'}")
+                    
+                df["Pratique VAE"] = df["Pratique VAE"].fillna('Non')
+            else:
+                df["Pratique VAE"] = 'Non'
         # add column Age compute at the 30 september of year
         df['Date de naissance'] = pd.to_datetime(df['Date de naissance'],
                                                  format="%d/%m/%Y")
@@ -76,9 +82,13 @@ class EffectifCtg():
                 df_1['Prénom'] = df_1['Nom, Prénom'].apply(lambda row: re.split('\s+', row)[2])
                 df_1['Sexe'] = df_1['Sexe'].apply(lambda row:row[0])
                 df_1 = df_1.rename(columns={'N°': 'N° Licencié',})
-                vae_df = pd.read_excel(path_root / "VAE.xlsx")
-                vae_dic = dict(zip(vae_df["N° Licencié"], (vae_df["Pratique VAE"])))
-                df_1["Pratique VAE"] = df_1["N° Licencié"].map(vae_dic)
+                file_vae = path_root / "VAE.xlsx"
+                if os.path.isfile(file_vae):
+                    vae_df = pd.read_excel(path_root / "VAE.xlsx")
+                    vae_dic = dict(zip(vae_df["N° Licencié"], (vae_df["Pratique VAE"])))
+                    df_1["Pratique VAE"] = df_1["N° Licencié"].map(vae_dic)
+                else:
+                    df["Pratique VAE"] = 'Non'
             
             
             df_1['Date de naissance'] = pd.to_datetime(df_1['Date de naissance'],

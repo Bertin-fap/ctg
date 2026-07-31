@@ -276,7 +276,7 @@ def builds_excel_presence_au_club(ctg_path):
         effectif = EffectifCtg(date,ctg_path,False)
         df = effectif.effectif
         df['date'] = date
-        list_df.append(df[['N° Licencié','Nom','Prénom','date']])
+        list_df.append(df[['N° Licencié','Nom','Prénom','E-mail','date']])
 
     df = pd.concat(list_df) #.to_excel(file / Path('effectif_total.xlsx'),index=False)
 
@@ -285,19 +285,23 @@ def builds_excel_presence_au_club(ctg_path):
     list_nom = []
     list_prenom = []
     list_date_ = []
+    list_email = []
     for licence in df.groupby('N° Licencié'):
         list_c = [x if x in licence[1]['date'].to_list() else None for x in list_date]
         #if len(list_c) - list_c.count(None) == 1: singleton
         list_num_licence.append(licence[0])
         list_nom.append(licence[1]['Nom'].unique()[0])
         list_prenom.append(licence[1]['Prénom'].unique()[0])
+        list_email.append(licence[1]['E-mail'].unique()[0])
         list_date_.append(list_c)
 
 
     dic['N° Licencié'] = list_num_licence
     dic['Nom'] = list_nom
     dic['Prénom'] = list_prenom
+    dic['E-mail'] = list_email
     dic['date'] = list_date_
+    
 
     df = pd.DataFrame.from_dict(dic)
     split_df = pd.DataFrame(df['date'].tolist(), columns=list_date)
@@ -351,32 +355,49 @@ def anciennete_au_club(ctg_path):
     def addlabels(x,y,offset):
         for i in range(len(x)):
             if y[i] != 0:
-                plt.text(x[i]-0.2,y[i]+offset,round(y[i],1),size=15)
+                condition = len(str(y[i]))==2
+                x_offset = 0.5 if condition else 0.2
+                plt.text(int(x[i])-x_offset,y[i]+x_offset,round(y[i],1),size=15)
 
     currentDateTime = datetime.datetime.now()
     date = currentDateTime.date()
     current_year = int(date.strftime("%Y"))
 
-    in_path = ctg_path / Path(str(current_year))
-    in_path = in_path / Path('STATISTIQUES') /Path('EXCEL') / Path('effectif_history.xlsx')
-    df = pd.read_excel(in_path)
-    eff = []
-
-    years = list(range(2012,current_year+1))
-    for year in years:
-        dg = df.dropna(subset=[year,current_year])
-        eff.append(len(dg))
-    eff = [eff[0]] + list(np.diff(eff))
+    current_year = datetime.datetime.now().year
+    path = Path(ctg_path).parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+    path_history = path / Path(str(current_year)) / Path(r"STATISTIQUES\effectif_history.xlsx")
+    df = pd.read_excel(path_history )
+    df.rename(columns={'N° Licencié': 'id',}, inplace=True)
+    df = df.fillna(0)
+    path_effectif = path / Path(str(current_year)) / Path(f'effectif_ffct_{current_year}.xlsx')
+    deff = pd.read_excel(path_effectif)
+    
+    duree = []
+    for id in deff['N°'].tolist():
+        f_dict_ = df.query('id == @id').to_dict(orient='records')[0]
+    
+        f_dict = {}
+        for k,v in f_dict_.items():
+            if re.findall(r'\d{4}',str(k)):
+                f_dict[int(k)] = v
+            else:
+                f_dict[k] = v
+            
+            
+        years = [int(x) for x in df.columns if re.findall(r'\d{4}',str(x))]
+        x = int(min([f_dict[int(x)] for x in years if f_dict[x] != 0]))
+        duree.append(current_year-x+1)
+    c = Counter(duree)
 
     # creating the bar plot
     fig = plt.figure(figsize = (10, 5))
-    plt.bar(years, eff, color ='maroon',
+    plt.bar(c.keys(),c.values(),color ='maroon',
             width = 0.4)
 
-    plt.xlabel("")
+    plt.xlabel("# années")
     plt.ylabel("# adhérents")
-    plt.title("Ancienneté au CTG")
-    addlabels(list(range(2012,2025)), eff,0)
+    plt.title(f"Ancienneté au CTG en {current_year}")
+    addlabels(list(c.keys()),list(c.values()),0)
     plt.tight_layout()
     plt.show()
 
