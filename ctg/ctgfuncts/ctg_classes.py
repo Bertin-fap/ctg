@@ -35,6 +35,12 @@ class EffectifCtg():
             messagebox.showwarning("Action requise", message)
             return
         df = pd.read_excel(file)
+        if 'Adresse' not in df.columns:
+            df['Adresse'] = df['Numéro voie'].fillna('').astype(str) + ' ' +  \
+                          df.iloc[:,16].fillna('').astype(str)  +  ' ' +\
+                          df['Lieu dit'].fillna('').astype(str)  + ' ' +\
+                          df['Code postal'].fillna('').astype(str)  + ' ' +\
+                          df['Ville'].fillna('').astype(str)
         if 'E-mail' not in df.columns:
             df = df.rename(columns={'Adresse email': 'E-mail'})
         if 'N° Licencié' not in df.columns:
@@ -68,7 +74,7 @@ class EffectifCtg():
         dh = built_lat_long(df)
         df['distance'] = df.apply(lambda row: self.distance_(row, dh),axis=1)
         
-        self.effectif = self.correction_effectif(year,df)
+        self.effectif = df #self.correction_effectif(year,df)
 
         # get effectif of the year year-1
         year_1 = int(year)-1
@@ -97,7 +103,7 @@ class EffectifCtg():
             
             df_1['Age']  = df_1['Date de naissance'].apply(lambda x :
                                                           (pd.Timestamp(int(year), 9, 30)-x).days/365)
-            df_1 = self.correction_effectif(year_1,df_1)
+            #df_1 = self.correction_effectif(year_1,df_1)
             self.effectif_1 = df_1  # effectif year moins un
         else:
             self.effectif_1 = None

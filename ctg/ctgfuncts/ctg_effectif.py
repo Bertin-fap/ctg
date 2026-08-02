@@ -220,9 +220,9 @@ def evolution_age_median(ctg_path:pathlib.WindowsPath):
     def addlabels(x,y,z=None):
         for i in range(len(x)):
             if z is None:
-                plt.text(x[i]-0.3,y[i]+0.1,y[i],size=10)
+                plt.text(x[i]-0.3,y[i]+0.3,y[i],size=10,rotation='vertical')
             else:
-                plt.text(x[i]-0.2,y[i]+0.1,z[i],size=10,rotation='vertical')
+                plt.text(x[i]-0.2,y[i]+0.3,z[i],size=10,rotation='vertical')
 
     xt = range(55,90)
     data_path = ctg_path.parent.parent / Path('1_FONCTIONNEMENT_CTG/1-1_BASE_ADHERENTS_CTG')
@@ -249,14 +249,14 @@ def evolution_age_median(ctg_path:pathlib.WindowsPath):
 
     fig, ax = plt.subplots()
     plt.bar(years,age_mean)
-    plt.plot(years,age_naturel,"--r")
+    #plt.plot(years,age_naturel,"--r")
     plt.ylabel('Age moyen')
-    plt.ylim(50,1.1*max(age_naturel))
+    #plt.ylim(50,1.1*max(age_naturel))
     addlabels(years,[round(x,1) for x in age_mean])
     linear_model = np.polyfit(years,age_mean,1)
     linear_model_fn = np.poly1d(linear_model)
     plt.xticks(years,years)
-    plt.tick_params(axis='x', labelsize=20,rotation=90)
+    plt.tick_params(axis='x', labelsize=15,rotation=90)
     plt.tick_params(axis='y', labelsize=20)
     plt.ylabel('Age median',size=20)
     x_s =[years[0]-1] + years + [years[-1]+1]
@@ -373,7 +373,7 @@ def anciennete_au_club(ctg_path):
     deff = pd.read_excel(path_effectif)
     
     duree = []
-    for id in deff['N°'].tolist():
+    for id in deff['N° Licencié'].tolist():
         f_dict_ = df.query('id == @id').to_dict(orient='records')[0]
     
         f_dict = {}
@@ -467,3 +467,4 @@ def plot_rebond(ctg_path:pathlib.WindowsPath):
     dg[['# rebonds']].plot.bar(ax=ax[1])
     ax[1].yaxis.grid()
     plt.show()
+    

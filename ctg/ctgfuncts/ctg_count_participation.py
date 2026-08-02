@@ -1,10 +1,12 @@
 __all__ = ['inscrit_sejour','search_adherent']     
 
 from pathlib import Path
+import datetime
 import pathlib
 import difflib
 import functools
 import os
+import re
 import unicodedata
 from tkinter import messagebox
 
@@ -101,8 +103,6 @@ def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,deffectif,nbr_jours=No
     else:
         dg = pd.DataFrame([[None,None,None,None,None,None,sejour,]], columns=col+['sejour'])
         list_nom_brut.append('')
-    
-    dg['Nom_brut'] = list_nom_brut
     dg['sejour'] = sejour
     if nbr_jours is not None : dg['nbr_jours'] = nbr_jours
     if type is not None :dg['Type'] = type
@@ -116,7 +116,7 @@ def search_adherent(year,nom, ctg_path):
     effectif = ctg.ctgfuncts.EffectifCtg(year,Path(ctg_path))
     
     effectif = effectif.effectif
-    deffectif = effectif[['N° Licencié','Nom','Prénom','Sexe','Pratique VAE','Tel fixe', 'Tel portable','Age','Adresse','Adresse email']]
+    deffectif = effectif[['N° Licencié','Nom','Prénom','Sexe','Pratique VAE','N° Tél', 'N° Portable','Age','Adresse','E-mail']]
     
     nom_list1 = (deffectif['Nom']+' '+deffectif['Prénom']).tolist()
     nom_list2 = deffectif['Prénom']+' '+deffectif['Nom']
@@ -128,8 +128,8 @@ def search_adherent(year,nom, ctg_path):
         prenom = nomc.split()[1]
         dh = deffectif.query('Nom==@nom_ and Prénom==@prenom')
         dh = dh.fillna('')
-        dh['Tel fixe']= dh['Tel fixe'].apply(normalize_num_tel)
-        dh['Tel portable']= dh['Tel portable'].apply(normalize_num_tel)
+        dh['N° Tél']= dh['N° Tél'].apply(normalize_num_tel)
+        dh['N° Portable']= dh['N° Portable'].apply(normalize_num_tel)
         
         txt = '\n'.join([f'{k} : {dh.iloc[0][k]}  ' for k in dh.columns])
         
@@ -144,6 +144,45 @@ def search_adherent(year,nom, ctg_path):
                    'Nbr_SEJOURS']]
             
             txt = txt+'\n'+'\n'.join([f'{k} : {dh.iloc[0][k]}  ' for k in dh.columns])
+        txt = txt + '\n' + duree_presence_club(ctg_path,id)
         messagebox.showinfo('INFO',txt)
     else:
         messagebox.showinfo('INFO',f'Le nom {nom} est inconnu')
+
+def duree_presence_club(ctg_path,id):
+    currentDateTime = datetime.datetime.now()
+    date = currentDateTime.date()
+    current_year = int(date.strftime("%Y"))
+    
+    current_year = datetime.datetime.now().year
+    
+    
+    path = Path(ctg_path).parent.parent / Path(r"1_FONCTIONNEMENT_CTG\1-1_BASE_ADHERENTS_CTG")
+    path_history = path / Path(str(current_year)) / Path(r"STATISTIQUES\effectif_history.xlsx")
+    if os.path.isfile(path_history):
+        df = pd.read_excel(path_history )
+        df.rename(columns={'N° Licencié': 'id',}, inplace=True)
+        df = df.fillna(0)
+        
+        duree = []
+        
+        f_dict = {}
+        f_dict_ = df.query('id == @id').to_dict(orient='records')[0]
+            
+        for k,v in f_dict_.items():
+            if re.findall(r'\d{4}',str(k)):
+                f_dict[int(k)] = v
+            else:
+                f_dict[k] = v
+            
+            
+        years = [int(x) for x in df.columns if re.findall(r'\d{4}',str(x))]
+        x = int(min([f_dict[int(x)] for x in years if f_dict[x] != 0]))
+        if x == 1999:
+            txt = f'Adhérent(e) au CTG depuis au moins {current_year-x+1} ans'
+        else :
+            txt = f'Adhérent(e) au CTG  depuis {current_year-x+1} ans'
+    else:
+        txt= ''
+    
+    return txt
