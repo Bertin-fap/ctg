@@ -181,10 +181,11 @@ def read_sortie_csv(file:pathlib.WindowsPath):
     try:
         err = 0
         df = pd.read_csv(file,skiprows=1,header=None)
+        
     except EmptyDataError:
         df = None
     except ParserError :
-        print(f'WARNING : The csv file {file} is hill configurated')
+        print(f'WARNING : The csv file {file} is illisible')
         df = None
 
     return df

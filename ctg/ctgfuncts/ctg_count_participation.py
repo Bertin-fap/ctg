@@ -31,7 +31,9 @@ convert_to_ascii = lambda text : nfc(text). \
                                      strip()  
 
 def correct_name(nom):
-    
+    if not isinstance(nom,str):
+        return 'baba au rhum'
+    nom = re.sub(r'\s+', ' ', nom).strip()
     nom = nom.upper()
     nom = convert_to_ascii(nom)
     dic_nom = {"DANIE": "DANIELLE PUECH",
@@ -42,33 +44,35 @@ def correct_name(nom):
     return nom
     
 
-def search_name(nom_list1,nom_list2,nom):
+def search_name(nom_list1,nom_list2,id_list,nom):
     
     nom1 = difflib.get_close_matches(nom, nom_list1, n=1)
     nom2 = difflib.get_close_matches(nom, nom_list2, n=1)
-    
     if nom1:
         seq_match = difflib.SequenceMatcher(None, nom, nom1[0])
         ratio1 = seq_match.ratio()
         nom1 = nom1[0]
+        id1 =id_list[nom_list1.index(nom1)]
     else:
         ratio1 = 0
-        nom1 = ' '
+        id1 = 0
         
     if nom2:
         seq_match = difflib.SequenceMatcher(None, nom, nom2[0])
         ratio2 = seq_match.ratio()
         nom2 = nom2[0]
+        id2 = id_list[nom_list2.index(nom2)]
     else:
         ratio2 = 0
-        nom2 = ' '
+        id2 = 0
     
     
     if ratio2>ratio1:
         nomc = nom2.split()[1]+' '+nom2.split()[0]
+        id = id2
     else:
-        nomc = nom1
-    return nomc
+        id = id1
+    return id
 
 def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,deffectif,nbr_jours=None,type=None,cout_sejour=None,nom_parcours=None):
 
@@ -78,7 +82,8 @@ def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,deffectif,nbr_jours=No
     '''
 
     nom_list1 = (deffectif['Nom']+' '+deffectif['Prénom']).tolist()
-    nom_list2 = deffectif['Prénom']+' '+deffectif['Nom']
+    nom_list2 = (deffectif['Prénom']+' '+deffectif['Nom']).tolist()
+    id_list = deffectif['N° Licencié'].tolist()
     
     sejour = os.path.splitext(os.path.basename(file))[0]
     
@@ -86,18 +91,19 @@ def inscrit_sejour(file:pathlib.WindowsPath,no_match:list,deffectif,nbr_jours=No
     df_list = []
     list_nom_brut = []
     dg = read_sortie_csv(file)
+    
     if dg is not None:
         list_nom =  dg[0].tolist()
         for nom in list_nom:
             nom_brut = nom
             nom = correct_name(nom_brut)
-            nomc = search_name(nom_list1,nom_list2,nom)
-            if nomc == ' ':
+            id = search_name(nom_list1,nom_list2,id_list,nom)
+            if id == 0:
                 no_match.append((file,nom_brut))
             else:
-                nom_= nomc.split()[0]
-                prenom = nomc.split()[1]
-                df_list.append(deffectif.query('Nom==@nom_ and Prénom==@prenom'))
+                #nom_= nomc.split()[0]
+                #prenom = nomc.split()[1]
+                df_list.append(deffectif.query('`N° Licencié`==@id'))
                 list_nom_brut.append(nom_brut)
         dg = pd.concat(df_list)
     else:
@@ -119,14 +125,13 @@ def search_adherent(year,nom, ctg_path):
     deffectif = effectif[['N° Licencié','Nom','Prénom','Sexe','Pratique VAE','N° Tél', 'N° Portable','Age','Adresse','E-mail']]
     
     nom_list1 = (deffectif['Nom']+' '+deffectif['Prénom']).tolist()
-    nom_list2 = deffectif['Prénom']+' '+deffectif['Nom']
+    nom_list2 = (deffectif['Prénom']+' '+deffectif['Nom']).tolist()
+    id_list = deffectif['N° Licencié'].tolist()
     
-    nomc = search_name(nom_list1,nom_list2, correct_name(nom))
+    id = search_name(nom_list1, nom_list2, id_list, correct_name(nom))
    
-    if nomc != ' ':
-        nom_= nomc.split()[0]
-        prenom = nomc.split()[1]
-        dh = deffectif.query('Nom==@nom_ and Prénom==@prenom')
+    if id != 0:
+        dh = deffectif.query('`N° Licencié`==@id')
         dh = dh.fillna('')
         dh['N° Tél']= dh['N° Tél'].apply(normalize_num_tel)
         dh['N° Portable']= dh['N° Portable'].apply(normalize_num_tel)

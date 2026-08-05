@@ -134,7 +134,7 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
                          name_activite)
        
 
-        nom_inconnu_list = '; '.join([inconnu[1] for inconnu in no_match])
+        nom_inconnu_list = '; '.join([inconnu[1] for inconnu in no_match if isinstance(inconnu[1],str)])
             
         output_path = Path(str(output_path).replace(r'\CSV',r'\EXCEL')).with_suffix('.xlsx')
         
