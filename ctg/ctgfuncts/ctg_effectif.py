@@ -373,6 +373,7 @@ def anciennete_au_club(ctg_path):
     deff = pd.read_excel(path_effectif)
     
     duree = []
+    id_list = []
     for id in deff['N° Licencié'].tolist():
         f_dict_ = df.query('id == @id').to_dict(orient='records')[0]
     
@@ -386,9 +387,18 @@ def anciennete_au_club(ctg_path):
             
         years = [int(x) for x in df.columns if re.findall(r'\d{4}',str(x))]
         x = int(min([f_dict[int(x)] for x in years if f_dict[x] != 0]))
-        duree.append(current_year-x+1)
-    c = Counter(duree)
+        presence_club = current_year-x+1
+        duree.append(presence_club)
+        id_list.append(id)
 
+    dict_ = {'id': id_list,
+            'duree': duree}
+    #pd.DataFrame(dict_).to_excel(r'C:\users\franc\Temp\spy.xlsx')
+    
+    c = Counter(duree)
+    dict_ = {'duree': c.keys(),
+            'nbr': c.values()}
+    #pd.DataFrame(dict_).to_excel(r'C:\users\franc\Temp\spy1.xlsx')
     # creating the bar plot
     fig = plt.figure(figsize = (10, 5))
     plt.bar(c.keys(),c.values(),color ='maroon',

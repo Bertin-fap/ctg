@@ -147,8 +147,9 @@ def search_adherent(year,nom, ctg_path):
             dh = df.query('ID == @id')[['SORTIE DU DIMANCHE CLUB',
                    'SORTIE DU SAMEDI CLUB', 'SORTIE DU JEUDI CLUB', 'RANDONNEE',
                    'Nbr_SEJOURS']]
-            
-            txt = txt+'\n'+'\n'.join([f'{k} : {dh.iloc[0][k]}  ' for k in dh.columns])
+          
+            if len(dh)>0:
+                txt = txt+'\n'+'\n'.join([f'{k} : {dh.iloc[0][k]}  ' for k in dh.columns])
         txt = txt + '\n' + duree_presence_club(ctg_path,id)
         messagebox.showinfo('INFO',txt)
     else:
@@ -170,7 +171,8 @@ def duree_presence_club(ctg_path,id):
         df = df.fillna(0)
         
         duree = []
-        
+        if id not in df['id']:
+            return ''
         f_dict = {}
         f_dict_ = df.query('id == @id').to_dict(orient='records')[0]
             

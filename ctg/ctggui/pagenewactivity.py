@@ -75,17 +75,17 @@ def get_new_activity(self,master, page_name, institute, ctg_path):
                 file = ' sortie du dimanche.csv' if type_sortie== 'SORTIE CLUB' else ' randonnee.csv'
                 output_path = ctg_path / Path(year) / Path('SORTIES DU DIMANCHE/CSV') 
                 output_path = output_path / Path(prefixe+file)
-                type = 'SORTIES DU DIMANCHE'
+                type = 'SORTIES DU DIMANCHE' if type_sortie== 'SORTIE CLUB' else 'RANDONNEE'
             elif jour_semaine== 'SAMEDI':
                 file = ' sortie du samedi.csv' if type_sortie== 'SORTIE CLUB' else ' randonnee.csv'
                 output_path = ctg_path / Path(year) / Path('SORTIES DU SAMEDI/CSV')
                 output_path = output_path / Path(prefixe+file)
-                type = 'SORTIES DU SAMEDI'
+                type = 'SORTIES DU SAMEDI' if type_sortie== 'SORTIE CLUB' else 'RANDONNEE'
             else:
                 file = ' sortie du jeudi.csv' if type_sortie== 'SORTIE CLUB' else ' randonnee.csv'
                 output_path = ctg_path / Path(year) / Path('SORTIES DU JEUDI/CSV')
                 output_path = output_path / Path(prefixe+file)
-                type = 'SORTIES DU JEUDI'
+                type = 'SORTIES DU JEUDI' if type_sortie== 'SORTIE CLUB' else 'RANDONNEE'
         return output_path,type
         
     def put_file_in_db():
