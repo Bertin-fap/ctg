@@ -43,10 +43,7 @@ class AppMain(tk.Tk):
     ############################### Class init - start ###############################
     def __init__(master):
 
-        #ctg_path_default = Path.home() /Path('CTG/SORTIES')
-        
-        #ctg_path_default = Path(r'C:/Users/franc/Nextcloud2/BASE_DOCUMENTS_CTG/2_ACTIVITES_CTG/2-2_STATS_DES_SORTIES_ANNEES')
-        ctg_path_default =Path.home() / Path(gg.nextcloud) 
+        ctg_path_default = Path.home() / Path(gg.nextcloud) 
         ctg_path_default = ctg_path_default / Path('BASE_DOCUMENTS_CTG/2_ACTIVITES_CTG/2-2_STATS_DES_SORTIES_ANNEES')
         # Setting the link with "tk.Tk"
         tk.Tk.__init__(master)
@@ -254,7 +251,8 @@ class InitApp(tk.Tk):
         def _update_page():
 
             institute_select = 'CTG'
-            inst_default_bmf = Path.home() / Path(r'Nextcloud2\BASE_DOCUMENTS_CTG\2_ACTIVITES_CTG\2-2_STATS_DES_SORTIES_ANNEES')
+            inst_default_bmf = Path.home() / Path(gg.nextcloud) 
+            inst_default_bmf = inst_default_bmf / Path('BASE_DOCUMENTS_CTG/2_ACTIVITES_CTG/2-2_STATS_DES_SORTIES_ANNEES')
 
             # Managing working folder (bmf stands for "BiblioMeter_Files")
             _set_bmf_widget_param(institute_select, inst_default_bmf)
